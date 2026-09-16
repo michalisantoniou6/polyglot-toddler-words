@@ -277,6 +277,15 @@
         }
 
         .card-emoji { font-size: 4.2rem; margin-bottom: 6px; }
+        .card-art {
+            width: 96px;
+            height: 76px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card-art svg { width: 100%; height: 100%; overflow: visible; }
         .card-title { font-size: 1.15rem; font-weight: 800; color: #2d3748; text-align: center; }
         .card-sub { font-size: 0.85rem; font-weight: 600; color: #718096; margin-top: 2px; }
 
@@ -306,7 +315,7 @@
     <header>
         <div class="lang-bar">
             <button class="lang-pill" onclick="setLanguage('en')">🇬🇧 EN</button>
-            <button class="lang-pill" onclick="setLanguage('es')">🇪🇸 ES</button>
+            <button class="lang-pill" onclick="setLanguage('es')">🇲🇽 MX</button>
             <button class="lang-pill" onclick="setLanguage('fr')">🇫🇷 FR</button>
             <button class="lang-pill" onclick="setLanguage('el')">🇬🇷 ΕΛ</button>
             <button class="lang-pill active" onclick="setLanguage('all')">🌍 All 4</button>
@@ -316,8 +325,8 @@
     <!-- Game Tabs -->
     <nav class="game-nav">
         <button class="nav-tab active" onclick="switchGame('monster', this)">
-            <span class="nav-icon">👾</span>
-            <span>Hungry Monster</span>
+            <span class="nav-icon">🎅</span>
+            <span>Feed Santa</span>
         </button>
         <button class="nav-tab" onclick="switchGame('trucks', this)">
             <span class="nav-icon">🚜</span>
@@ -339,11 +348,11 @@
         <span id="repeatText">Apple</span>
     </div>
 
-    <!-- 1. HUNGRY MONSTER GAME -->
+    <!-- 1. FEED SANTA GAME -->
     <div id="game-monster" class="game-view active">
-        <div class="speech-bubble" id="monsterSpeech">Feed me! I'm hungry! 😋</div>
+        <div class="speech-bubble" id="monsterSpeech">Ari, can you feed Santa? 🎅</div>
         <div class="monster-stage">
-            <div class="monster-avatar" id="monsterAvatar" onclick="tickleMonster()">👾</div>
+            <div class="monster-avatar" id="monsterAvatar" onclick="tickleMonster()" role="img" aria-label="Santa Claus">🎅</div>
         </div>
         <div class="food-grid" id="monsterFoodGrid"></div>
     </div>
@@ -366,7 +375,7 @@
 
     <script>
         /* -------------------------------------------------------------
-           1. CORE DATASETS (4 Languages: EN, ES, FR, EL)
+           1. CORE DATASETS (4 Languages: EN, Mexican ES, FR, EL)
         ------------------------------------------------------------- */
         const foods = [
             { emoji: "🍎", en: "Apple", es: "Manzana", fr: "Pomme", el: "Μήλο" },
@@ -377,8 +386,39 @@
             { emoji: "🍓", en: "Strawberry", es: "Fresa", fr: "Fraise", el: "Φράουλα" },
             { emoji: "🍪", en: "Cookie", es: "Galleta", fr: "Biscuit", el: "Μπισκότο" },
             { emoji: "🍉", en: "Watermelon", es: "Sandía", fr: "Pastèque", el: "Καρπούζι" },
-            { emoji: "🥦", en: "Broccoli", es: "Brócoli", fr: "Brocoli", el: "Μπρόκολο" }
+            { emoji: "🥦", en: "Broccoli", es: "Brócoli", fr: "Brocoli", el: "Μπρόκολο" },
+            { emoji: "🍇", en: "Grapes", es: "Uvas", fr: "Raisins", el: "Σταφύλια" },
+            { emoji: "🍊", en: "Orange", es: "Naranja", fr: "Orange", el: "Πορτοκάλι" },
+            { emoji: "🍐", en: "Pear", es: "Pera", fr: "Poire", el: "Αχλάδι" },
+            { emoji: "🍍", en: "Pineapple", es: "Piña", fr: "Ananas", el: "Ανανάς" },
+            { emoji: "🥑", en: "Avocado", es: "Aguacate", fr: "Avocat", el: "Αβοκάντο" },
+            { emoji: "🌽", en: "Corn", es: "Elote", fr: "Maïs", el: "Καλαμπόκι" },
+            { emoji: "🌮", en: "Taco", es: "Taco", fr: "Taco", el: "Τάκο" },
+            { emoji: "🍞", en: "Bread", es: "Pan", fr: "Pain", el: "Ψωμί" },
+            { emoji: "🧀", en: "Cheese", es: "Queso", fr: "Fromage", el: "Τυρί" },
+            { emoji: "🥚", en: "Egg", es: "Huevo", fr: "Œuf", el: "Αυγό" },
+            { emoji: "🥛", en: "Milk", es: "Leche", fr: "Lait", el: "Γάλα" },
+            { emoji: "🍅", en: "Tomato", es: "Jitomate", fr: "Tomate", el: "Ντομάτα" },
+            { emoji: "🥔", en: "Potato", es: "Papa", fr: "Pomme de terre", el: "Πατάτα" },
+            { emoji: "🍒", en: "Cherries", es: "Cerezas", fr: "Cerises", el: "Κεράσια" },
+            { emoji: "🍑", en: "Peach", es: "Durazno", fr: "Pêche", el: "Ροδάκινο" },
+            { emoji: "🥭", en: "Mango", es: "Mango", fr: "Mangue", el: "Μάνγκο" },
+            { emoji: "🍋", en: "Lemon", es: "Limón", fr: "Citron", el: "Λεμόνι" },
+            { emoji: "🌭", en: "Hot dog", es: "Hot dog", fr: "Hot-dog", el: "Χοτ ντογκ" }
         ];
+
+        const bulldozerArt = `
+            <div class="card-art" aria-hidden="true">
+                <svg viewBox="0 0 120 90" role="img">
+                    <path d="M76 20h21l9 25H70z" fill="#f6ad55" stroke="#9c4221" stroke-width="3"/>
+                    <rect x="31" y="36" width="61" height="28" rx="7" fill="#f6c343" stroke="#975a16" stroke-width="3"/>
+                    <rect x="55" y="20" width="24" height="24" rx="3" fill="#63b3ed" stroke="#2b6cb0" stroke-width="3"/>
+                    <path d="M29 44H15L8 68h23" fill="#a0aec0" stroke="#4a5568" stroke-width="4" stroke-linejoin="round"/>
+                    <rect x="27" y="60" width="70" height="22" rx="11" fill="#4a5568"/>
+                    <circle cx="43" cy="71" r="7" fill="#cbd5e0"/><circle cx="62" cy="71" r="7" fill="#cbd5e0"/><circle cx="81" cy="71" r="7" fill="#cbd5e0"/>
+                    <path d="M99 42h12" stroke="#975a16" stroke-width="5" stroke-linecap="round"/>
+                </svg>
+            </div>`;
 
         const trucks = [
             { emoji: "🚜", type: "tractor", en: "Tractor", es: "Tractor", fr: "Tracteur", el: "Τρακτέρ" },
@@ -386,9 +426,25 @@
             { emoji: "🚚", type: "excavator", en: "Excavator", es: "Excavadora", fr: "Pelleteuse", el: "Εκσκαφέας" },
             { emoji: "🚛", type: "truck", en: "Dump truck", es: "Camión volquete", fr: "Camion benne", el: "Ανατρεπόμενο" },
             { emoji: "🚒", type: "siren", en: "Fire truck", es: "Camión de bomberos", fr: "Camion de pompiers", el: "Πυροσβεστικό" },
-            { emoji: "🚧", type: "bulldozer", en: "Bulldozer", es: "Buldócer", fr: "Bulldozer", el: "Μπουλντόζα" },
+            { emoji: "🚜", art: bulldozerArt, type: "bulldozer", en: "Bulldozer", es: "Buldócer", fr: "Bulldozer", el: "Μπουλντόζα" },
             { emoji: "🚑", type: "siren", en: "Ambulance", es: "Ambulancia", fr: "Ambulance", el: "Ασθενοφόρο" },
-            { emoji: "🚀", type: "rocket", en: "Rocket", es: "Cohete", fr: "Fusée", el: "Πύραυλος" }
+            { emoji: "🚀", type: "rocket", en: "Rocket", es: "Cohete", fr: "Fusée", el: "Πύραυλος" },
+            { emoji: "🚜", type: "engine", en: "Backhoe", es: "Retroexcavadora", fr: "Tractopelle", el: "Εκσκαφέας-φορτωτής" },
+            { emoji: "🏗️", type: "engine", en: "Wheel loader", es: "Cargador frontal", fr: "Chargeuse", el: "Φορτωτής" },
+            { emoji: "🚜", type: "engine", en: "Road roller", es: "Aplanadora", fr: "Rouleau compresseur", el: "Οδοστρωτήρας" },
+            { emoji: "🚛", type: "truck", en: "Cement mixer", es: "Revolvedora", fr: "Bétonnière", el: "Μπετονιέρα" },
+            { emoji: "🚛", type: "truck", en: "Garbage truck", es: "Camión de basura", fr: "Camion poubelle", el: "Απορριμματοφόρο" },
+            { emoji: "🛻", type: "truck", en: "Tow truck", es: "Grúa de arrastre", fr: "Dépanneuse", el: "Γερανός ρυμούλκησης" },
+            { emoji: "🚚", type: "engine", en: "Snowplow", es: "Quitanieves", fr: "Chasse-neige", el: "Εκχιονιστικό" },
+            { emoji: "🏭", type: "engine", en: "Forklift", es: "Montacargas", fr: "Chariot élévateur", el: "Περονοφόρο" },
+            { emoji: "🚜", type: "engine", en: "Skid steer", es: "Minicargador", fr: "Chargeuse compacte", el: "Μίνι φορτωτής" },
+            { emoji: "🛣️", type: "engine", en: "Paver", es: "Pavimentadora", fr: "Finisseuse", el: "Ασφαλτοστρωτήρας" },
+            { emoji: "⚙️", type: "engine", en: "Drilling rig", es: "Perforadora", fr: "Foreuse", el: "Γεωτρύπανο" },
+            { emoji: "🛻", type: "truck", en: "Monster truck", es: "Camión monstruo", fr: "Monster truck", el: "Τερατώδες φορτηγό" },
+            { emoji: "🚓", type: "siren", en: "Police car", es: "Patrulla", fr: "Voiture de police", el: "Περιπολικό" },
+            { emoji: "🚌", type: "truck", en: "School bus", es: "Autobús escolar", fr: "Bus scolaire", el: "Σχολικό λεωφορείο" },
+            { emoji: "🚐", type: "truck", en: "Delivery van", es: "Camioneta de reparto", fr: "Camionnette de livraison", el: "Βαν διανομών" },
+            { emoji: "🚂", type: "engine", en: "Train", es: "Tren", fr: "Train", el: "Τρένο" }
         ];
 
         const animals = [
@@ -399,7 +455,23 @@
             { emoji: "🐸", sound: "frog", en: "Frog", es: "Rana", fr: "Grenouille", el: "Βάτραχος" },
             { emoji: "🦆", sound: "duck", en: "Duck", es: "Pato", fr: "Canard", el: "Πάπια" },
             { emoji: "🐑", sound: "sheep", en: "Sheep", es: "Oveja", fr: "Mouton", el: "Πρόβατο" },
-            { emoji: "🐷", sound: "pig", en: "Pig", es: "Cerdo", fr: "Cochon", el: "Γουρούνι" }
+            { emoji: "🐷", sound: "pig", en: "Pig", es: "Cerdo", fr: "Cochon", el: "Γουρούνι" },
+            { emoji: "🐴", sound: "horse", en: "Horse", es: "Caballo", fr: "Cheval", el: "Άλογο" },
+            { emoji: "🐘", sound: "elephant", en: "Elephant", es: "Elefante", fr: "Éléphant", el: "Ελέφαντας" },
+            { emoji: "🐵", sound: "monkey", en: "Monkey", es: "Mono", fr: "Singe", el: "Πίθηκος" },
+            { emoji: "🐯", sound: "tiger", en: "Tiger", es: "Tigre", fr: "Tigre", el: "Τίγρη" },
+            { emoji: "🐻", sound: "bear", en: "Bear", es: "Oso", fr: "Ours", el: "Αρκούδα" },
+            { emoji: "🐰", sound: "rabbit", en: "Rabbit", es: "Conejo", fr: "Lapin", el: "Κουνέλι" },
+            { emoji: "🐔", sound: "chicken", en: "Chicken", es: "Gallina", fr: "Poule", el: "Κότα" },
+            { emoji: "🐓", sound: "rooster", en: "Rooster", es: "Gallo", fr: "Coq", el: "Κόκορας" },
+            { emoji: "🐐", sound: "goat", en: "Goat", es: "Cabra", fr: "Chèvre", el: "Κατσίκα" },
+            { emoji: "🫏", sound: "donkey", en: "Donkey", es: "Burro", fr: "Âne", el: "Γάιδαρος" },
+            { emoji: "🦉", sound: "owl", en: "Owl", es: "Búho", fr: "Hibou", el: "Κουκουβάγια" },
+            { emoji: "🐧", sound: "penguin", en: "Penguin", es: "Pingüino", fr: "Manchot", el: "Πιγκουίνος" },
+            { emoji: "🦒", sound: "giraffe", en: "Giraffe", es: "Jirafa", fr: "Girafe", el: "Καμηλοπάρδαλη" },
+            { emoji: "🦓", sound: "zebra", en: "Zebra", es: "Cebra", fr: "Zèbre", el: "Ζέβρα" },
+            { emoji: "🐊", sound: "crocodile", en: "Crocodile", es: "Cocodrilo", fr: "Crocodile", el: "Κροκόδειλος" },
+            { emoji: "🐋", sound: "whale", en: "Whale", es: "Ballena", fr: "Baleine", el: "Φάλαινα" }
         ];
 
         const numbers = [
@@ -639,7 +711,7 @@
             if (currentLangMode !== 'all') {
                 const langMap = {
                     en: { code: 'en-US', text: item.en },
-                    es: { code: 'es-ES', text: item.es },
+                    es: { code: 'es-MX', text: item.es },
                     fr: { code: 'fr-FR', text: item.fr },
                     el: { code: 'el-GR', text: item.el }
                 };
@@ -655,7 +727,7 @@
             // Sequential All 4 mode with pause for toddler repetition
             const seq = [
                 { code: 'en-US', text: item.en },
-                { code: 'es-ES', text: item.es },
+                { code: 'es-MX', text: item.es },
                 { code: 'fr-FR', text: item.fr },
                 { code: 'el-GR', text: item.el }
             ];
@@ -693,7 +765,7 @@
             else stopBalloonSpawner();
         }
 
-        // --- Game 1: Hungry Monster ---
+        // --- Game 1: Feed Santa ---
         const monsterAvatar = document.getElementById('monsterAvatar');
         const monsterSpeech = document.getElementById('monsterSpeech');
         const monsterFoodGrid = document.getElementById('monsterFoodGrid');
@@ -709,20 +781,43 @@
         function feedMonster(food) {
             SoundFX.chomp();
             monsterAvatar.classList.add('chewing');
-            monsterSpeech.textContent = `Yum! ${food.en}! 😋`;
+            monsterSpeech.textContent = "Ho, ho, ho! Ευχαριστώ, Ari! Thank you, Ari! 🎁";
 
             setTimeout(() => {
                 monsterAvatar.classList.remove('chewing');
             }, 1200);
 
-            pronounceItem(food, () => {
-                monsterSpeech.textContent = "More, please! Feed me! 👾";
+            speakSantaThanks(() => {
+                pronounceItem(food, () => {
+                    monsterSpeech.textContent = "More, please, Ari! 🎅";
+                });
             });
+        }
+
+        function speakSantaThanks(onFinish) {
+            const thanks = {
+                en: { code: 'en-US', text: 'Ho, ho, ho! Thank you, Ari!' },
+                es: { code: 'es-MX', text: '¡Jo, jo, jo! ¡Gracias, Ari!' },
+                fr: { code: 'fr-FR', text: 'Ho, ho, ho ! Merci, Ari !' },
+                el: { code: 'el-GR', text: 'Χο, χο, χο! Ευχαριστώ, Άρι!' }
+            };
+
+            if (currentLangMode === 'all') {
+                speakSingle(thanks.el.code, thanks.el.text, () => {
+                    speechSequenceTimeout = setTimeout(() => {
+                        speakSingle(thanks.en.code, thanks.en.text, onFinish);
+                    }, 500);
+                });
+                return;
+            }
+
+            const selectedThanks = thanks[currentLangMode];
+            speakSingle(selectedThanks.code, selectedThanks.text, onFinish);
         }
 
         function tickleMonster() {
             SoundFX.animal('cat');
-            monsterSpeech.textContent = "Hahaha that tickles! 😆";
+            monsterSpeech.textContent = "Ho, ho, ho! That tickles, Ari! 😆";
         }
 
         // --- Game 2: Big Machines ---
@@ -731,7 +826,7 @@
             const card = document.createElement('div');
             card.className = 'arcade-card';
             card.innerHTML = `
-                <div class="card-emoji">${t.emoji}</div>
+                ${t.art || `<div class="card-emoji">${t.emoji}</div>`}
                 <div class="card-title">${t.en}</div>
                 <div class="card-sub">${t.el}</div>
             `;
