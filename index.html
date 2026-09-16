@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="el">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Toddler Fun Arcade</title>
+    <title>Χαρούμενα παιδικά παιχνίδια</title>
     <style>
         * {
             box-sizing: border-box;
@@ -514,23 +514,200 @@
             hyphens: auto;
         }
 
-        /* Speak Overlay (For multi-language sequence) */
+        /* Full-screen listen-and-repeat moment */
         #repeatOverlay {
+            --repeat-bg-start: #90cdf4;
+            --repeat-bg-end: #e6fffa;
             position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(26, 32, 44, 0.92);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 30px;
-            font-size: 1.2rem;
-            font-weight: bold;
+            inset: 0;
+            z-index: 3000;
             display: none;
             align-items: center;
+            justify-content: center;
+            padding: max(20px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
+            overflow: hidden;
+            color: #1a202c;
+            background:
+                radial-gradient(circle at 14% 18%, rgba(255,255,255,0.9) 0 3%, transparent 3.5%),
+                radial-gradient(circle at 86% 22%, rgba(255,215,0,0.8) 0 2.5%, transparent 3%),
+                radial-gradient(circle at 20% 82%, rgba(255,255,255,0.72) 0 2.5%, transparent 3%),
+                linear-gradient(145deg, var(--repeat-bg-start), var(--repeat-bg-end));
+            backdrop-filter: blur(10px);
+        }
+
+        #repeatOverlay.active { display: flex; }
+        #repeatOverlay[data-language="en"] { --repeat-bg-start: #c3dafe; --repeat-bg-end: #fed7e2; }
+        #repeatOverlay[data-language="es"] { --repeat-bg-start: #fbd38d; --repeat-bg-end: #fff5b8; }
+        #repeatOverlay[data-language="fr"] { --repeat-bg-start: #bee3f8; --repeat-bg-end: #c6f6d5; }
+
+        body.repeat-open { overflow: hidden; }
+
+        .repeat-close {
+            position: fixed;
+            z-index: 2;
+            top: max(14px, env(safe-area-inset-top));
+            right: max(14px, env(safe-area-inset-right));
+            width: 52px;
+            height: 52px;
+            border: 3px solid rgba(255,255,255,0.9);
+            border-radius: 50%;
+            background: rgba(26,32,44,0.78);
+            color: white;
+            font: 900 2rem/1 system-ui, sans-serif;
+            cursor: pointer;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+        }
+
+        .repeat-card {
+            position: relative;
+            width: min(92vw, 540px);
+            max-height: calc(100dvh - 40px);
+            min-height: min(76dvh, 650px);
+            padding: clamp(18px, 4vh, 34px) clamp(18px, 6vw, 42px);
+            border: 5px solid rgba(255,255,255,0.9);
+            border-radius: clamp(28px, 8vw, 48px);
+            background: rgba(255,255,255,0.94);
+            box-shadow: 0 24px 60px rgba(26,32,44,0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: clamp(8px, 2vh, 18px);
+            text-align: center;
+            overflow: hidden;
+            animation: repeatCardIn 0.42s cubic-bezier(.2,.85,.3,1.2) both;
+        }
+
+        .repeat-progress {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             gap: 10px;
-            z-index: 1000;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            min-height: 38px;
+        }
+
+        .repeat-step {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: #edf2f7;
+            opacity: 0.5;
+            font-size: 1.2rem;
+            transition: transform 0.25s ease, opacity 0.25s ease, background 0.25s ease;
+        }
+
+        .repeat-step.done { opacity: 0.78; }
+        .repeat-step.active {
+            opacity: 1;
+            transform: scale(1.3);
+            background: #fff5b8;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.16);
+        }
+
+        .repeat-flag {
+            font-size: clamp(3.5rem, 16vw, 6rem);
+            line-height: 1;
+            filter: drop-shadow(0 8px 8px rgba(0,0,0,0.16));
+        }
+
+        .repeat-visual {
+            width: min(74vw, 360px);
+            min-height: clamp(130px, 29vh, 250px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(8rem, 37vw, 14rem);
+            line-height: 1;
+            filter: drop-shadow(0 14px 14px rgba(0,0,0,0.2));
+            transform-origin: center;
+        }
+
+        .repeat-visual .card-art {
+            width: min(72vw, 340px);
+            height: min(52vw, 245px);
+            margin: 0;
+        }
+
+        .repeat-word {
+            width: 100%;
+            color: #2d3748;
+            font-size: clamp(2rem, 9vw, 4rem);
+            line-height: 1.05;
+            font-weight: 950;
+            overflow-wrap: anywhere;
+        }
+
+        .repeat-prompt {
+            padding: 10px 18px;
+            border-radius: 999px;
+            background: #ebf8ff;
+            color: #2b6cb0;
+            font-size: clamp(1.05rem, 4.5vw, 1.45rem);
+            line-height: 1.2;
+            font-weight: 850;
+        }
+
+        .repeat-card.your-turn .repeat-prompt {
+            background: #fff5b8;
+            color: #975a16;
+            animation: repeatPromptPulse 0.8s ease-in-out infinite alternate;
+        }
+
+        .repeat-bounce { animation: repeatBounce 1.55s ease-in-out both; }
+        .repeat-wiggle { animation: repeatWiggle 1.55s ease-in-out both; }
+        .repeat-float { animation: repeatFloat 1.55s ease-in-out both; }
+        .repeat-pop { animation: repeatPop 1.55s ease-in-out both; }
+
+        @keyframes repeatCardIn {
+            from { opacity: 0; transform: scale(0.72); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes repeatBounce {
+            0%, 100% { transform: translateY(0) scale(1); }
+            30% { transform: translateY(-4vh) scale(1.08); }
+            55% { transform: translateY(0) scale(0.94, 1.08); }
+            75% { transform: translateY(-2vh) scale(1.04); }
+        }
+
+        @keyframes repeatWiggle {
+            0%, 100% { transform: rotate(0) scale(1); }
+            20% { transform: rotate(-12deg) scale(1.08); }
+            40% { transform: rotate(12deg) scale(1.02); }
+            60% { transform: rotate(-8deg) scale(1.08); }
+            80% { transform: rotate(8deg) scale(1.02); }
+        }
+
+        @keyframes repeatFloat {
+            0%, 100% { transform: translate(0, 0) rotate(0); }
+            30% { transform: translate(5vw, -2vh) rotate(6deg); }
+            65% { transform: translate(-5vw, 1vh) rotate(-6deg); }
+        }
+
+        @keyframes repeatPop {
+            0% { transform: scale(0.35) rotate(-8deg); }
+            35% { transform: scale(1.16) rotate(5deg); }
+            62% { transform: scale(0.92) rotate(-3deg); }
+            100% { transform: scale(1) rotate(0); }
+        }
+
+        @keyframes repeatPromptPulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.06); }
+        }
+
+        @media (max-height: 690px) {
+            .repeat-card { min-height: calc(100dvh - 40px); max-height: calc(100dvh - 40px); padding-block: 12px; gap: 6px; }
+            .repeat-visual { min-height: 112px; font-size: clamp(6.5rem, 30vh, 10rem); }
+            .repeat-visual .card-art { height: min(34vh, 190px); }
+            .repeat-flag { font-size: clamp(2.8rem, 10vh, 4.5rem); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .repeat-card,
+            .repeat-visual { animation: none !important; }
         }
 
         @media (min-width: 620px) {
@@ -634,10 +811,16 @@
         </div>
     </header>
 
-    <!-- Repeat Toast Bar -->
-    <div id="repeatOverlay">
-        <span id="repeatEmoji">🍎</span>
-        <span id="repeatText">Apple</span>
+    <!-- Full-screen listen-and-repeat stage -->
+    <div id="repeatOverlay" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="repeatText">
+        <button class="repeat-close" id="repeatClose" type="button" onclick="cancelRepeatSequence()" aria-label="Close">×</button>
+        <div class="repeat-card" id="repeatCard">
+            <div class="repeat-progress" id="repeatProgress" aria-hidden="true"></div>
+            <div class="repeat-flag" id="repeatFlag" aria-hidden="true">🇬🇷</div>
+            <div class="repeat-visual" id="repeatVisual" aria-hidden="true">🍎</div>
+            <div class="repeat-word" id="repeatText">Μήλο</div>
+            <div class="repeat-prompt" id="repeatPrompt">👂 Άκου καλά…</div>
+        </div>
     </div>
 
     <div id="santaCelebration" aria-hidden="true">
@@ -1007,6 +1190,20 @@
            3. SPEECH SYNTHESIS ENGINE (iOS / Android Multi-voice)
         ------------------------------------------------------------- */
         let currentLangMode = 'el'; // 'en', 'es', 'fr', 'el', or 'all'
+        const languageSettings = {
+            el: { code: 'el-GR', flag: '🇬🇷' },
+            en: { code: 'en-US', flag: '🇬🇧' },
+            es: { code: 'es-MX', flag: '🇲🇽' },
+            fr: { code: 'fr-FR', flag: '🇫🇷' }
+        };
+        const allLanguageOrder = ['el', 'en', 'es', 'fr'];
+        const repeatCopy = {
+            el: { listen: '👂 Άκου καλά…', repeat: '🎤 Πες το κι εσύ, Άρι!', spokenRepeat: 'Πες το κι εσύ, Άρι!', close: 'Κλείσιμο' },
+            en: { listen: '👂 Listen…', repeat: '🎤 Your turn, Ari!', spokenRepeat: 'Your turn, Ari!', close: 'Close' },
+            es: { listen: '👂 Escucha…', repeat: '🎤 ¡Tu turno, Ari!', spokenRepeat: '¡Tu turno, Ari!', close: 'Cerrar' },
+            fr: { listen: '👂 Écoute…', repeat: '🎤 À toi, Ari !', spokenRepeat: 'À toi, Ari !', close: 'Fermer' }
+        };
+        const repeatAnimationClasses = ['repeat-bounce', 'repeat-wiggle', 'repeat-float', 'repeat-pop'];
         let voices = [];
         function loadVoices() {
             voices = window.speechSynthesis.getVoices();
@@ -1028,20 +1225,20 @@
 
         window._activeUtterance = null;
         let speechSequenceTimeout = null;
+        let repeatSequenceRunId = 0;
+        let repeatFinishCallback = null;
 
         function setLanguage(mode, button) {
             currentLangMode = mode;
             document.querySelectorAll('.lang-pill').forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
-            window.speechSynthesis.cancel();
-            if (speechSequenceTimeout) clearTimeout(speechSequenceTimeout);
-            hideToast();
+            cancelRepeatSequence();
             updateInterfaceLanguage();
             resetSantaIdleTimer();
         }
 
         function updateInterfaceLanguage() {
-            const displayLanguage = currentLangMode === 'all' ? 'en' : currentLangMode;
+            const displayLanguage = currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode;
             const text = interfaceText[displayLanguage];
             document.documentElement.lang = displayLanguage;
             document.title = text.pageTitle;
@@ -1068,7 +1265,7 @@
                 card.setAttribute('aria-label', item[displayLanguage]);
 
                 if (currentLangMode === 'all') {
-                    subtitle.textContent = item.el;
+                    subtitle.textContent = item.en;
                     subtitle.style.display = '';
                 } else {
                     subtitle.textContent = '';
@@ -1101,58 +1298,108 @@
             window.speechSynthesis.speak(utterance);
         }
 
-        function showToast(emoji, text) {
+        function showToast(item, text, language, stepIndex = 0, totalSteps = 1) {
             const overlay = document.getElementById('repeatOverlay');
-            document.getElementById('repeatEmoji').textContent = emoji;
+            const card = document.getElementById('repeatCard');
+            const visual = document.getElementById('repeatVisual');
+            const progressLanguages = totalSteps > 1 ? allLanguageOrder : [language];
+
+            overlay.dataset.language = language;
+            overlay.classList.add('active');
+            overlay.setAttribute('aria-hidden', 'false');
+            document.body.classList.add('repeat-open');
+            card.classList.remove('your-turn');
+
+            document.getElementById('repeatFlag').textContent = languageSettings[language].flag;
             document.getElementById('repeatText').textContent = text;
-            overlay.style.display = 'flex';
+            document.getElementById('repeatPrompt').textContent = repeatCopy[language].listen;
+            document.getElementById('repeatClose').setAttribute('aria-label', repeatCopy[language].close);
+            document.getElementById('repeatProgress').innerHTML = progressLanguages.map((progressLanguage, index) => {
+                const state = index === stepIndex ? 'active' : (index < stepIndex ? 'done' : '');
+                return `<span class="repeat-step ${state}">${languageSettings[progressLanguage].flag}</span>`;
+            }).join('');
+
+            visual.className = 'repeat-visual';
+            if (item.art) {
+                visual.innerHTML = item.art;
+            } else {
+                visual.textContent = item.emoji || String(item.num ?? '✨');
+            }
+            void visual.offsetWidth;
+            visual.classList.add(repeatAnimationClasses[Math.floor(Math.random() * repeatAnimationClasses.length)]);
         }
 
         function hideToast() {
-            document.getElementById('repeatOverlay').style.display = 'none';
+            const overlay = document.getElementById('repeatOverlay');
+            overlay.classList.remove('active');
+            overlay.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('repeat-open');
+        }
+
+        function cancelRepeatSequence() {
+            repeatSequenceRunId++;
+            window.speechSynthesis.cancel();
+            if (speechSequenceTimeout) {
+                clearTimeout(speechSequenceTimeout);
+                speechSequenceTimeout = null;
+            }
+            hideToast();
+            const finish = repeatFinishCallback;
+            repeatFinishCallback = null;
+            if (finish) finish();
+        }
+
+        function finishRepeatSequence(runId) {
+            if (runId !== repeatSequenceRunId) return;
+            hideToast();
+            const finish = repeatFinishCallback;
+            repeatFinishCallback = null;
+            if (finish) finish();
+        }
+
+        function playRepeatStep(item, text, language, stepIndex, totalSteps, runId, onDone) {
+            if (runId !== repeatSequenceRunId) return;
+            showToast(item, text, language, stepIndex, totalSteps);
+            speakSingle(languageSettings[language].code, text, () => {
+                if (runId !== repeatSequenceRunId) return;
+                document.getElementById('repeatCard').classList.add('your-turn');
+                document.getElementById('repeatPrompt').textContent = repeatCopy[language].repeat;
+                speakSingle(languageSettings[language].code, repeatCopy[language].spokenRepeat, () => {
+                    if (runId === repeatSequenceRunId) onDone();
+                });
+            });
         }
 
         // Plays either the chosen language or the 4-language Listen & Repeat sequence
         function pronounceItem(item, onFinish) {
-            window.speechSynthesis.cancel();
-            if (speechSequenceTimeout) clearTimeout(speechSequenceTimeout);
+            cancelRepeatSequence();
+            const runId = ++repeatSequenceRunId;
+            repeatFinishCallback = onFinish || null;
 
             if (currentLangMode !== 'all') {
-                const langMap = {
-                    en: { code: 'en-US', text: item.en },
-                    es: { code: 'es-MX', text: item.es },
-                    fr: { code: 'fr-FR', text: item.fr },
-                    el: { code: 'el-GR', text: item.el }
-                };
-                const sel = langMap[currentLangMode];
-                showToast(item.emoji || '✨', sel.text);
-                speakSingle(sel.code, sel.text, () => {
-                    setTimeout(hideToast, 1200);
-                    if (onFinish) onFinish();
+                playRepeatStep(item, item[currentLangMode], currentLangMode, 0, 1, runId, () => {
+                    speechSequenceTimeout = setTimeout(() => finishRepeatSequence(runId), 1700);
                 });
                 return;
             }
 
             // Sequential All 4 mode with pause for toddler repetition
-            const seq = [
-                { code: 'en-US', text: item.en },
-                { code: 'es-MX', text: item.es },
-                { code: 'fr-FR', text: item.fr },
-                { code: 'el-GR', text: item.el }
-            ];
+            const seq = allLanguageOrder.map(language => ({
+                language,
+                code: languageSettings[language].code,
+                text: item[language]
+            }));
 
             let index = 0;
             function runNext() {
                 if (index >= seq.length) {
-                    hideToast();
-                    if (onFinish) onFinish();
+                    finishRepeatSequence(runId);
                     return;
                 }
                 const cur = seq[index];
-                showToast(item.emoji || '🗣️', cur.text);
-                speakSingle(cur.code, cur.text, () => {
+                playRepeatStep(item, cur.text, cur.language, index, seq.length, runId, () => {
                     index++;
-                    speechSequenceTimeout = setTimeout(runNext, 1800); // 1.8s breath window
+                    speechSequenceTimeout = setTimeout(runNext, 1700);
                 });
             }
             runNext();
@@ -1202,6 +1449,11 @@
         }, { passive: true });
         gameNav.addEventListener('pointerdown', dismissGameSwipeHint, { passive: true });
         window.addEventListener('resize', updateGameNavControls);
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape' && document.getElementById('repeatOverlay').classList.contains('active')) {
+                cancelRepeatSequence();
+            }
+        });
 
         // Tab switcher
         function switchGame(gameId, tabEl) {
@@ -1219,8 +1471,7 @@
             });
             dismissGameSwipeHint();
             revealActiveGame();
-            window.speechSynthesis.cancel();
-            hideToast();
+            cancelRepeatSequence();
 
             if (gameId === 'balloons') {
                 startBalloonSpawner();
@@ -1257,7 +1508,7 @@
             SoundFX.chomp();
             monsterAvatar.classList.add('chewing');
             const responseIndex = Math.floor(Math.random() * 3);
-            const displayLanguage = currentLangMode === 'all' ? 'en' : currentLangMode;
+            const displayLanguage = currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode;
             const displayResponse = getSantaResponse(food, displayLanguage, responseIndex);
             monsterSpeech.textContent = `${displayResponse} 🎁`;
             showSantaCelebration(displayResponse);
@@ -1329,7 +1580,7 @@
                 return;
             }
 
-            const sequence = ['en', 'es', 'fr', 'el'];
+            const sequence = allLanguageOrder;
             let index = 0;
             function speakNextThankYou() {
                 if (index >= sequence.length) {
@@ -1362,7 +1613,7 @@
         function promptSantaForMore() {
             if (!document.getElementById('game-monster').classList.contains('active')) return;
             const languageCodes = { en: 'en-US', es: 'es-MX', fr: 'fr-FR', el: 'el-GR' };
-            const displayLanguage = currentLangMode === 'all' ? 'en' : currentLangMode;
+            const displayLanguage = currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode;
             monsterSpeech.textContent = interfaceText[displayLanguage].morePlease;
             monsterAvatar.classList.remove('asking');
             void monsterAvatar.offsetWidth;
@@ -1374,7 +1625,7 @@
                 return;
             }
 
-            const sequence = ['en', 'es', 'fr', 'el'];
+            const sequence = allLanguageOrder;
             let index = 0;
             function speakNextPrompt() {
                 if (index >= sequence.length) return;
@@ -1389,11 +1640,30 @@
 
         function tickleMonster() {
             clearSantaIdleTimer();
+            cancelRepeatSequence();
             SoundFX.animal('cat');
-            const displayLanguage = currentLangMode === 'all' ? 'en' : currentLangMode;
+            const displayLanguage = currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode;
             monsterSpeech.textContent = interfaceText[displayLanguage].tickle;
             const languageCodes = { en: 'en-US', es: 'es-MX', fr: 'fr-FR', el: 'el-GR' };
-            speakSingle(languageCodes[displayLanguage], getSpeechText(interfaceText[displayLanguage].tickle), resetSantaIdleTimer);
+
+            if (currentLangMode !== 'all') {
+                speakSingle(languageCodes[displayLanguage], getSpeechText(interfaceText[displayLanguage].tickle), resetSantaIdleTimer);
+                return;
+            }
+
+            let index = 0;
+            function speakNextTickle() {
+                if (index >= allLanguageOrder.length) {
+                    resetSantaIdleTimer();
+                    return;
+                }
+                const language = allLanguageOrder[index++];
+                monsterSpeech.textContent = interfaceText[language].tickle;
+                speakSingle(languageCodes[language], getSpeechText(interfaceText[language].tickle), () => {
+                    speechSequenceTimeout = setTimeout(speakNextTickle, 350);
+                });
+            }
+            speakNextTickle();
         }
 
         function getSpeechText(text) {
@@ -1513,7 +1783,7 @@
             setTimeout(() => popEffect.remove(), 400);
 
             balloonEl.remove();
-            const displayLanguage = currentLangMode === 'all' ? 'en' : currentLangMode;
+            const displayLanguage = currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode;
             balloonStatus.textContent = interfaceText[displayLanguage].popped(numItem.num);
             pronounceItem(numItem);
         }
