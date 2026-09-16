@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Toddler Fun Arcade</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            user-select: none;
+            touch-action: manipulation;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f0f7ff;
+            color: #2d3748;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Top Header & Global Language Selector */
+        header {
+            background: white;
+            padding: 12px 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .lang-bar {
+            display: flex;
+            gap: 6px;
+            background: #edf2f7;
+            padding: 4px;
+            border-radius: 30px;
+        }
+
+        .lang-pill {
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: none;
+            background: transparent;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            color: #4a5568;
+            transition: all 0.2s ease;
+        }
+
+        .lang-pill.active {
+            background: #3182ce;
+            color: white;
+            box-shadow: 0 2px 6px rgba(49, 130, 206, 0.4);
+        }
+
+        /* Game Navigation Tabs */
+        .game-nav {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            width: 100%;
+            max-width: 550px;
+            padding: 10px 14px 4px 14px;
+            scrollbar-width: none;
+        }
+        .game-nav::-webkit-scrollbar { display: none; }
+
+        .nav-tab {
+            flex: 1;
+            min-width: 110px;
+            background: white;
+            border: 3px solid #e2e8f0;
+            border-radius: 18px;
+            padding: 10px 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #4a5568;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .nav-tab.active {
+            border-color: #ed8936;
+            background: #fffaf0;
+            color: #dd6b20;
+            transform: scale(1.03);
+            box-shadow: 0 4px 10px rgba(237, 137, 54, 0.2);
+        }
+
+        .nav-icon { font-size: 1.8rem; margin-bottom: 2px; }
+
+        /* Main Game Containers */
+        .game-view {
+            display: none;
+            flex-grow: 1;
+            padding: 16px;
+            max-width: 550px;
+            width: 100%;
+            margin: 0 auto;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .game-view.active {
+            display: flex;
+        }
+
+        /* ---------------- GAME 1: HUNGRY MONSTER ---------------- */
+        .monster-stage {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        .monster-avatar {
+            font-size: 6.5rem;
+            cursor: pointer;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: inline-block;
+        }
+
+        .monster-avatar.chewing {
+            animation: chomp 0.4s 3 ease-in-out;
+        }
+
+        @keyframes chomp {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.25) rotate(-5deg); }
+        }
+
+        .speech-bubble {
+            background: white;
+            border-radius: 20px;
+            padding: 10px 20px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #2b6cb0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin-bottom: 12px;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            width: 100%;
+        }
+
+        .food-item {
+            background: white;
+            border: 3px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 14px 6px;
+            font-size: 3rem;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.1s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.04);
+        }
+
+        .food-item:active {
+            transform: scale(0.85);
+            background: #feebc8;
+        }
+
+        /* ---------------- GAME 2: BALLOON POP ---------------- */
+        .balloon-sky {
+            position: relative;
+            width: 100%;
+            height: 480px;
+            background: linear-gradient(to top, #bee3f8, #ebf8ff);
+            border-radius: 24px;
+            overflow: hidden;
+            border: 4px solid #bee3f8;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .balloon {
+            position: absolute;
+            bottom: -90px;
+            width: 76px;
+            height: 96px;
+            border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 900;
+            color: white;
+            cursor: pointer;
+            box-shadow: inset -6px -6px 12px rgba(0,0,0,0.18);
+        }
+
+        .balloon::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 36px;
+            width: 2px;
+            height: 24px;
+            background: #a0aec0;
+        }
+
+        .pop-effect {
+            position: absolute;
+            font-size: 3.5rem;
+            pointer-events: none;
+            animation: popOut 0.4s forwards ease-out;
+        }
+
+        @keyframes popOut {
+            0% { transform: scale(0.6); opacity: 1; }
+            100% { transform: scale(1.6); opacity: 0; }
+        }
+
+        .balloon-status {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #2c5282;
+            margin-top: 14px;
+            text-align: center;
+        }
+
+        /* ---------------- GAME 3 & 4: SOUNDBOARD GRIDS ---------------- */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            width: 100%;
+            padding-bottom: 20px;
+        }
+
+        .arcade-card {
+            background: white;
+            border-radius: 24px;
+            border: 3px solid #e2e8f0;
+            padding: 16px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: transform 0.1s ease, border-color 0.2s ease;
+            min-height: 145px;
+        }
+
+        .arcade-card:active {
+            transform: scale(0.92);
+        }
+
+        .arcade-card.playing {
+            border-color: #38b2ac;
+            background: #e6fffa;
+            transform: scale(0.97);
+        }
+
+        .card-emoji { font-size: 4.2rem; margin-bottom: 6px; }
+        .card-title { font-size: 1.15rem; font-weight: 800; color: #2d3748; text-align: center; }
+        .card-sub { font-size: 0.85rem; font-weight: 600; color: #718096; margin-top: 2px; }
+
+        /* Speak Overlay (For multi-language sequence) */
+        #repeatOverlay {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(26, 32, 44, 0.92);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header & Language Mode Selector -->
+    <header>
+        <div class="lang-bar">
+            <button class="lang-pill" onclick="setLanguage('en')">🇬🇧 EN</button>
+            <button class="lang-pill" onclick="setLanguage('es')">🇪🇸 ES</button>
+            <button class="lang-pill" onclick="setLanguage('fr')">🇫🇷 FR</button>
+            <button class="lang-pill" onclick="setLanguage('el')">🇬🇷 ΕΛ</button>
+            <button class="lang-pill active" onclick="setLanguage('all')">🌍 All 4</button>
+        </div>
+    </header>
+
+    <!-- Game Tabs -->
+    <nav class="game-nav">
+        <button class="nav-tab active" onclick="switchGame('monster', this)">
+            <span class="nav-icon">👾</span>
+            <span>Hungry Monster</span>
+        </button>
+        <button class="nav-tab" onclick="switchGame('trucks', this)">
+            <span class="nav-icon">🚜</span>
+            <span>Big Trucks</span>
+        </button>
+        <button class="nav-tab" onclick="switchGame('balloons', this)">
+            <span class="nav-icon">🎈</span>
+            <span>Balloon Pop</span>
+        </button>
+        <button class="nav-tab" onclick="switchGame('animals', this)">
+            <span class="nav-icon">🦁</span>
+            <span>Animals</span>
+        </button>
+    </nav>
+
+    <!-- Repeat Toast Bar -->
+    <div id="repeatOverlay">
+        <span id="repeatEmoji">🍎</span>
+        <span id="repeatText">Apple</span>
+    </div>
+
+    <!-- 1. HUNGRY MONSTER GAME -->
+    <div id="game-monster" class="game-view active">
+        <div class="speech-bubble" id="monsterSpeech">Feed me! I'm hungry! 😋</div>
+        <div class="monster-stage">
+            <div class="monster-avatar" id="monsterAvatar" onclick="tickleMonster()">👾</div>
+        </div>
+        <div class="food-grid" id="monsterFoodGrid"></div>
+    </div>
+
+    <!-- 2. BIG MACHINES & TRUCKS GAME -->
+    <div id="game-trucks" class="game-view">
+        <div class="card-grid" id="trucksGrid"></div>
+    </div>
+
+    <!-- 3. BALLOON POP & COUNT -->
+    <div id="game-balloons" class="game-view">
+        <div class="balloon-status" id="balloonStatus">Pop the balloons! 🎈</div>
+        <div class="balloon-sky" id="balloonSky"></div>
+    </div>
+
+    <!-- 4. ANIMAL SOUNDBOARD -->
+    <div id="game-animals" class="game-view">
+        <div class="card-grid" id="animalsGrid"></div>
+    </div>
+
+    <script>
+        /* -------------------------------------------------------------
+           1. CORE DATASETS (4 Languages: EN, ES, FR, EL)
+        ------------------------------------------------------------- */
+        const foods = [
+            { emoji: "🍎", en: "Apple", es: "Manzana", fr: "Pomme", el: "Μήλο" },
+            { emoji: "🍌", en: "Banana", es: "Plátano", fr: "Banane", el: "Μπανάνα" },
+            { emoji: "🍕", en: "Pizza", es: "Pizza", fr: "Pizza", el: "Πίτσα" },
+            { emoji: "🥕", en: "Carrot", es: "Zanahoria", fr: "Carotte", el: "Καρότο" },
+            { emoji: "🍦", en: "Ice cream", es: "Helado", fr: "Glace", el: "Παγωτό" },
+            { emoji: "🍓", en: "Strawberry", es: "Fresa", fr: "Fraise", el: "Φράουλα" },
+            { emoji: "🍪", en: "Cookie", es: "Galleta", fr: "Biscuit", el: "Μπισκότο" },
+            { emoji: "🍉", en: "Watermelon", es: "Sandía", fr: "Pastèque", el: "Καρπούζι" },
+            { emoji: "🥦", en: "Broccoli", es: "Brócoli", fr: "Brocoli", el: "Μπρόκολο" }
+        ];
+
+        const trucks = [
+            { emoji: "🚜", type: "tractor", en: "Tractor", es: "Tractor", fr: "Tracteur", el: "Τρακτέρ" },
+            { emoji: "🏗️", type: "crane", en: "Crane", es: "Grúa", fr: "Grue", el: "Γερανός" },
+            { emoji: "🚚", type: "excavator", en: "Excavator", es: "Excavadora", fr: "Pelleteuse", el: "Εκσκαφέας" },
+            { emoji: "🚛", type: "truck", en: "Dump truck", es: "Camión volquete", fr: "Camion benne", el: "Ανατρεπόμενο" },
+            { emoji: "🚒", type: "siren", en: "Fire truck", es: "Camión de bomberos", fr: "Camion de pompiers", el: "Πυροσβεστικό" },
+            { emoji: "🚧", type: "bulldozer", en: "Bulldozer", es: "Buldócer", fr: "Bulldozer", el: "Μπουλντόζα" },
+            { emoji: "🚑", type: "siren", en: "Ambulance", es: "Ambulancia", fr: "Ambulance", el: "Ασθενοφόρο" },
+            { emoji: "🚀", type: "rocket", en: "Rocket", es: "Cohete", fr: "Fusée", el: "Πύραυλος" }
+        ];
+
+        const animals = [
+            { emoji: "🐶", sound: "dog", en: "Dog", es: "Perro", fr: "Chien", el: "Σκύλος" },
+            { emoji: "🐱", sound: "cat", en: "Cat", es: "Gato", fr: "Chat", el: "Γάτα" },
+            { emoji: "🦁", sound: "lion", en: "Lion", es: "León", fr: "Lion", el: "Λιοντάρι" },
+            { emoji: "🐮", sound: "cow", en: "Cow", es: "Vaca", fr: "Vache", el: "Αγελάδα" },
+            { emoji: "🐸", sound: "frog", en: "Frog", es: "Rana", fr: "Grenouille", el: "Βάτραχος" },
+            { emoji: "🦆", sound: "duck", en: "Duck", es: "Pato", fr: "Canard", el: "Πάπια" },
+            { emoji: "🐑", sound: "sheep", en: "Sheep", es: "Oveja", fr: "Mouton", el: "Πρόβατο" },
+            { emoji: "🐷", sound: "pig", en: "Pig", es: "Cerdo", fr: "Cochon", el: "Γουρούνι" }
+        ];
+
+        const numbers = [
+            { num: 1, en: "One", es: "Uno", fr: "Un", el: "Ένα" },
+            { num: 2, en: "Two", es: "Dos", fr: "Deux", el: "Δύο" },
+            { num: 3, en: "Three", es: "Tres", fr: "Trois", el: "Τρία" },
+            { num: 4, en: "Four", es: "Cuatro", fr: "Quatre", el: "Τέσσερα" },
+            { num: 5, en: "Five", es: "Cinco", fr: "Cinq", el: "Πέντε" },
+            { num: 6, en: "Six", es: "Seis", fr: "Six", el: "Έξι" },
+            { num: 7, en: "Seven", es: "Siete", fr: "Sept", el: "Επτά" },
+            { num: 8, en: "Eight", es: "Ocho", fr: "Huit", el: "Οκτώ" },
+            { num: 9, en: "Nine", es: "Nueve", fr: "Neuf", el: "Εννέα" },
+            { num: 10, en: "Ten", es: "Diez", fr: "Dix", el: "Δέκα" }
+        ];
+
+        /* -------------------------------------------------------------
+           2. SYNTHESIZED SOUND EFFECTS ENGINE (Web Audio API)
+           Zero external MP3 dependencies; 100% instant & offline.
+        ------------------------------------------------------------- */
+        let audioCtx = null;
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        const SoundFX = {
+            chomp() {
+                const ctx = getAudioContext();
+                for (let i = 0; i < 3; i++) {
+                    setTimeout(() => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(280, ctx.currentTime);
+                        osc.frequency.exponentialRampToValueAtTime(70, ctx.currentTime + 0.1);
+                        gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                        gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.start();
+                        osc.stop(ctx.currentTime + 0.1);
+                    }, i * 110);
+                }
+            },
+            pop() {
+                const ctx = getAudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(800, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(120, ctx.currentTime + 0.08);
+                gain.gain.setValueAtTime(0.5, ctx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.08);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.08);
+            },
+            horn() {
+                const ctx = getAudioContext();
+                const freqs = [150, 190];
+                freqs.forEach(f => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.value = f;
+                    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.55);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.55);
+                });
+            },
+            siren() {
+                const ctx = getAudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(650, ctx.currentTime);
+                osc.frequency.linearRampToValueAtTime(950, ctx.currentTime + 0.25);
+                osc.frequency.linearRampToValueAtTime(650, ctx.currentTime + 0.5);
+                gain.gain.setValueAtTime(0.25, ctx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.5);
+            },
+            engine() {
+                const ctx = getAudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(60, ctx.currentTime);
+                osc.frequency.linearRampToValueAtTime(140, ctx.currentTime + 0.3);
+                osc.frequency.linearRampToValueAtTime(70, ctx.currentTime + 0.6);
+                gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.6);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.6);
+            },
+            animal(type) {
+                const ctx = getAudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                if (type === 'cat') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(500, ctx.currentTime);
+                    osc.frequency.linearRampToValueAtTime(750, ctx.currentTime + 0.2);
+                    osc.frequency.linearRampToValueAtTime(350, ctx.currentTime + 0.5);
+                    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.5);
+                } else if (type === 'dog') {
+                    [0, 0.18].forEach(delay => {
+                        setTimeout(() => {
+                            const o = ctx.createOscillator();
+                            const g = ctx.createGain();
+                            o.type = 'triangle';
+                            o.frequency.setValueAtTime(320, ctx.currentTime);
+                            o.frequency.linearRampToValueAtTime(110, ctx.currentTime + 0.12);
+                            g.gain.setValueAtTime(0.4, ctx.currentTime);
+                            g.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.12);
+                            o.connect(g);
+                            g.connect(ctx.destination);
+                            o.start();
+                            o.stop(ctx.currentTime + 0.12);
+                        }, delay * 1000);
+                    });
+                } else if (type === 'cow') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(110, ctx.currentTime);
+                    osc.frequency.linearRampToValueAtTime(95, ctx.currentTime + 0.7);
+                    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.7);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.7);
+                } else {
+                    // Default happy chirp
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(450, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(900, ctx.currentTime + 0.2);
+                    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.25);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.25);
+                }
+            }
+        };
+
+        /* -------------------------------------------------------------
+           3. SPEECH SYNTHESIS ENGINE (iOS / Android Multi-voice)
+        ------------------------------------------------------------- */
+        let currentLangMode = 'all'; // 'en', 'es', 'fr', 'el', or 'all'
+        let voices = [];
+        function loadVoices() {
+            voices = window.speechSynthesis.getVoices();
+        }
+        loadVoices();
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = loadVoices;
+        }
+
+        function getVoiceForLang(langCode) {
+            if (!voices || voices.length === 0) voices = window.speechSynthesis.getVoices();
+            const prefix = langCode.split('-')[0].toLowerCase();
+            let match = voices.find(v => v.lang.toLowerCase().replace('_', '-') === langCode.toLowerCase());
+            if (match) return match;
+            match = voices.find(v => v.lang.toLowerCase().startsWith(prefix));
+            if (match) return match;
+            return voices.find(v => v.lang.toLowerCase().includes(prefix)) || null;
+        }
+
+        window._activeUtterance = null;
+        let speechSequenceTimeout = null;
+
+        function setLanguage(mode) {
+            currentLangMode = mode;
+            document.querySelectorAll('.lang-pill').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            window.speechSynthesis.cancel();
+            if (speechSequenceTimeout) clearTimeout(speechSequenceTimeout);
+            hideToast();
+        }
+
+        function speakSingle(langCode, text, onDone) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = langCode;
+            utterance.rate = 0.78;
+            const voice = getVoiceForLang(langCode);
+            if (voice) utterance.voice = voice;
+            window._activeUtterance = utterance;
+
+            utterance.onend = () => {
+                window._activeUtterance = null;
+                if (onDone) onDone();
+            };
+            utterance.onerror = () => {
+                window._activeUtterance = null;
+                if (onDone) onDone();
+            };
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function showToast(emoji, text) {
+            const overlay = document.getElementById('repeatOverlay');
+            document.getElementById('repeatEmoji').textContent = emoji;
+            document.getElementById('repeatText').textContent = text;
+            overlay.style.display = 'flex';
+        }
+
+        function hideToast() {
+            document.getElementById('repeatOverlay').style.display = 'none';
+        }
+
+        // Plays either the chosen language or the 4-language Listen & Repeat sequence
+        function pronounceItem(item, onFinish) {
+            window.speechSynthesis.cancel();
+            if (speechSequenceTimeout) clearTimeout(speechSequenceTimeout);
+
+            if (currentLangMode !== 'all') {
+                const langMap = {
+                    en: { code: 'en-US', text: item.en },
+                    es: { code: 'es-ES', text: item.es },
+                    fr: { code: 'fr-FR', text: item.fr },
+                    el: { code: 'el-GR', text: item.el }
+                };
+                const sel = langMap[currentLangMode];
+                showToast(item.emoji || '✨', sel.text);
+                speakSingle(sel.code, sel.text, () => {
+                    setTimeout(hideToast, 1200);
+                    if (onFinish) onFinish();
+                });
+                return;
+            }
+
+            // Sequential All 4 mode with pause for toddler repetition
+            const seq = [
+                { code: 'en-US', text: item.en },
+                { code: 'es-ES', text: item.es },
+                { code: 'fr-FR', text: item.fr },
+                { code: 'el-GR', text: item.el }
+            ];
+
+            let index = 0;
+            function runNext() {
+                if (index >= seq.length) {
+                    hideToast();
+                    if (onFinish) onFinish();
+                    return;
+                }
+                const cur = seq[index];
+                showToast(item.emoji || '🗣️', cur.text);
+                speakSingle(cur.code, cur.text, () => {
+                    index++;
+                    speechSequenceTimeout = setTimeout(runNext, 1800); // 1.8s breath window
+                });
+            }
+            runNext();
+        }
+
+        /* -------------------------------------------------------------
+           4. GAME IMPLEMENTATIONS
+        ------------------------------------------------------------- */
+        // Tab switcher
+        function switchGame(gameId, tabEl) {
+            document.querySelectorAll('.game-view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(`game-${gameId}`).classList.add('active');
+            tabEl.classList.add('active');
+            window.speechSynthesis.cancel();
+            hideToast();
+
+            if (gameId === 'balloons') startBalloonSpawner();
+            else stopBalloonSpawner();
+        }
+
+        // --- Game 1: Hungry Monster ---
+        const monsterAvatar = document.getElementById('monsterAvatar');
+        const monsterSpeech = document.getElementById('monsterSpeech');
+        const monsterFoodGrid = document.getElementById('monsterFoodGrid');
+
+        foods.forEach(f => {
+            const btn = document.createElement('div');
+            btn.className = 'food-item';
+            btn.textContent = f.emoji;
+            btn.onclick = () => feedMonster(f);
+            monsterFoodGrid.appendChild(btn);
+        });
+
+        function feedMonster(food) {
+            SoundFX.chomp();
+            monsterAvatar.classList.add('chewing');
+            monsterSpeech.textContent = `Yum! ${food.en}! 😋`;
+
+            setTimeout(() => {
+                monsterAvatar.classList.remove('chewing');
+            }, 1200);
+
+            pronounceItem(food, () => {
+                monsterSpeech.textContent = "More, please! Feed me! 👾";
+            });
+        }
+
+        function tickleMonster() {
+            SoundFX.animal('cat');
+            monsterSpeech.textContent = "Hahaha that tickles! 😆";
+        }
+
+        // --- Game 2: Big Machines ---
+        const trucksGrid = document.getElementById('trucksGrid');
+        trucks.forEach(t => {
+            const card = document.createElement('div');
+            card.className = 'arcade-card';
+            card.innerHTML = `
+                <div class="card-emoji">${t.emoji}</div>
+                <div class="card-title">${t.en}</div>
+                <div class="card-sub">${t.el}</div>
+            `;
+            card.onclick = () => {
+                card.classList.add('playing');
+                if (t.type === 'siren') SoundFX.siren();
+                else if (t.type === 'crane' || t.type === 'truck') SoundFX.horn();
+                else SoundFX.engine();
+
+                setTimeout(() => {
+                    pronounceItem(t, () => card.classList.remove('playing'));
+                }, 400);
+            };
+            trucksGrid.appendChild(card);
+        });
+
+        // --- Game 3: Animals ---
+        const animalsGrid = document.getElementById('animalsGrid');
+        animals.forEach(a => {
+            const card = document.createElement('div');
+            card.className = 'arcade-card';
+            card.innerHTML = `
+                <div class="card-emoji">${a.emoji}</div>
+                <div class="card-title">${a.en}</div>
+                <div class="card-sub">${a.el}</div>
+            `;
+            card.onclick = () => {
+                card.classList.add('playing');
+                SoundFX.animal(a.sound);
+                setTimeout(() => {
+                    pronounceItem(a, () => card.classList.remove('playing'));
+                }, 450);
+            };
+            animalsGrid.appendChild(card);
+        });
+
+        // --- Game 4: Balloon Pop & Count ---
+        const balloonSky = document.getElementById('balloonSky');
+        const balloonStatus = document.getElementById('balloonStatus');
+        let balloonInterval = null;
+        let currentNumberIndex = 0;
+        const balloonColors = ['#f56565', '#48bb78', '#4299e1', '#ed8936', '#9f7aea', '#ecc94b'];
+
+        function spawnBalloon() {
+            if (!document.getElementById('game-balloons').classList.contains('active')) return;
+
+            const b = document.createElement('div');
+            b.className = 'balloon';
+            
+            const numItem = numbers[currentNumberIndex];
+            b.textContent = numItem.num;
+            currentNumberIndex = (currentNumberIndex + 1) % numbers.length;
+
+            const randomColor = balloonColors[Math.floor(Math.random() * balloonColors.length)];
+            b.style.backgroundColor = randomColor;
+
+            const maxLeft = balloonSky.clientWidth - 85;
+            b.style.left = Math.max(10, Math.floor(Math.random() * maxLeft)) + 'px';
+
+            balloonSky.appendChild(b);
+
+            let pos = -90;
+            const speed = 1.3 + Math.random() * 0.9;
+
+            function floatUp() {
+                if (!b.parentElement) return;
+                pos += speed;
+                b.style.bottom = pos + 'px';
+
+                if (pos > balloonSky.clientHeight + 10) {
+                    b.remove();
+                } else {
+                    requestAnimationFrame(floatUp);
+                }
+            }
+            requestAnimationFrame(floatUp);
+
+            b.onclick = (e) => {
+                e.stopPropagation();
+                popBalloon(b, numItem);
+            };
+        }
+
+        function popBalloon(balloonEl, numItem) {
+            SoundFX.pop();
+            const rect = balloonEl.getBoundingClientRect();
+            const skyRect = balloonSky.getBoundingClientRect();
+
+            // Create Pop Star Burst
+            const popEffect = document.createElement('div');
+            popEffect.className = 'pop-effect';
+            popEffect.textContent = '💥';
+            popEffect.style.left = (rect.left - skyRect.left) + 'px';
+            popEffect.style.top = (rect.top - skyRect.top) + 'px';
+            balloonSky.appendChild(popEffect);
+            setTimeout(() => popEffect.remove(), 400);
+
+            balloonEl.remove();
+            balloonStatus.textContent = `Popped #${numItem.num}! ⭐`;
+            pronounceItem(numItem);
+        }
+
+        function startBalloonSpawner() {
+            if (balloonInterval) clearInterval(balloonInterval);
+            balloonSky.innerHTML = '';
+            spawnBalloon();
+            balloonInterval = setInterval(spawnBalloon, 2200);
+        }
+
+        function stopBalloonSpawner() {
+            if (balloonInterval) clearInterval(balloonInterval);
+            balloonSky.innerHTML = '';
+        }
+    </script>
+</body>
+</html>
