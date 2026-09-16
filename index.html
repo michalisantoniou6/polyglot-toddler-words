@@ -139,6 +139,10 @@
             animation: chomp 0.4s 3 ease-in-out;
         }
 
+        .monster-avatar.asking {
+            animation: santaAsk 0.18s 8 ease-in-out;
+        }
+
         #santaCelebration {
             position: fixed;
             inset: 0;
@@ -219,6 +223,12 @@
         @keyframes chomp {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.25) rotate(-5deg); }
+        }
+
+        @keyframes santaAsk {
+            0%, 100% { transform: translateX(0) rotate(0); }
+            25% { transform: translateX(-10px) rotate(-7deg); }
+            75% { transform: translateX(10px) rotate(7deg); }
         }
 
         .speech-bubble {
@@ -578,25 +588,25 @@
                 popped: number => `Popped #${number}! ⭐`, santaLabel: 'Santa Claus'
             },
             es: {
-                pageTitle: 'Juegos infantiles divertidos', allLanguages: 'Los 4', feedSanta: 'Alimenta a Santa',
-                trucks: 'Camiones grandes', balloons: 'Explota globos', animals: 'Animales',
-                santaPrompt: 'Ari, ¿puedes alimentar a Santa? 🎅', morePlease: '¡Más, por favor, Ari! 🎅',
-                tickle: '¡Jo, jo, jo! ¡Eso me da cosquillas, Ari! 😆', popBalloons: '¡Explota los globos! 🎈',
-                popped: number => `¡Explotaste el número ${number}! ⭐`, santaLabel: 'Santa Claus'
+                pageTitle: 'Juegos infantiles divertidos', allLanguages: 'Los 4', feedSanta: 'Dale de comer a Santa',
+                trucks: 'Camiones grandes', balloons: 'Revienta globos', animals: 'Animales',
+                santaPrompt: 'Ari, ¿puedes darle de comer a Santa? 🎅', morePlease: '¡Más, por favor, Ari! 🎅',
+                tickle: '¡Jo, jo, jo! ¡Eso me da cosquillas, Ari! 😆', popBalloons: '¡Revienta los globos! 🎈',
+                popped: number => `¡Reventaste el globo número ${number}! ⭐`, santaLabel: 'Santa Claus'
             },
             fr: {
                 pageTitle: 'Jeux amusants pour enfants', allLanguages: 'Les 4', feedSanta: 'Nourris le Père Noël',
                 trucks: 'Gros camions', balloons: 'Éclate les ballons', animals: 'Animaux',
                 santaPrompt: 'Ari, peux-tu nourrir le Père Noël ? 🎅', morePlease: 'Encore, s’il te plaît, Ari ! 🎅',
                 tickle: 'Ho, ho, ho ! Ça me chatouille, Ari ! 😆', popBalloons: 'Éclate les ballons ! 🎈',
-                popped: number => `Ballon numéro ${number} éclaté ! ⭐`, santaLabel: 'Père Noël'
+                popped: number => `Tu as éclaté le ballon numéro ${number} ! ⭐`, santaLabel: 'Père Noël'
             },
             el: {
                 pageTitle: 'Χαρούμενα παιδικά παιχνίδια', allLanguages: 'Και οι 4', feedSanta: 'Τάισε τον Άγιο Βασίλη',
-                trucks: 'Μεγάλα οχήματα', balloons: 'Σπάσε τα μπαλόνια', animals: 'Ζώα',
+                trucks: 'Μεγάλα οχήματα', balloons: 'Σκάσε τα μπαλόνια', animals: 'Ζώα',
                 santaPrompt: 'Άρι, μπορείς να ταΐσεις τον Άγιο Βασίλη; 🎅', morePlease: 'Κι άλλο, παρακαλώ, Άρι! 🎅',
-                tickle: 'Χο, χο, χο! Με γαργαλάς, Άρι! 😆', popBalloons: 'Σπάσε τα μπαλόνια! 🎈',
-                popped: number => `Έσπασες το μπαλόνι ${number}! ⭐`, santaLabel: 'Άγιος Βασίλης'
+                tickle: 'Χο, χο, χο! Με γαργαλάς, Άρι! 😆', popBalloons: 'Σκάσε τα μπαλόνια! 🎈',
+                popped: number => `Έσκασες το μπαλόνι με τον αριθμό ${number}! ⭐`, santaLabel: 'Άγιος Βασίλης'
             }
         };
 
@@ -814,6 +824,7 @@
             if (speechSequenceTimeout) clearTimeout(speechSequenceTimeout);
             hideToast();
             updateInterfaceLanguage();
+            resetSantaIdleTimer();
         }
 
         function updateInterfaceLanguage() {
@@ -942,8 +953,17 @@
             window.speechSynthesis.cancel();
             hideToast();
 
-            if (gameId === 'balloons') startBalloonSpawner();
-            else stopBalloonSpawner();
+            if (gameId === 'balloons') {
+                startBalloonSpawner();
+            } else {
+                stopBalloonSpawner();
+            }
+
+            if (gameId === 'monster') {
+                resetSantaIdleTimer();
+            } else {
+                clearSantaIdleTimer();
+            }
         }
 
         // --- Game 1: Feed Santa ---
@@ -951,6 +971,7 @@
         const monsterSpeech = document.getElementById('monsterSpeech');
         const monsterFoodGrid = document.getElementById('monsterFoodGrid');
         let santaCelebrationTimeout = null;
+        let santaIdleTimeout = null;
 
         foods.forEach(f => {
             const btn = document.createElement('div');
@@ -963,6 +984,7 @@
         });
 
         function feedMonster(food) {
+            clearSantaIdleTimer();
             SoundFX.chomp();
             monsterAvatar.classList.add('chewing');
             const responseIndex = Math.floor(Math.random() * 3);
@@ -975,6 +997,7 @@
 
             speakSantaThanks(food, responseIndex, () => {
                 monsterSpeech.textContent = interfaceText[displayLanguage].morePlease;
+                resetSantaIdleTimer();
             });
         }
 
@@ -985,23 +1008,23 @@
             const responses = {
                 en: [
                     `Ho, ho, ho! Thank you for ${foodName}, Ari!`,
-                    `Mmm! ${foodName.charAt(0).toUpperCase() + foodName.slice(1)} was delicious, Ari!`,
-                    `Ho, ho, ho! I really liked ${foodName}, Ari!`
+                    `That was delicious! Thank you for ${foodName}, Ari!`,
+                    `I loved that! Thank you for ${foodName}, Ari!`
                 ],
                 es: [
                     `¡Jo, jo, jo! ¡Gracias por ${foodName}, Ari!`,
-                    `¡Mmm, qué rico! ¡Gracias por ${foodName}, Ari!`,
-                    `¡Jo, jo, jo! Me gustó mucho ${foodName}, Ari!`
+                    `¡Qué delicia! ¡Gracias por ${foodName}, Ari!`,
+                    `¡Me encantó! ¡Gracias por ${foodName}, Ari!`
                 ],
                 fr: [
                     `Ho, ho, ho ! Merci pour ${foodName}, Ari !`,
-                    `Miam, c’était délicieux ! Merci pour ${foodName}, Ari !`,
-                    `Ho, ho, ho ! J’ai beaucoup aimé ${foodName}, Ari !`
+                    `C’était délicieux ! Merci pour ${foodName}, Ari !`,
+                    `J’ai adoré ! Merci pour ${foodName}, Ari !`
                 ],
                 el: [
                     `Χο, χο, χο! Ευχαριστώ για ${foodName}, Άρι!`,
-                    `Μμμ, ήταν πεντανόστιμο! Ευχαριστώ για ${foodName}, Άρι!`,
-                    `Χο, χο, χο! Μου άρεσε πολύ ${foodName}, Άρι!`
+                    `Τι νοστιμιά! Ευχαριστώ για ${foodName}, Άρι!`,
+                    `Μου άρεσε πολύ! Ευχαριστώ για ${foodName}, Άρι!`
                 ]
             };
             return responses[language][responseIndex];
@@ -1054,10 +1077,58 @@
             speakNextThankYou();
         }
 
+        function clearSantaIdleTimer() {
+            if (santaIdleTimeout) {
+                clearTimeout(santaIdleTimeout);
+                santaIdleTimeout = null;
+            }
+        }
+
+        function resetSantaIdleTimer() {
+            clearSantaIdleTimer();
+            if (!document.getElementById('game-monster').classList.contains('active')) return;
+            santaIdleTimeout = setTimeout(promptSantaForMore, 5000);
+        }
+
+        function promptSantaForMore() {
+            if (!document.getElementById('game-monster').classList.contains('active')) return;
+            const languageCodes = { en: 'en-US', es: 'es-MX', fr: 'fr-FR', el: 'el-GR' };
+            const displayLanguage = currentLangMode === 'all' ? 'en' : currentLangMode;
+            monsterSpeech.textContent = interfaceText[displayLanguage].morePlease;
+            monsterAvatar.classList.remove('asking');
+            void monsterAvatar.offsetWidth;
+            monsterAvatar.classList.add('asking');
+            setTimeout(() => monsterAvatar.classList.remove('asking'), 1600);
+
+            if (currentLangMode !== 'all') {
+                speakSingle(languageCodes[currentLangMode], getSpeechText(interfaceText[currentLangMode].morePlease));
+                return;
+            }
+
+            const sequence = ['en', 'es', 'fr', 'el'];
+            let index = 0;
+            function speakNextPrompt() {
+                if (index >= sequence.length) return;
+                const language = sequence[index++];
+                monsterSpeech.textContent = interfaceText[language].morePlease;
+                speakSingle(languageCodes[language], getSpeechText(interfaceText[language].morePlease), () => {
+                    speechSequenceTimeout = setTimeout(speakNextPrompt, 350);
+                });
+            }
+            speakNextPrompt();
+        }
+
         function tickleMonster() {
+            clearSantaIdleTimer();
             SoundFX.animal('cat');
             const displayLanguage = currentLangMode === 'all' ? 'en' : currentLangMode;
             monsterSpeech.textContent = interfaceText[displayLanguage].tickle;
+            const languageCodes = { en: 'en-US', es: 'es-MX', fr: 'fr-FR', el: 'el-GR' };
+            speakSingle(languageCodes[displayLanguage], getSpeechText(interfaceText[displayLanguage].tickle), resetSantaIdleTimer);
+        }
+
+        function getSpeechText(text) {
+            return text.replace(/[🎅😆🎈⭐]/gu, '').trim();
         }
 
         // --- Game 2: Big Machines ---
