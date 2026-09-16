@@ -139,6 +139,83 @@
             animation: chomp 0.4s 3 ease-in-out;
         }
 
+        #santaCelebration {
+            position: fixed;
+            inset: 0;
+            z-index: 2500;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            padding: 24px;
+            overflow: hidden;
+            pointer-events: none;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.92) 0 4%, transparent 5%),
+                radial-gradient(circle at 80% 25%, rgba(255, 215, 0, 0.8) 0 3%, transparent 4%),
+                radial-gradient(circle at 25% 80%, rgba(72, 187, 120, 0.78) 0 3%, transparent 4%),
+                linear-gradient(145deg, rgba(197, 48, 48, 0.94), rgba(47, 133, 90, 0.94));
+        }
+
+        #santaCelebration.active { display: flex; }
+
+        .celebration-message {
+            max-width: 520px;
+            padding: 14px 22px;
+            border-radius: 24px;
+            background: white;
+            color: #c53030;
+            font-size: clamp(1.2rem, 5vw, 2rem);
+            font-weight: 900;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.28);
+        }
+
+        .dancing-santa {
+            display: inline-block;
+            font-size: clamp(9rem, 38vw, 17rem);
+            line-height: 1;
+            filter: drop-shadow(0 18px 18px rgba(0,0,0,0.3));
+            transform-origin: center;
+        }
+
+        .dance-spin { animation: santaSpin 2.6s ease-in-out both; }
+        .dance-bounce { animation: santaBounce 2.6s ease-in-out both; }
+        .dance-wiggle { animation: santaWiggle 2.6s ease-in-out both; }
+        .dance-circle { animation: santaCircle 2.6s ease-in-out both; }
+
+        @keyframes santaSpin {
+            0% { transform: scale(0.25) rotate(0); }
+            35% { transform: scale(1.2) rotate(360deg); }
+            70% { transform: scale(0.9) rotate(720deg); }
+            100% { transform: scale(1) rotate(1080deg); }
+        }
+
+        @keyframes santaBounce {
+            0%, 100% { transform: translateY(0) scale(1); }
+            20% { transform: translateY(-22vh) scale(1.12, 0.9); }
+            40% { transform: translateY(0) scale(0.9, 1.12); }
+            60% { transform: translateY(-14vh) scale(1.08, 0.94); }
+            80% { transform: translateY(0) scale(0.94, 1.06); }
+        }
+
+        @keyframes santaWiggle {
+            0%, 100% { transform: rotate(0) scale(1); }
+            15% { transform: rotate(-18deg) scale(1.12); }
+            30% { transform: rotate(18deg) scale(0.95); }
+            45% { transform: rotate(-22deg) scale(1.12); }
+            60% { transform: rotate(22deg) scale(0.95); }
+            75% { transform: rotate(-12deg) scale(1.08); }
+        }
+
+        @keyframes santaCircle {
+            0%, 100% { transform: translate(0, 0) rotate(0); }
+            25% { transform: translate(28vw, -12vh) rotate(20deg); }
+            50% { transform: translate(0, 16vh) rotate(0); }
+            75% { transform: translate(-28vw, -12vh) rotate(-20deg); }
+        }
+
         @keyframes chomp {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.25) rotate(-5deg); }
@@ -314,31 +391,31 @@
     <!-- Header & Language Mode Selector -->
     <header>
         <div class="lang-bar">
-            <button class="lang-pill" onclick="setLanguage('en')">🇬🇧 EN</button>
-            <button class="lang-pill" onclick="setLanguage('es')">🇲🇽 MX</button>
-            <button class="lang-pill" onclick="setLanguage('fr')">🇫🇷 FR</button>
-            <button class="lang-pill" onclick="setLanguage('el')">🇬🇷 ΕΛ</button>
-            <button class="lang-pill active" onclick="setLanguage('all')">🌍 All 4</button>
+            <button class="lang-pill active" onclick="setLanguage('el', this)">🇬🇷 ΕΛ</button>
+            <button class="lang-pill" onclick="setLanguage('en', this)">🇬🇧 EN</button>
+            <button class="lang-pill" onclick="setLanguage('es', this)">🇲🇽 MX</button>
+            <button class="lang-pill" onclick="setLanguage('fr', this)">🇫🇷 FR</button>
+            <button class="lang-pill" onclick="setLanguage('all', this)">🌍 All 4</button>
         </div>
     </header>
 
     <!-- Game Tabs -->
     <nav class="game-nav">
-        <button class="nav-tab active" onclick="switchGame('monster', this)">
+        <button class="nav-tab" onclick="switchGame('monster', this)">
             <span class="nav-icon">🎅</span>
-            <span>Feed Santa</span>
+            <span id="navMonster">Feed Santa</span>
         </button>
         <button class="nav-tab" onclick="switchGame('trucks', this)">
             <span class="nav-icon">🚜</span>
-            <span>Big Trucks</span>
+            <span id="navTrucks">Big Trucks</span>
         </button>
-        <button class="nav-tab" onclick="switchGame('balloons', this)">
+        <button class="nav-tab active" onclick="switchGame('balloons', this)">
             <span class="nav-icon">🎈</span>
-            <span>Balloon Pop</span>
+            <span id="navBalloons">Balloon Pop</span>
         </button>
         <button class="nav-tab" onclick="switchGame('animals', this)">
             <span class="nav-icon">🦁</span>
-            <span>Animals</span>
+            <span id="navAnimals">Animals</span>
         </button>
     </nav>
 
@@ -348,8 +425,13 @@
         <span id="repeatText">Apple</span>
     </div>
 
+    <div id="santaCelebration" aria-hidden="true">
+        <div class="celebration-message" id="santaCelebrationMessage"></div>
+        <div class="dancing-santa" id="dancingSanta" role="img" aria-label="Santa Claus">🎅</div>
+    </div>
+
     <!-- 1. FEED SANTA GAME -->
-    <div id="game-monster" class="game-view active">
+    <div id="game-monster" class="game-view">
         <div class="speech-bubble" id="monsterSpeech">Ari, can you feed Santa? 🎅</div>
         <div class="monster-stage">
             <div class="monster-avatar" id="monsterAvatar" onclick="tickleMonster()" role="img" aria-label="Santa Claus">🎅</div>
@@ -363,7 +445,7 @@
     </div>
 
     <!-- 3. BALLOON POP & COUNT -->
-    <div id="game-balloons" class="game-view">
+    <div id="game-balloons" class="game-view active">
         <div class="balloon-status" id="balloonStatus">Pop the balloons! 🎈</div>
         <div class="balloon-sky" id="balloonSky"></div>
     </div>
@@ -486,6 +568,67 @@
             { num: 9, en: "Nine", es: "Nueve", fr: "Neuf", el: "Εννέα" },
             { num: 10, en: "Ten", es: "Diez", fr: "Dix", el: "Δέκα" }
         ];
+
+        const interfaceText = {
+            en: {
+                pageTitle: 'Toddler Fun Arcade', allLanguages: 'All 4', feedSanta: 'Feed Santa',
+                trucks: 'Big Trucks', balloons: 'Balloon Pop', animals: 'Animals',
+                santaPrompt: 'Ari, can you feed Santa? 🎅', morePlease: 'More, please, Ari! 🎅',
+                tickle: 'Ho, ho, ho! That tickles, Ari! 😆', popBalloons: 'Pop the balloons! 🎈',
+                popped: number => `Popped #${number}! ⭐`, santaLabel: 'Santa Claus'
+            },
+            es: {
+                pageTitle: 'Juegos infantiles divertidos', allLanguages: 'Los 4', feedSanta: 'Alimenta a Santa',
+                trucks: 'Camiones grandes', balloons: 'Explota globos', animals: 'Animales',
+                santaPrompt: 'Ari, ¿puedes alimentar a Santa? 🎅', morePlease: '¡Más, por favor, Ari! 🎅',
+                tickle: '¡Jo, jo, jo! ¡Eso me da cosquillas, Ari! 😆', popBalloons: '¡Explota los globos! 🎈',
+                popped: number => `¡Explotaste el número ${number}! ⭐`, santaLabel: 'Santa Claus'
+            },
+            fr: {
+                pageTitle: 'Jeux amusants pour enfants', allLanguages: 'Les 4', feedSanta: 'Nourris le Père Noël',
+                trucks: 'Gros camions', balloons: 'Éclate les ballons', animals: 'Animaux',
+                santaPrompt: 'Ari, peux-tu nourrir le Père Noël ? 🎅', morePlease: 'Encore, s’il te plaît, Ari ! 🎅',
+                tickle: 'Ho, ho, ho ! Ça me chatouille, Ari ! 😆', popBalloons: 'Éclate les ballons ! 🎈',
+                popped: number => `Ballon numéro ${number} éclaté ! ⭐`, santaLabel: 'Père Noël'
+            },
+            el: {
+                pageTitle: 'Χαρούμενα παιδικά παιχνίδια', allLanguages: 'Και οι 4', feedSanta: 'Τάισε τον Άγιο Βασίλη',
+                trucks: 'Μεγάλα οχήματα', balloons: 'Σπάσε τα μπαλόνια', animals: 'Ζώα',
+                santaPrompt: 'Άρι, μπορείς να ταΐσεις τον Άγιο Βασίλη; 🎅', morePlease: 'Κι άλλο, παρακαλώ, Άρι! 🎅',
+                tickle: 'Χο, χο, χο! Με γαργαλάς, Άρι! 😆', popBalloons: 'Σπάσε τα μπαλόνια! 🎈',
+                popped: number => `Έσπασες το μπαλόνι ${number}! ⭐`, santaLabel: 'Άγιος Βασίλης'
+            }
+        };
+
+        const santaFoodNames = {
+            '🍎': { es: 'la manzana', fr: 'la pomme', el: 'το μήλο' },
+            '🍌': { es: 'el plátano', fr: 'la banane', el: 'την μπανάνα' },
+            '🍕': { es: 'la pizza', fr: 'la pizza', el: 'την πίτσα' },
+            '🥕': { es: 'la zanahoria', fr: 'la carotte', el: 'το καρότο' },
+            '🍦': { es: 'el helado', fr: 'la glace', el: 'το παγωτό' },
+            '🍓': { es: 'la fresa', fr: 'la fraise', el: 'τη φράουλα' },
+            '🍪': { es: 'la galleta', fr: 'le biscuit', el: 'το μπισκότο' },
+            '🍉': { es: 'la sandía', fr: 'la pastèque', el: 'το καρπούζι' },
+            '🥦': { es: 'el brócoli', fr: 'le brocoli', el: 'το μπρόκολο' },
+            '🍇': { es: 'las uvas', fr: 'les raisins', el: 'τα σταφύλια' },
+            '🍊': { es: 'la naranja', fr: 'l’orange', el: 'το πορτοκάλι' },
+            '🍐': { es: 'la pera', fr: 'la poire', el: 'το αχλάδι' },
+            '🍍': { es: 'la piña', fr: 'l’ananas', el: 'τον ανανά' },
+            '🥑': { es: 'el aguacate', fr: 'l’avocat', el: 'το αβοκάντο' },
+            '🌽': { es: 'el elote', fr: 'le maïs', el: 'το καλαμπόκι' },
+            '🌮': { es: 'el taco', fr: 'le taco', el: 'το τάκο' },
+            '🍞': { es: 'el pan', fr: 'le pain', el: 'το ψωμί' },
+            '🧀': { es: 'el queso', fr: 'le fromage', el: 'το τυρί' },
+            '🥚': { es: 'el huevo', fr: 'l’œuf', el: 'το αυγό' },
+            '🥛': { es: 'la leche', fr: 'le lait', el: 'το γάλα' },
+            '🍅': { es: 'el jitomate', fr: 'la tomate', el: 'την ντομάτα' },
+            '🥔': { es: 'la papa', fr: 'la pomme de terre', el: 'την πατάτα' },
+            '🍒': { es: 'las cerezas', fr: 'les cerises', el: 'τα κεράσια' },
+            '🍑': { es: 'el durazno', fr: 'la pêche', el: 'το ροδάκινο' },
+            '🥭': { es: 'el mango', fr: 'la mangue', el: 'το μάνγκο' },
+            '🍋': { es: 'el limón', fr: 'le citron', el: 'το λεμόνι' },
+            '🌭': { es: 'el hot dog', fr: 'le hot-dog', el: 'το χοτ ντογκ' }
+        };
 
         /* -------------------------------------------------------------
            2. SYNTHESIZED SOUND EFFECTS ENGINE (Web Audio API)
@@ -640,7 +783,7 @@
         /* -------------------------------------------------------------
            3. SPEECH SYNTHESIS ENGINE (iOS / Android Multi-voice)
         ------------------------------------------------------------- */
-        let currentLangMode = 'all'; // 'en', 'es', 'fr', 'el', or 'all'
+        let currentLangMode = 'el'; // 'en', 'es', 'fr', 'el', or 'all'
         let voices = [];
         function loadVoices() {
             voices = window.speechSynthesis.getVoices();
@@ -663,13 +806,51 @@
         window._activeUtterance = null;
         let speechSequenceTimeout = null;
 
-        function setLanguage(mode) {
+        function setLanguage(mode, button) {
             currentLangMode = mode;
             document.querySelectorAll('.lang-pill').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            button.classList.add('active');
             window.speechSynthesis.cancel();
             if (speechSequenceTimeout) clearTimeout(speechSequenceTimeout);
             hideToast();
+            updateInterfaceLanguage();
+        }
+
+        function updateInterfaceLanguage() {
+            const displayLanguage = currentLangMode === 'all' ? 'en' : currentLangMode;
+            const text = interfaceText[displayLanguage];
+            document.documentElement.lang = displayLanguage;
+            document.title = text.pageTitle;
+            document.querySelector('.lang-pill:last-child').textContent = `🌍 ${text.allLanguages}`;
+            document.getElementById('navMonster').textContent = text.feedSanta;
+            document.getElementById('navTrucks').textContent = text.trucks;
+            document.getElementById('navBalloons').textContent = text.balloons;
+            document.getElementById('navAnimals').textContent = text.animals;
+            document.getElementById('monsterSpeech').textContent = text.santaPrompt;
+            document.getElementById('monsterAvatar').setAttribute('aria-label', text.santaLabel);
+            document.getElementById('dancingSanta').setAttribute('aria-label', text.santaLabel);
+            document.getElementById('balloonStatus').textContent = text.popBalloons;
+
+            document.querySelectorAll('[data-item-kind]').forEach(card => {
+                const source = card.dataset.itemKind === 'truck' ? trucks : animals;
+                const item = source[Number(card.dataset.itemIndex)];
+                const title = card.querySelector('.card-title');
+                const subtitle = card.querySelector('.card-sub');
+                title.textContent = item[displayLanguage];
+                card.setAttribute('aria-label', item[displayLanguage]);
+
+                if (currentLangMode === 'all') {
+                    subtitle.textContent = item.el;
+                    subtitle.style.display = '';
+                } else {
+                    subtitle.textContent = '';
+                    subtitle.style.display = 'none';
+                }
+            });
+
+            document.querySelectorAll('.food-item').forEach((button, index) => {
+                button.setAttribute('aria-label', foods[index][displayLanguage]);
+            });
         }
 
         function speakSingle(langCode, text, onDone) {
@@ -769,11 +950,14 @@
         const monsterAvatar = document.getElementById('monsterAvatar');
         const monsterSpeech = document.getElementById('monsterSpeech');
         const monsterFoodGrid = document.getElementById('monsterFoodGrid');
+        let santaCelebrationTimeout = null;
 
         foods.forEach(f => {
             const btn = document.createElement('div');
             btn.className = 'food-item';
             btn.textContent = f.emoji;
+            btn.setAttribute('role', 'button');
+            btn.setAttribute('aria-label', f.en);
             btn.onclick = () => feedMonster(f);
             monsterFoodGrid.appendChild(btn);
         });
@@ -781,50 +965,110 @@
         function feedMonster(food) {
             SoundFX.chomp();
             monsterAvatar.classList.add('chewing');
-            monsterSpeech.textContent = "Ho, ho, ho! Ευχαριστώ, Ari! Thank you, Ari! 🎁";
+            const responseIndex = Math.floor(Math.random() * 3);
+            const displayLanguage = currentLangMode === 'all' ? 'en' : currentLangMode;
+            const displayResponse = getSantaResponse(food, displayLanguage, responseIndex);
+            monsterSpeech.textContent = `${displayResponse} 🎁`;
+            showSantaCelebration(displayResponse);
 
-            setTimeout(() => {
-                monsterAvatar.classList.remove('chewing');
-            }, 1200);
+            setTimeout(() => monsterAvatar.classList.remove('chewing'), 1200);
 
-            speakSantaThanks(() => {
-                pronounceItem(food, () => {
-                    monsterSpeech.textContent = "More, please, Ari! 🎅";
-                });
+            speakSantaThanks(food, responseIndex, () => {
+                monsterSpeech.textContent = interfaceText[displayLanguage].morePlease;
             });
         }
 
-        function speakSantaThanks(onFinish) {
-            const thanks = {
-                en: { code: 'en-US', text: 'Ho, ho, ho! Thank you, Ari!' },
-                es: { code: 'es-MX', text: '¡Jo, jo, jo! ¡Gracias, Ari!' },
-                fr: { code: 'fr-FR', text: 'Ho, ho, ho ! Merci, Ari !' },
-                el: { code: 'el-GR', text: 'Χο, χο, χο! Ευχαριστώ, Άρι!' }
+        function getSantaResponse(food, language, responseIndex) {
+            const foodName = language === 'en'
+                ? `the ${food.en.toLowerCase()}`
+                : santaFoodNames[food.emoji][language];
+            const responses = {
+                en: [
+                    `Ho, ho, ho! Thank you for ${foodName}, Ari!`,
+                    `Mmm! ${foodName.charAt(0).toUpperCase() + foodName.slice(1)} was delicious, Ari!`,
+                    `Ho, ho, ho! I really liked ${foodName}, Ari!`
+                ],
+                es: [
+                    `¡Jo, jo, jo! ¡Gracias por ${foodName}, Ari!`,
+                    `¡Mmm, qué rico! ¡Gracias por ${foodName}, Ari!`,
+                    `¡Jo, jo, jo! Me gustó mucho ${foodName}, Ari!`
+                ],
+                fr: [
+                    `Ho, ho, ho ! Merci pour ${foodName}, Ari !`,
+                    `Miam, c’était délicieux ! Merci pour ${foodName}, Ari !`,
+                    `Ho, ho, ho ! J’ai beaucoup aimé ${foodName}, Ari !`
+                ],
+                el: [
+                    `Χο, χο, χο! Ευχαριστώ για ${foodName}, Άρι!`,
+                    `Μμμ, ήταν πεντανόστιμο! Ευχαριστώ για ${foodName}, Άρι!`,
+                    `Χο, χο, χο! Μου άρεσε πολύ ${foodName}, Άρι!`
+                ]
+            };
+            return responses[language][responseIndex];
+        }
+
+        function showSantaCelebration(message) {
+            const celebration = document.getElementById('santaCelebration');
+            const dancingSanta = document.getElementById('dancingSanta');
+            const danceClasses = ['dance-spin', 'dance-bounce', 'dance-wiggle', 'dance-circle'];
+            if (santaCelebrationTimeout) clearTimeout(santaCelebrationTimeout);
+            dancingSanta.className = 'dancing-santa';
+            void dancingSanta.offsetWidth;
+            dancingSanta.classList.add(danceClasses[Math.floor(Math.random() * danceClasses.length)]);
+            document.getElementById('santaCelebrationMessage').textContent = message;
+            celebration.classList.add('active');
+            celebration.setAttribute('aria-hidden', 'false');
+            santaCelebrationTimeout = setTimeout(() => {
+                celebration.classList.remove('active');
+                celebration.setAttribute('aria-hidden', 'true');
+            }, 2800);
+        }
+
+        function speakSantaThanks(food, responseIndex, onFinish) {
+            const languages = {
+                en: 'en-US',
+                es: 'es-MX',
+                fr: 'fr-FR',
+                el: 'el-GR'
             };
 
-            if (currentLangMode === 'all') {
-                speakSingle(thanks.el.code, thanks.el.text, () => {
-                    speechSequenceTimeout = setTimeout(() => {
-                        speakSingle(thanks.en.code, thanks.en.text, onFinish);
-                    }, 500);
-                });
+            if (currentLangMode !== 'all') {
+                speakSingle(languages[currentLangMode], getSantaResponse(food, currentLangMode, responseIndex), onFinish);
                 return;
             }
 
-            const selectedThanks = thanks[currentLangMode];
-            speakSingle(selectedThanks.code, selectedThanks.text, onFinish);
+            const sequence = ['en', 'es', 'fr', 'el'];
+            let index = 0;
+            function speakNextThankYou() {
+                if (index >= sequence.length) {
+                    if (onFinish) onFinish();
+                    return;
+                }
+                const language = sequence[index++];
+                const response = getSantaResponse(food, language, responseIndex);
+                document.getElementById('santaCelebrationMessage').textContent = response;
+                speakSingle(languages[language], response, () => {
+                    speechSequenceTimeout = setTimeout(speakNextThankYou, 450);
+                });
+            }
+            speakNextThankYou();
         }
 
         function tickleMonster() {
             SoundFX.animal('cat');
-            monsterSpeech.textContent = "Ho, ho, ho! That tickles, Ari! 😆";
+            const displayLanguage = currentLangMode === 'all' ? 'en' : currentLangMode;
+            monsterSpeech.textContent = interfaceText[displayLanguage].tickle;
         }
 
         // --- Game 2: Big Machines ---
         const trucksGrid = document.getElementById('trucksGrid');
-        trucks.forEach(t => {
+        trucks.forEach((t, index) => {
             const card = document.createElement('div');
             card.className = 'arcade-card';
+            card.dataset.itemKind = 'truck';
+            card.dataset.itemIndex = index;
+            card.setAttribute('role', 'button');
+            card.setAttribute('aria-label', t.en);
             card.innerHTML = `
                 ${t.art || `<div class="card-emoji">${t.emoji}</div>`}
                 <div class="card-title">${t.en}</div>
@@ -845,9 +1089,13 @@
 
         // --- Game 3: Animals ---
         const animalsGrid = document.getElementById('animalsGrid');
-        animals.forEach(a => {
+        animals.forEach((a, index) => {
             const card = document.createElement('div');
             card.className = 'arcade-card';
+            card.dataset.itemKind = 'animal';
+            card.dataset.itemIndex = index;
+            card.setAttribute('role', 'button');
+            card.setAttribute('aria-label', a.en);
             card.innerHTML = `
                 <div class="card-emoji">${a.emoji}</div>
                 <div class="card-title">${a.en}</div>
@@ -925,7 +1173,8 @@
             setTimeout(() => popEffect.remove(), 400);
 
             balloonEl.remove();
-            balloonStatus.textContent = `Popped #${numItem.num}! ⭐`;
+            const displayLanguage = currentLangMode === 'all' ? 'en' : currentLangMode;
+            balloonStatus.textContent = interfaceText[displayLanguage].popped(numItem.num);
             pronounceItem(numItem);
         }
 
@@ -940,6 +1189,9 @@
             if (balloonInterval) clearInterval(balloonInterval);
             balloonSky.innerHTML = '';
         }
+
+        updateInterfaceLanguage();
+        startBalloonSpawner();
     </script>
 </body>
 </html>
