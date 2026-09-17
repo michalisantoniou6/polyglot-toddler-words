@@ -926,6 +926,32 @@
             font-weight: 650;
         }
 
+        .sound-credits {
+            margin-top: 18px;
+            border: 2px solid #e2e8f0;
+            border-radius: 14px;
+            background: #f7fafc;
+            color: #4a5568;
+            font-size: 0.82rem;
+            line-height: 1.4;
+        }
+
+        .sound-credits summary {
+            padding: 12px 14px;
+            cursor: pointer;
+            font-weight: 850;
+        }
+
+        .sound-credits-list {
+            max-height: 190px;
+            margin: 0;
+            padding: 0 14px 14px 34px;
+            overflow-y: auto;
+        }
+
+        .sound-credits-list li { margin-top: 6px; }
+        .sound-credits-list a { color: #2b6cb0; }
+
         .settings-error {
             min-height: 22px;
             margin: 9px 0 0;
@@ -1057,6 +1083,10 @@
                 <button class="settings-save" id="settingsSave" type="submit">Αποθήκευση</button>
                 <button class="settings-restore" id="settingsRestore" type="button" onclick="restoreDefaultSettings()">Επαναφορά αρχικών</button>
             </div>
+            <details class="sound-credits">
+                <summary id="soundCreditsTitle">🔊 Πηγές πραγματικών ήχων</summary>
+                <ol class="sound-credits-list" id="soundCreditsList"></ol>
+            </details>
         </form>
     </div>
 
@@ -1197,30 +1227,30 @@
             </div>`;
 
         const trucks = [
-            { emoji: "🚜", type: "tractor", en: "Tractor", es: "Tractor", fr: "Tracteur", el: "Τρακτέρ" },
-            { emoji: "🏗️", type: "crane", en: "Crane", es: "Grúa", fr: "Grue", el: "Γερανός" },
-            { emoji: "🚚", type: "excavator", en: "Excavator", es: "Excavadora", fr: "Pelleteuse", el: "Εκσκαφέας" },
-            { emoji: "🚛", type: "truck", en: "Dump truck", es: "Camión volquete", fr: "Camion benne", el: "Ανατρεπόμενο" },
-            { emoji: "🚒", type: "siren", en: "Fire truck", es: "Camión de bomberos", fr: "Camion de pompiers", el: "Πυροσβεστικό" },
-            { emoji: "🚜", art: bulldozerArt, type: "bulldozer", en: "Bulldozer", es: "Buldócer", fr: "Bulldozer", el: "Μπουλντόζα" },
-            { emoji: "🚑", type: "siren", en: "Ambulance", es: "Ambulancia", fr: "Ambulance", el: "Ασθενοφόρο" },
-            { emoji: "🚀", type: "rocket", en: "Rocket", es: "Cohete", fr: "Fusée", el: "Πύραυλος" },
-            { emoji: "🚜", type: "engine", en: "Backhoe", es: "Retroexcavadora", fr: "Tractopelle", el: "Εκσκαφέας-φορτωτής" },
-            { emoji: "🏗️", type: "engine", en: "Wheel loader", es: "Cargador frontal", fr: "Chargeuse", el: "Φορτωτής" },
-            { emoji: "🚜", type: "engine", en: "Road roller", es: "Aplanadora", fr: "Rouleau compresseur", el: "Οδοστρωτήρας" },
-            { emoji: "🚛", type: "truck", en: "Cement mixer", es: "Revolvedora", fr: "Bétonnière", el: "Μπετονιέρα" },
-            { emoji: "🚛", type: "truck", en: "Garbage truck", es: "Camión de basura", fr: "Camion poubelle", el: "Απορριμματοφόρο" },
-            { emoji: "🛻", type: "truck", en: "Tow truck", es: "Grúa de arrastre", fr: "Dépanneuse", el: "Γερανός ρυμούλκησης" },
-            { emoji: "🚚", type: "engine", en: "Snowplow", es: "Quitanieves", fr: "Chasse-neige", el: "Εκχιονιστικό" },
-            { emoji: "🏭", type: "engine", en: "Forklift", es: "Montacargas", fr: "Chariot élévateur", el: "Περονοφόρο" },
-            { emoji: "🚜", type: "engine", en: "Skid steer", es: "Minicargador", fr: "Chargeuse compacte", el: "Μίνι φορτωτής" },
-            { emoji: "🛣️", type: "engine", en: "Paver", es: "Pavimentadora", fr: "Finisseuse", el: "Ασφαλτοστρωτήρας" },
-            { emoji: "⚙️", type: "engine", en: "Drilling rig", es: "Perforadora", fr: "Foreuse", el: "Γεωτρύπανο" },
-            { emoji: "🛻", type: "truck", en: "Monster truck", es: "Camión monstruo", fr: "Monster truck", el: "Τερατώδες φορτηγό" },
-            { emoji: "🚓", type: "siren", en: "Police car", es: "Patrulla", fr: "Voiture de police", el: "Περιπολικό" },
-            { emoji: "🚌", type: "truck", en: "School bus", es: "Autobús escolar", fr: "Bus scolaire", el: "Σχολικό λεωφορείο" },
-            { emoji: "🚐", type: "truck", en: "Delivery van", es: "Camioneta de reparto", fr: "Camionnette de livraison", el: "Βαν διανομών" },
-            { emoji: "🚂", type: "engine", en: "Train", es: "Tren", fr: "Train", el: "Τρένο" }
+            { emoji: "🚜", type: "tractor", soundProfile: "tractor", en: "Tractor", es: "Tractor", fr: "Tracteur", el: "Τρακτέρ" },
+            { emoji: "🏗️", type: "crane", soundProfile: "construction", en: "Crane", es: "Grúa", fr: "Grue", el: "Γερανός" },
+            { emoji: "🚚", type: "excavator", soundProfile: "construction", en: "Excavator", es: "Excavadora", fr: "Pelleteuse", el: "Εκσκαφέας" },
+            { emoji: "🚛", type: "truck", soundProfile: "heavyTruck", en: "Dump truck", es: "Camión volquete", fr: "Camion benne", el: "Ανατρεπόμενο" },
+            { emoji: "🚒", type: "siren", soundProfile: "fireSiren", en: "Fire truck", es: "Camión de bomberos", fr: "Camion de pompiers", el: "Πυροσβεστικό" },
+            { emoji: "🚜", art: bulldozerArt, type: "bulldozer", soundProfile: "construction", en: "Bulldozer", es: "Buldócer", fr: "Bulldozer", el: "Μπουλντόζα" },
+            { emoji: "🚑", type: "siren", soundProfile: "ambulance", en: "Ambulance", es: "Ambulancia", fr: "Ambulance", el: "Ασθενοφόρο" },
+            { emoji: "🚀", type: "rocket", soundProfile: "rocket", en: "Rocket", es: "Cohete", fr: "Fusée", el: "Πύραυλος" },
+            { emoji: "🚜", type: "engine", soundProfile: "construction", en: "Backhoe", es: "Retroexcavadora", fr: "Tractopelle", el: "Εκσκαφέας-φορτωτής" },
+            { emoji: "🏗️", type: "engine", soundProfile: "construction", en: "Wheel loader", es: "Cargador frontal", fr: "Chargeuse", el: "Φορτωτής" },
+            { emoji: "🚜", type: "engine", soundProfile: "construction", en: "Road roller", es: "Aplanadora", fr: "Rouleau compresseur", el: "Οδοστρωτήρας" },
+            { emoji: "🚛", type: "truck", soundProfile: "heavyTruck", en: "Cement mixer", es: "Revolvedora", fr: "Bétonnière", el: "Μπετονιέρα" },
+            { emoji: "🚛", type: "truck", soundProfile: "garbage", en: "Garbage truck", es: "Camión de basura", fr: "Camion poubelle", el: "Απορριμματοφόρο" },
+            { emoji: "🛻", type: "truck", soundProfile: "heavyTruck", en: "Tow truck", es: "Grúa de arrastre", fr: "Dépanneuse", el: "Γερανός ρυμούλκησης" },
+            { emoji: "🚚", type: "engine", soundProfile: "heavyTruck", en: "Snowplow", es: "Quitanieves", fr: "Chasse-neige", el: "Εκχιονιστικό" },
+            { emoji: "🏭", type: "engine", soundProfile: "forklift", en: "Forklift", es: "Montacargas", fr: "Chariot élévateur", el: "Περονοφόρο" },
+            { emoji: "🚜", type: "engine", soundProfile: "construction", en: "Skid steer", es: "Minicargador", fr: "Chargeuse compacte", el: "Μίνι φορτωτής" },
+            { emoji: "🛣️", type: "engine", soundProfile: "construction", en: "Paver", es: "Pavimentadora", fr: "Finisseuse", el: "Ασφαλτοστρωτήρας" },
+            { emoji: "⚙️", type: "engine", soundProfile: "drill", en: "Drilling rig", es: "Perforadora", fr: "Foreuse", el: "Γεωτρύπανο" },
+            { emoji: "🛻", type: "truck", soundProfile: "monsterTruck", en: "Monster truck", es: "Camión monstruo", fr: "Monster truck", el: "Τερατώδες φορτηγό" },
+            { emoji: "🚓", type: "siren", soundProfile: "police", en: "Police car", es: "Patrulla", fr: "Voiture de police", el: "Περιπολικό" },
+            { emoji: "🚌", type: "truck", soundProfile: "heavyTruck", en: "School bus", es: "Autobús escolar", fr: "Bus scolaire", el: "Σχολικό λεωφορείο" },
+            { emoji: "🚐", type: "truck", soundProfile: "heavyTruck", en: "Delivery van", es: "Camioneta de reparto", fr: "Camionnette de livraison", el: "Βαν διανομών" },
+            { emoji: "🚂", type: "engine", soundProfile: "train", en: "Train", es: "Tren", fr: "Train", el: "Τρένο" }
         ];
 
         const animals = [
@@ -1249,6 +1279,195 @@
             { emoji: "🐊", sound: "crocodile", en: "Crocodile", es: "Cocodrilo", fr: "Crocodile", el: "Κροκόδειλος" },
             { emoji: "🐋", sound: "whale", en: "Whale", es: "Ballena", fr: "Baleine", el: "Φάλαινα" }
         ];
+
+        const commonsFile = fileName => `https://commons.wikimedia.org/wiki/Special:Redirect/file/${encodeURIComponent(fileName)}`;
+        const freesoundPage = soundId => `https://freesound.org/s/${soundId}/`;
+        const clip = (src, title, creator, license, page, start = 0, duration = 2.6) => ({ src, title, creator, license, page, start, duration });
+
+        // Short real-world recordings. Repeated taps rotate through each profile.
+        // The synthesized effects below remain as a graceful fallback when offline.
+        const realSoundProfiles = {
+            dog: [
+                clip('https://upload.wikimedia.org/wikipedia/commons/5/58/Barking_of_a_dog_2.ogg', 'Barking of a dog 2', 'Amada44', 'CC BY-SA 3.0', 'https://commons.wikimedia.org/wiki/File:Barking_of_a_dog_2.ogg'),
+                clip('https://upload.wikimedia.org/wikipedia/commons/a/a2/Barking_of_a_dog.ogg', 'Barking of a dog', 'Amada44', 'CC BY-SA 3.0', 'https://commons.wikimedia.org/wiki/File:Barking_of_a_dog.ogg'),
+                clip('https://upload.wikimedia.org/wikipedia/commons/1/1c/Perro_ladrando.ogg', 'Perro ladrando', 'Armartinell', 'CC BY-SA 4.0', 'https://commons.wikimedia.org/wiki/File:Perro_ladrando.ogg')
+            ],
+            cat: [
+                clip('https://upload.wikimedia.org/wikipedia/commons/6/6b/Meow_of_a_pleading_cat.oga', 'Meow of a pleading cat', 'Wikimedia Commons contributor', 'Public domain', 'https://commons.wikimedia.org/wiki/File:Meow_of_a_pleading_cat.oga'),
+                clip('https://upload.wikimedia.org/wikipedia/commons/8/81/Meow_of_a_Siamese_cat_-_freemaster2.wav', 'Meow of a Siamese cat', 'freemaster2', 'CC0', 'https://commons.wikimedia.org/wiki/File:Meow_of_a_Siamese_cat_-_freemaster2.wav'),
+                clip('https://upload.wikimedia.org/wikipedia/commons/6/62/Meow.ogg', 'Meow', 'Dan Crosby', 'CC BY-SA 3.0', 'https://commons.wikimedia.org/wiki/File:Meow.ogg')
+            ],
+            lion: [
+                clip('https://upload.wikimedia.org/wikipedia/commons/7/7d/Lion_raring-sound1TamilNadu178.ogg', 'Lion roaring', 'Vijaybarve', 'Public domain', 'https://commons.wikimedia.org/wiki/File:Lion_raring-sound1TamilNadu178.ogg'),
+                clip('https://upload.wikimedia.org/wikipedia/commons/d/d3/Lionroar.wav', 'Lion roar', 'Wikimedia Commons contributor', 'CC BY 4.0', 'https://commons.wikimedia.org/wiki/File:Lionroar.wav'),
+                clip('https://cdn.freesound.org/previews/488/488348_10507382-hq.mp3', 'Lion', 'GJ55GB', 'CC0', freesoundPage(488348))
+            ],
+            cow: [
+                clip('https://cdn.freesound.org/previews/233/233134_4056007-hq.mp3', 'Cow moo 5', 'JarredGibb', 'CC0', freesoundPage(233134)),
+                clip('https://cdn.freesound.org/previews/233/233129_4056007-hq.mp3', 'Cow moo 2', 'JarredGibb', 'CC0', freesoundPage(233129)),
+                clip('https://cdn.freesound.org/previews/233/233127_4056007-hq.mp3', 'Cow moo 4', 'JarredGibb', 'CC0', freesoundPage(233127))
+            ],
+            frog: [
+                clip('https://upload.wikimedia.org/wikipedia/commons/9/9f/Single_Frog_Croak.oga', 'Single frog croak', 'Wikimedia Commons contributor', 'CC BY-SA 4.0', 'https://commons.wikimedia.org/wiki/File:Single_Frog_Croak.oga'),
+                clip('https://upload.wikimedia.org/wikipedia/commons/5/51/Frogs_croak_calling_chorus_at_night.ogg', 'Frogs calling at night', 'Wikimedia Commons contributor', 'CC BY-SA 4.0', 'https://commons.wikimedia.org/wiki/File:Frogs_croak_calling_chorus_at_night.ogg'),
+                clip('https://upload.wikimedia.org/wikipedia/commons/9/95/Frog_croaking_after_rain%2C_Kerala.wav', 'Frog croaking after rain', 'Wikimedia Commons contributor', 'CC BY-SA 4.0', 'https://commons.wikimedia.org/wiki/File:Frog_croaking_after_rain,_Kerala.wav')
+            ],
+            duck: [
+                clip('https://cdn.freesound.org/previews/238/238593_4253783-hq.mp3', 'Ducks quacking', 'zulfint', 'CC0', freesoundPage(238593)),
+                clip('https://cdn.freesound.org/previews/515/515408_10319640-hq.mp3', 'Duck quack', 'Tabby and Gus', 'CC0', freesoundPage(515408)),
+                clip('https://cdn.freesound.org/previews/365/365133_6659813-hq.mp3', 'Duck quack', 'gibarroule', 'CC0', freesoundPage(365133))
+            ],
+            sheep: [
+                clip('https://upload.wikimedia.org/wikipedia/commons/1/13/Sheep_bleating.ogg', 'Sheep bleating', 'Wikimedia Commons contributor', 'Public domain', 'https://commons.wikimedia.org/wiki/File:Sheep_bleating.ogg'),
+                clip('https://upload.wikimedia.org/wikipedia/commons/2/28/Sheep_bleat.ogg', 'Sheep bleat', 'Wikimedia Commons contributor', 'CC0', 'https://commons.wikimedia.org/wiki/File:Sheep_bleat.ogg'),
+                clip('https://upload.wikimedia.org/wikipedia/commons/2/2a/Mudchute_sheep_1.ogg', 'Mudchute sheep', 'Wikimedia Commons contributor', 'CC BY-SA 3.0', 'https://commons.wikimedia.org/wiki/File:Mudchute_sheep_1.ogg')
+            ],
+            pig: [
+                clip('https://cdn.freesound.org/previews/449/449577_676927-hq.mp3', 'Pigs oinking', 'zachrau', 'CC0', freesoundPage(449577)),
+                clip('https://cdn.freesound.org/previews/233/233183_4056007-hq.mp3', 'Pig snorts', 'JarredGibb', 'CC0', freesoundPage(233183)),
+                clip('https://cdn.freesound.org/previews/233/233177_4056007-hq.mp3', 'Pig grunt and squeal', 'JarredGibb', 'CC0', freesoundPage(233177))
+            ],
+            horse: [
+                clip('https://upload.wikimedia.org/wikipedia/commons/d/db/Wiehern.ogg', 'Horse neigh', 'Wikimedia Commons contributor', 'Public domain', 'https://commons.wikimedia.org/wiki/File:Wiehern.ogg'),
+                clip('https://upload.wikimedia.org/wikipedia/commons/7/7a/Mares-Prefer-the-Voices-of-Highly-Fertile-Stallions-pone.0118468.s004.oga', 'Stallion call 4', 'Charlton et al.', 'CC BY 4.0', 'https://commons.wikimedia.org/wiki/File:Mares-Prefer-the-Voices-of-Highly-Fertile-Stallions-pone.0118468.s004.oga'),
+                clip('https://upload.wikimedia.org/wikipedia/commons/0/07/Mares-Prefer-the-Voices-of-Highly-Fertile-Stallions-pone.0118468.s002.oga', 'Stallion call 2', 'Charlton et al.', 'CC BY 4.0', 'https://commons.wikimedia.org/wiki/File:Mares-Prefer-the-Voices-of-Highly-Fertile-Stallions-pone.0118468.s002.oga')
+            ],
+            elephant: [
+                clip('https://cdn.freesound.org/previews/527/527845_11431915-hq.mp3', 'Elephant trumpets and growls', 'D.jones', 'CC0', freesoundPage(527845)),
+                clip('https://upload.wikimedia.org/wikipedia/commons/4/40/Elephant_voice_-_trumpeting.ogg', 'Elephant trumpeting', 'Thagadooran', 'CC0', 'https://commons.wikimedia.org/wiki/File:Elephant_voice_-_trumpeting.ogg'),
+                clip('https://cdn.freesound.org/previews/507/507467_2977885-hq.mp3', 'Angry elephant', 'Danjocross', 'CC0', freesoundPage(507467))
+            ],
+            monkey: [
+                clip('https://upload.wikimedia.org/wikipedia/commons/1/16/Brown_woolly_monkey_alarm_call.wav', 'Brown woolly monkey alarm call', 'Wikimedia Commons contributor', 'CC BY-SA 4.0', 'https://commons.wikimedia.org/wiki/File:Brown_woolly_monkey_alarm_call.wav'),
+                clip('https://upload.wikimedia.org/wikipedia/commons/f/f3/Dusky-leaf-monkey-call-kaeng-krachan.ogg', 'Dusky leaf monkey call', 'Wikimedia Commons contributor', 'CC BY-SA 4.0', 'https://commons.wikimedia.org/wiki/File:Dusky-leaf-monkey-call-kaeng-krachan.ogg'),
+                clip('https://upload.wikimedia.org/wikipedia/commons/1/1b/Campbell%27s-Monkeys-Use-Affixation-to-Alter-Call-Meaning-pone.0007808.s006.ogg', 'Campbell monkey call', 'Ouattara et al.', 'CC BY 2.5', 'https://commons.wikimedia.org/wiki/File:Campbell%27s-Monkeys-Use-Affixation-to-Alter-Call-Meaning-pone.0007808.s006.ogg')
+            ],
+            tiger: [
+                clip('https://cdn.freesound.org/previews/263/263115_672090-hq.mp3', 'Tiger roar', 'lauramellis', 'CC0', freesoundPage(263115), 0, 2.5),
+                clip('https://cdn.freesound.org/previews/263/263115_672090-hq.mp3', 'Tiger roar', 'lauramellis', 'CC0', freesoundPage(263115), 3, 2.5),
+                clip('https://cdn.freesound.org/previews/263/263115_672090-hq.mp3', 'Tiger roar', 'lauramellis', 'CC0', freesoundPage(263115), 6, 2.5)
+            ],
+            bear: [
+                clip('https://cdn.freesound.org/previews/519/519599_7143328-hq.mp3', 'Grizzly bear growl', 'Nivatius', 'CC0', freesoundPage(519599), 0, 2.6),
+                clip('https://upload.wikimedia.org/wikipedia/commons/4/4e/Bear_growl.ogg', 'Bear growl', 'Shizhao', 'CC BY 3.0', 'https://commons.wikimedia.org/wiki/File:Bear_growl.ogg'),
+                clip('https://cdn.freesound.org/previews/519/519599_7143328-hq.mp3', 'Grizzly bear growl', 'Nivatius', 'CC0', freesoundPage(519599), 3.2, 2.6)
+            ],
+            rabbit: [
+                clip('https://cdn.freesound.org/previews/385/385849_4521595-hq.mp3', 'Rabbit squeaking and sneezing', 'kessir', 'CC BY 3.0', freesoundPage(385849)),
+                clip('https://cdn.freesound.org/previews/385/385850_4521595-hq.mp3', 'Rabbit squeaking', 'kessir', 'CC BY 3.0', freesoundPage(385850)),
+                clip('https://cdn.freesound.org/previews/372/372075_4521595-hq.mp3', 'Rabbit oinks and squeaks', 'kessir', 'CC0', freesoundPage(372075))
+            ],
+            chicken: [
+                clip('https://upload.wikimedia.org/wikipedia/commons/d/d6/Chickens_demanding_food.ogg', 'Chickens demanding food', 'Wikimedia Commons contributor', 'Public domain', 'https://commons.wikimedia.org/wiki/File:Chickens_demanding_food.ogg'),
+                clip('https://upload.wikimedia.org/wikipedia/commons/4/44/Hen_announcing_shes_lain_an_egg.ogg', 'Hen announcing an egg', 'Wikimedia Commons contributor', 'Public domain', 'https://commons.wikimedia.org/wiki/File:Hen_announcing_shes_lain_an_egg.ogg'),
+                clip('https://upload.wikimedia.org/wikipedia/commons/0/00/Hens_leaving_coop.ogg', 'Hens leaving coop', 'Wikimedia Commons contributor', 'Public domain', 'https://commons.wikimedia.org/wiki/File:Hens_leaving_coop.ogg')
+            ],
+            rooster: [
+                clip('https://upload.wikimedia.org/wikipedia/commons/c/c5/Rooster_crowing.ogg', 'Rooster crowing', 'Wikimedia Commons contributor', 'CC BY-SA 4.0', 'https://commons.wikimedia.org/wiki/File:Rooster_crowing.ogg'),
+                clip('https://upload.wikimedia.org/wikipedia/commons/4/43/Young_rooster_crowing.ogg', 'Young rooster crowing', 'Wikimedia Commons contributor', 'CC BY-SA 4.0', 'https://commons.wikimedia.org/wiki/File:Young_rooster_crowing.ogg'),
+                clip('https://upload.wikimedia.org/wikipedia/commons/c/c5/Small_rooster_crowing.ogg', 'Small rooster crowing', 'Wikimedia Commons contributor', 'Public domain', 'https://commons.wikimedia.org/wiki/File:Small_rooster_crowing.ogg')
+            ],
+            goat: [
+                clip('https://cdn.freesound.org/previews/581/581240_2247456-hq.mp3', 'Goat bleating', 'Kinoton', 'CC0', freesoundPage(581240)),
+                clip('https://cdn.freesound.org/previews/266/266616_3719168-hq.mp3', 'Baby goat bleating', 'OBXJohn', 'CC BY 3.0', freesoundPage(266616)),
+                clip('https://cdn.freesound.org/previews/267/267147_2454586-hq.mp3', 'Goat choir', 'EduFigueres', 'CC BY 3.0', freesoundPage(267147))
+            ],
+            donkey: [
+                clip('https://upload.wikimedia.org/wikipedia/commons/2/25/157763_felix-blume_a-donkey-is-braying-in-his-enclosure-in-south-of-france.wav', 'Donkey braying', 'Felix Blume', 'CC0', 'https://commons.wikimedia.org/wiki/File:157763_felix-blume_a-donkey-is-braying-in-his-enclosure-in-south-of-france.wav', 0, 2.7),
+                clip('https://upload.wikimedia.org/wikipedia/commons/2/25/157763_felix-blume_a-donkey-is-braying-in-his-enclosure-in-south-of-france.wav', 'Donkey braying', 'Felix Blume', 'CC0', 'https://commons.wikimedia.org/wiki/File:157763_felix-blume_a-donkey-is-braying-in-his-enclosure-in-south-of-france.wav', 5, 2.7),
+                clip('https://upload.wikimedia.org/wikipedia/commons/2/25/157763_felix-blume_a-donkey-is-braying-in-his-enclosure-in-south-of-france.wav', 'Donkey braying', 'Felix Blume', 'CC0', 'https://commons.wikimedia.org/wiki/File:157763_felix-blume_a-donkey-is-braying-in-his-enclosure-in-south-of-france.wav', 10, 2.7)
+            ],
+            owl: [
+                clip('https://cdn.freesound.org/previews/326/326350_44431-hq.mp3', 'Owl hoot', 'gadzooks', 'CC0', freesoundPage(326350)),
+                clip('https://cdn.freesound.org/previews/159/159726_401105-hq.mp3', 'Owl hooting', 'gfrog', 'CC0', freesoundPage(159726)),
+                clip('https://cdn.freesound.org/previews/415/415153_1712536-hq.mp3', 'Owl hooting', 'howebzar', 'CC0', freesoundPage(415153))
+            ],
+            penguin: [
+                clip('https://upload.wikimedia.org/wikipedia/commons/5/5a/20091121_Little_Penguin_calls_at_St_Kilda_Breakwater.ogg', 'Little penguin calls', 'Mikeybear', 'CC BY 3.0', 'https://commons.wikimedia.org/wiki/File:20091121_Little_Penguin_calls_at_St_Kilda_Breakwater.ogg'),
+                clip(commonsFile('Little Penguin (Eudyptula minor).ogg'), 'Little penguin', 'Wikimedia Commons contributor', 'CC BY-SA', 'https://commons.wikimedia.org/wiki/File:Little_Penguin_(Eudyptula_minor).ogg'),
+                clip('https://cdn.freesound.org/previews/97/97387_1578278-hq.mp3', 'Penguin', 'soundbytez', 'CC BY 3.0', freesoundPage(97387))
+            ],
+            giraffe: [
+                clip('https://upload.wikimedia.org/wikipedia/commons/a/a8/Giraffe_Hum.oga', 'Giraffe hum', 'Baotic, Sicks and Stoeger', 'CC BY-SA 4.0', 'https://commons.wikimedia.org/wiki/File:Giraffe_Hum.oga'),
+                clip('https://upload.wikimedia.org/wikipedia/commons/9/91/Giraffehum5.oga', 'Giraffe hum 5', 'Baotic, Sicks and Stoeger', 'CC BY-SA 4.0', 'https://commons.wikimedia.org/wiki/File:Giraffehum5.oga'),
+                clip('https://upload.wikimedia.org/wikipedia/commons/7/76/Giraffehum4.oga', 'Giraffe hum 4', 'Baotic, Sicks and Stoeger', 'CC BY-SA 4.0', 'https://commons.wikimedia.org/wiki/File:Giraffehum4.oga')
+            ],
+            zebra: [
+                clip('https://upload.wikimedia.org/wikipedia/commons/8/8a/Gr%C3%A9vys_zebra_%28Sound_Effects%29.ogg', 'Grévy’s zebra', 'DiegoC472', 'CC BY-SA 4.0', 'https://commons.wikimedia.org/wiki/File:Gr%C3%A9vys_zebra_(Sound_Effects).ogg', 0, 2.5),
+                clip('https://upload.wikimedia.org/wikipedia/commons/8/8a/Gr%C3%A9vys_zebra_%28Sound_Effects%29.ogg', 'Grévy’s zebra', 'DiegoC472', 'CC BY-SA 4.0', 'https://commons.wikimedia.org/wiki/File:Gr%C3%A9vys_zebra_(Sound_Effects).ogg', 3, 2.5),
+                clip('https://upload.wikimedia.org/wikipedia/commons/8/8a/Gr%C3%A9vys_zebra_%28Sound_Effects%29.ogg', 'Grévy’s zebra', 'DiegoC472', 'CC BY-SA 4.0', 'https://commons.wikimedia.org/wiki/File:Gr%C3%A9vys_zebra_(Sound_Effects).ogg', 6, 2.5)
+            ],
+            crocodile: [
+                clip('https://cdn.freesound.org/previews/516/516293_8992398-hq.mp3', 'Crocodile vocalization', 'tvilgiat', 'CC0', freesoundPage(516293), 0, 2.6),
+                clip('https://cdn.freesound.org/previews/516/516293_8992398-hq.mp3', 'Crocodile vocalization', 'tvilgiat', 'CC0', freesoundPage(516293), 5, 2.6),
+                clip('https://cdn.freesound.org/previews/516/516293_8992398-hq.mp3', 'Crocodile vocalization', 'tvilgiat', 'CC0', freesoundPage(516293), 10, 2.6)
+            ],
+            whale: [
+                clip(commonsFile('Humpbackwhale2.ogg'), 'Humpback whale', 'Wikimedia Commons contributor', 'CC0', 'https://commons.wikimedia.org/wiki/File:Humpbackwhale2.ogg'),
+                clip(commonsFile('Humpback whale moo.ogg'), 'Humpback whale moo', 'US National Park Service', 'Public domain', 'https://commons.wikimedia.org/wiki/File:Humpback_whale_moo.ogg'),
+                clip(commonsFile('Blue whale atlantic2.ogg'), 'Blue whale Atlantic', 'NOAA', 'Public domain', 'https://commons.wikimedia.org/wiki/File:Blue_whale_atlantic2.ogg')
+            ],
+            tractor: [
+                clip('https://cdn.freesound.org/previews/256/256808_876304-hq.mp3', 'Tractor engine starting', 'radwoc', 'CC0', freesoundPage(256808)),
+                clip('https://cdn.freesound.org/previews/518/518294_8270369-hq.mp3', 'Tractor engine', 'lucasfuchs', 'CC0', freesoundPage(518294)),
+                clip('https://cdn.freesound.org/previews/707/707744_9745622-hq.mp3', 'Tractor engine start', 'lauderson', 'CC0', freesoundPage(707744))
+            ],
+            construction: [
+                clip('https://cdn.freesound.org/previews/606/606942_2175308-hq.mp3', 'Excavator', 'eZZin', 'CC0', freesoundPage(606942)),
+                clip('https://cdn.freesound.org/previews/606/606940_2175308-hq.mp3', 'Excavator 3', 'eZZin', 'CC0', freesoundPage(606940)),
+                clip('https://cdn.freesound.org/previews/606/606943_2175308-hq.mp3', 'Excavator 4', 'eZZin', 'CC0', freesoundPage(606943))
+            ],
+            heavyTruck: [
+                clip('https://cdn.freesound.org/previews/418/418436_6481539-hq.mp3', 'Diesel bus engine', 'CraftyIndividual', 'CC0', freesoundPage(418436)),
+                clip('https://cdn.freesound.org/previews/451/451373_612689-hq.mp3', 'Heavy diesel truck', 'kyles', 'CC0', freesoundPage(451373)),
+                clip(commonsFile('Car Horn.wav'), 'Car horn', 'Jan Ruttner', 'CC0', 'https://commons.wikimedia.org/wiki/File:Car_Horn.wav', 0, 2.1)
+            ],
+            fireSiren: [
+                clip('https://cdn.freesound.org/previews/315/315758_5028876-hq.mp3', 'Fire truck siren', 'contramundum', 'CC0', freesoundPage(315758)),
+                clip('https://cdn.freesound.org/previews/139/139324_630368-hq.mp3', 'Parisian fire truck siren', 'Mxsmanic', 'CC0', freesoundPage(139324)),
+                clip('https://cdn.freesound.org/previews/502/502997_1661766-hq.mp3', 'Passing fire truck', 'Felix Blume', 'CC0', freesoundPage(502997))
+            ],
+            ambulance: [
+                clip('https://cdn.freesound.org/previews/184/184623_3296721-hq.mp3', 'Ambulance siren', 'LanDub', 'CC0', freesoundPage(184623)),
+                clip('https://cdn.freesound.org/previews/469/469363_300738-hq.mp3', 'Distant ambulance siren', 'brunoboselli', 'CC0', freesoundPage(469363)),
+                clip('https://cdn.freesound.org/previews/393/393669_1617412-hq.mp3', 'Ambulance siren and horn', 'chripei', 'CC0', freesoundPage(393669))
+            ],
+            police: [
+                clip('https://cdn.freesound.org/previews/469/469411_9715821-hq.mp3', 'Police siren', 'sofialomba', 'CC0', freesoundPage(469411)),
+                clip('https://cdn.freesound.org/previews/156/156868_2538033-hq.mp3', 'Police siren yelp', 'MultiMax2121', 'CC0', freesoundPage(156868)),
+                clip('https://cdn.freesound.org/previews/536/536172_11925007-hq.mp3', 'Police siren', 'sebnx', 'CC0', freesoundPage(536172))
+            ],
+            rocket: [
+                clip('https://cdn.freesound.org/previews/521/521377_10847299-hq.mp3', 'Rocket launch', 'Jarusca', 'CC0', freesoundPage(521377)),
+                clip('https://cdn.freesound.org/previews/162/162379_71257-hq.mp3', 'Rocket launch', 'qubodup', 'CC0', freesoundPage(162379)),
+                clip('https://cdn.freesound.org/previews/613/613855_1661766-hq.mp3', 'Rocket launch rumble', 'Felix Blume', 'CC0', freesoundPage(613855))
+            ],
+            garbage: [
+                clip('https://cdn.freesound.org/previews/90/90856_57789-hq.mp3', 'Garbage truck', 'cognito perceptu', 'CC0', freesoundPage(90856)),
+                clip('https://cdn.freesound.org/previews/449/449437_8667144-hq.mp3', 'Garbage truck compacting', 'rodrigocswm', 'CC0', freesoundPage(449437)),
+                clip('https://cdn.freesound.org/previews/449/449431_8667144-hq.mp3', 'Garbage truck passing', 'rodrigocswm', 'CC0', freesoundPage(449431))
+            ],
+            forklift: [
+                clip('https://cdn.freesound.org/previews/449/449080_8812224-hq.mp3', 'Construction vehicle beeps and brakes', 'Bon Vivant Pictures', 'CC0', freesoundPage(449080)),
+                clip('https://cdn.freesound.org/previews/460/460767_5804919-hq.mp3', 'Electric forklift engine', 'be_a_hero_not_a_patriot', 'CC0', freesoundPage(460767), 0, 2.6),
+                clip('https://cdn.freesound.org/previews/460/460767_5804919-hq.mp3', 'Electric forklift engine', 'be_a_hero_not_a_patriot', 'CC0', freesoundPage(460767), 4, 2.6)
+            ],
+            drill: [
+                clip('https://cdn.freesound.org/previews/407/407454_3793224-hq.mp3', 'Drilling rig', 'fkunze', 'CC0', freesoundPage(407454), 0, 2.6),
+                clip('https://cdn.freesound.org/previews/400/400991_5121236-hq.mp3', 'Construction jackhammer excavator', 'InspectorJ', 'CC BY 3.0', freesoundPage(400991)),
+                clip('https://cdn.freesound.org/previews/407/407454_3793224-hq.mp3', 'Drilling rig', 'fkunze', 'CC0', freesoundPage(407454), 5, 2.6)
+            ],
+            monsterTruck: [
+                clip('https://cdn.freesound.org/previews/260/260779_2214631-hq.mp3', 'Burnouts and revving', 'Ears68', 'CC0', freesoundPage(260779), 0, 2.6),
+                clip('https://cdn.freesound.org/previews/260/260691_2214631-hq.mp3', 'High RPM burnout', 'Ears68', 'CC0', freesoundPage(260691), 0, 2.6),
+                clip('https://cdn.freesound.org/previews/260/260779_2214631-hq.mp3', 'Burnouts and revving', 'Ears68', 'CC0', freesoundPage(260779), 5, 2.6)
+            ],
+            train: [
+                clip('https://cdn.freesound.org/previews/455/455157_5900016-hq.mp3', 'Train horn', 'L83', 'CC0', freesoundPage(455157)),
+                clip('https://cdn.freesound.org/previews/141/141273_2051721-hq.mp3', 'Departing train horn', 'OroborosNZ', 'CC0', freesoundPage(141273)),
+                clip('https://cdn.freesound.org/previews/454/454025_612689-hq.mp3', 'Freight train horn', 'kyles', 'CC0', freesoundPage(454025))
+            ]
+        };
 
         const numbers = [
             { num: 1, en: "One", es: "Uno", fr: "Un", el: "Ένα" },
@@ -1333,8 +1552,8 @@
         };
 
         /* -------------------------------------------------------------
-           2. SYNTHESIZED SOUND EFFECTS ENGINE (Web Audio API)
-           Zero external MP3 dependencies; 100% instant & offline.
+           2. SYNTHESIZED FALLBACK EFFECTS (Web Audio API)
+           Used whenever a real-world recording cannot load.
         ------------------------------------------------------------- */
         let audioCtx = null;
         function getAudioContext() {
@@ -1482,6 +1701,89 @@
             }
         };
 
+        const soundProfileIndices = new Map();
+        let activeRealSound = null;
+        let realSoundStopTimeout = null;
+
+        function stopRealSound() {
+            if (realSoundStopTimeout) {
+                clearTimeout(realSoundStopTimeout);
+                realSoundStopTimeout = null;
+            }
+            const sound = activeRealSound;
+            activeRealSound = null;
+            if (sound) {
+                sound.pause();
+                sound.removeAttribute('src');
+                sound.load();
+            }
+        }
+
+        function playRealSound(profileName, fallback) {
+            const sounds = realSoundProfiles[profileName] || [];
+            if (sounds.length === 0) {
+                fallback();
+                return 700;
+            }
+
+            const index = soundProfileIndices.get(profileName) || 0;
+            soundProfileIndices.set(profileName, (index + 1) % sounds.length);
+            const selectedClip = sounds[index];
+            stopRealSound();
+
+            const sound = new Audio();
+            activeRealSound = sound;
+            sound.preload = 'auto';
+            sound.playsInline = true;
+            sound.volume = 0.92;
+            sound.src = selectedClip.src;
+
+            let usedFallback = false;
+            const useFallback = () => {
+                if (activeRealSound !== sound || usedFallback) return;
+                usedFallback = true;
+                activeRealSound = null;
+                fallback();
+            };
+
+            sound.addEventListener('loadedmetadata', () => {
+                if (activeRealSound !== sound || !selectedClip.start) return;
+                try {
+                    sound.currentTime = Math.min(selectedClip.start, Math.max(0, sound.duration - 0.2));
+                } catch (error) {
+                    // Some mobile browsers seek once enough audio has buffered.
+                }
+            }, { once: true });
+            sound.addEventListener('error', useFallback, { once: true });
+
+            const playPromise = sound.play();
+            if (playPromise) playPromise.catch(useFallback);
+
+            realSoundStopTimeout = setTimeout(() => {
+                if (activeRealSound === sound) stopRealSound();
+            }, selectedClip.duration * 1000);
+
+            return selectedClip.duration * 1000;
+        }
+
+        function populateSoundCredits() {
+            const creditList = document.getElementById('soundCreditsList');
+            const uniqueCredits = new Map();
+            Object.values(realSoundProfiles).flat().forEach(sound => {
+                if (!uniqueCredits.has(sound.page)) uniqueCredits.set(sound.page, sound);
+            });
+            uniqueCredits.forEach(sound => {
+                const item = document.createElement('li');
+                const link = document.createElement('a');
+                link.href = sound.page;
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+                link.textContent = sound.title;
+                item.append(link, document.createTextNode(` — ${sound.creator} · ${sound.license}`));
+                creditList.appendChild(item);
+            });
+        }
+
         /* -------------------------------------------------------------
            3. SPEECH SYNTHESIS ENGINE (iOS / Android Multi-voice)
         ------------------------------------------------------------- */
@@ -1506,7 +1808,8 @@
                 help: 'Χώρισέ τα με κόμμα. Κράτησε την ίδια σειρά και στις δύο λίστες.',
                 required: 'Γράψε τουλάχιστον ένα όνομα σε κάθε λίστα.',
                 error: 'Οι δύο λίστες πρέπει να έχουν τον ίδιο αριθμό ονομάτων.',
-                close: 'Κλείσιμο', cancel: 'Ακύρωση', save: 'Αποθήκευση', restore: 'Επαναφορά αρχικών'
+                close: 'Κλείσιμο', cancel: 'Ακύρωση', save: 'Αποθήκευση', restore: 'Επαναφορά αρχικών',
+                soundCredits: '🔊 Πηγές πραγματικών ήχων'
             },
             en: {
                 button: 'Parent settings', title: 'Parent settings',
@@ -1514,7 +1817,8 @@
                 help: 'Separate nicknames with commas. Keep both lists in the same order.',
                 required: 'Enter at least one name in each list.',
                 error: 'Both lists need the same number of names.',
-                close: 'Close', cancel: 'Cancel', save: 'Save', restore: 'Restore defaults'
+                close: 'Close', cancel: 'Cancel', save: 'Save', restore: 'Restore defaults',
+                soundCredits: '🔊 Real sound credits'
             },
             es: {
                 button: 'Ajustes para adultos', title: 'Ajustes para adultos',
@@ -1522,7 +1826,8 @@
                 help: 'Separa los apodos con comas. Mantén el mismo orden en las dos listas.',
                 required: 'Escribe al menos un nombre en cada lista.',
                 error: 'Las dos listas deben tener la misma cantidad de nombres.',
-                close: 'Cerrar', cancel: 'Cancelar', save: 'Guardar', restore: 'Restaurar valores'
+                close: 'Cerrar', cancel: 'Cancelar', save: 'Guardar', restore: 'Restaurar valores',
+                soundCredits: '🔊 Créditos de sonidos reales'
             },
             fr: {
                 button: 'Réglages pour adultes', title: 'Réglages pour adultes',
@@ -1530,7 +1835,8 @@
                 help: 'Sépare les surnoms par des virgules. Garde le même ordre dans les deux listes.',
                 required: 'Saisis au moins un prénom dans chaque liste.',
                 error: 'Les deux listes doivent contenir le même nombre de prénoms.',
-                close: 'Fermer', cancel: 'Annuler', save: 'Enregistrer', restore: 'Valeurs par défaut'
+                close: 'Fermer', cancel: 'Annuler', save: 'Enregistrer', restore: 'Valeurs par défaut',
+                soundCredits: '🔊 Crédits des sons réels'
             }
         };
 
@@ -1597,6 +1903,7 @@
             document.getElementById('settingsCancel').textContent = copy.cancel;
             document.getElementById('settingsSave').textContent = copy.save;
             document.getElementById('settingsRestore').textContent = copy.restore;
+            document.getElementById('soundCreditsTitle').textContent = copy.soundCredits;
         }
 
         function clearSettingsError() {
@@ -1625,6 +1932,7 @@
         function openSettings() {
             if (document.getElementById('settingsModal').classList.contains('active')) return;
             cancelRepeatSequence();
+            stopRealSound();
             clearSantaIdleTimer();
             updateSettingsLanguage();
             document.getElementById('settingsGreekNames').value = childNames.map(name => name.el).join(', ');
@@ -1963,15 +2271,16 @@
             runNext();
         }
 
-        function schedulePronunciation(card, item, delay) {
+        function schedulePronunciation(card, item, delay, startSound = null) {
             cancelRepeatSequence();
+            const soundDuration = startSound ? startSound() : 0;
             card.classList.add('playing');
             pendingPronunciationCard = card;
             itemPronunciationTimeout = setTimeout(() => {
                 itemPronunciationTimeout = null;
                 pendingPronunciationCard = null;
                 pronounceItem(item, () => card.classList.remove('playing'));
-            }, delay);
+            }, Math.max(delay, soundDuration + 180));
         }
 
         /* -------------------------------------------------------------
@@ -2066,6 +2375,7 @@
             dismissGameSwipeHint();
             revealActiveGame();
             cancelRepeatSequence();
+            stopRealSound();
 
             if (gameId === 'balloons') {
                 startBalloonSpawner();
@@ -2286,10 +2596,12 @@
                 <div class="card-sub">${t.el}</div>
             `;
             card.onclick = () => {
-                if (t.type === 'siren') SoundFX.siren();
-                else if (t.type === 'crane' || t.type === 'truck') SoundFX.horn();
-                else SoundFX.engine();
-                schedulePronunciation(card, t, 400);
+                const fallback = () => {
+                    if (t.type === 'siren') SoundFX.siren();
+                    else if (t.type === 'crane' || t.type === 'truck') SoundFX.horn();
+                    else SoundFX.engine();
+                };
+                schedulePronunciation(card, t, 400, () => playRealSound(t.soundProfile, fallback));
             };
             trucksGrid.appendChild(card);
         });
@@ -2309,8 +2621,7 @@
                 <div class="card-sub">${a.el}</div>
             `;
             card.onclick = () => {
-                SoundFX.animal(a.sound);
-                schedulePronunciation(card, a, 450);
+                schedulePronunciation(card, a, 450, () => playRealSound(a.sound, () => SoundFX.animal(a.sound)));
             };
             animalsGrid.appendChild(card);
         });
@@ -2412,6 +2723,7 @@
             balloonSky.innerHTML = '';
         }
 
+        populateSoundCredits();
         checkBrowserTranslation();
         updateInterfaceLanguage();
         startBalloonSpawner();
