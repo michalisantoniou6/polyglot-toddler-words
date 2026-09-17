@@ -1344,6 +1344,140 @@
         @media (prefers-reduced-motion: reduce) {
             .controls-panel { animation: none; }
         }
+
+        /* Music, movement, rhythm and everyday-language games */
+        .learning-game {
+            width: min(100%, 860px);
+            min-height: calc(100svh - 28px);
+            margin: 0 auto;
+            padding: 14px 10px 78px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+        .learning-title {
+            margin: 4px 0 0;
+            color: #2d4f73;
+            font-size: clamp(1.55rem, 6vw, 2.25rem);
+            text-align: center;
+        }
+        .learning-prompt {
+            min-height: 2.5em;
+            margin: 0;
+            color: #4a5568;
+            font-size: clamp(1.05rem, 4.3vw, 1.35rem);
+            font-weight: 800;
+            text-align: center;
+        }
+        .everyday-grid,
+        .music-pad-grid {
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+        .everyday-card,
+        .music-pad {
+            min-width: 0;
+            min-height: 142px;
+            border: 4px solid #e4ebf3;
+            border-radius: 24px;
+            background: #fff;
+            color: #2d3748;
+            box-shadow: 0 7px 0 rgba(45,55,72,.08);
+            font: inherit;
+            font-weight: 900;
+            touch-action: manipulation;
+        }
+        .everyday-card:active,
+        .music-pad:active,
+        .beat-pad:active,
+        .bell-key:active { transform: scale(.94); }
+        .everyday-emoji,
+        .music-emoji { display: block; font-size: clamp(3.1rem, 15vw, 5rem); }
+        .everyday-label,
+        .music-label {
+            display: block;
+            width:100%;
+            margin-top: 5px;
+            padding:0 4px;
+            font-size: clamp(.9rem, 4.2vw, 1.2rem);
+            line-height:1.05;
+            overflow-wrap:anywhere;
+        }
+        .music-pad:nth-child(4n+1) { background:#fff3cd; border-color:#ffd166; }
+        .music-pad:nth-child(4n+2) { background:#e0f4ff; border-color:#72c7ed; }
+        .music-pad:nth-child(4n+3) { background:#ffe5ec; border-color:#ff8fab; }
+        .music-pad:nth-child(4n) { background:#e4f7df; border-color:#7ed36c; }
+        .game-action-button {
+            min-height: 62px;
+            padding: 12px 24px;
+            border: 0;
+            border-radius: 999px;
+            background: linear-gradient(135deg,#3182ce,#6b46c1);
+            color: white;
+            box-shadow: 0 7px 0 #284f83;
+            font: inherit;
+            font-size: clamp(1.05rem,4.5vw,1.35rem);
+            font-weight: 900;
+            touch-action: manipulation;
+        }
+        .game-action-button:active { transform: translateY(4px); box-shadow:0 3px 0 #284f83; }
+        .beat-grid {
+            width: min(100%, 560px);
+            display:grid;
+            grid-template-columns:repeat(2,minmax(0,1fr));
+            gap:14px;
+        }
+        .beat-pad {
+            aspect-ratio:1.15;
+            border:6px solid rgba(255,255,255,.65);
+            border-radius:30px;
+            box-shadow:0 9px 0 rgba(45,55,72,.18);
+            font-size:clamp(3rem,16vw,5rem);
+            touch-action:manipulation;
+        }
+        .beat-pad.demo { animation: padFlash .34s ease; filter:brightness(1.3); transform:scale(1.06); }
+        @keyframes padFlash { 50% { transform:scale(.9); filter:brightness(1.55); } }
+        .dance-stage {
+            width:100%;
+            flex:1;
+            min-height:62svh;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            gap:16px;
+            overflow:hidden;
+            border:5px solid #bee3f8;
+            border-radius:32px;
+            background:radial-gradient(circle at 50% 20%,#fff 0,#e6f7ff 38%,#d6f5df 100%);
+        }
+        .dance-character { font-size:clamp(8rem,45vw,18rem); line-height:1; filter:drop-shadow(0 12px 8px rgba(0,0,0,.14)); }
+        .dance-character.moving { animation:danceParty .62s ease-in-out infinite alternate; }
+        .dance-character.frozen { animation:freezePop .35s ease; }
+        @keyframes danceParty { from{transform:rotate(-10deg) translate(-12px,-4px)} to{transform:rotate(10deg) translate(12px,8px)} }
+        @keyframes freezePop { 50%{transform:scale(1.15)} }
+        .dance-cue { font-size:clamp(2rem,10vw,4rem); color:#2b6cb0; font-weight:1000; text-align:center; }
+        .bell-keyboard { width:100%; display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:7px; }
+        .bell-key {
+            min-width:0;
+            min-height:clamp(170px,42svh,360px);
+            border:4px solid rgba(255,255,255,.75);
+            border-radius:20px;
+            color:white;
+            box-shadow:0 9px 0 rgba(45,55,72,.18);
+            font:inherit;
+            font-size:clamp(1.15rem,6vw,2rem);
+            font-weight:1000;
+            touch-action:manipulation;
+        }
+        .bell-key.playing { filter:brightness(1.35); transform:translateY(6px) scale(.97); }
+        .santa-band { font-size:clamp(5rem,25vw,10rem); line-height:1; }
+        @media (min-width:700px) {
+            .everyday-grid,.music-pad-grid { grid-template-columns:repeat(4,minmax(0,1fr)); }
+        }
     </style>
 </head>
 <body class="controls-collapsed">
@@ -1429,6 +1563,26 @@
                         <span class="nav-icon">🦁</span>
                         <span id="navAnimals">Animals</span>
                     </button>
+                    <button class="nav-tab" role="tab" aria-selected="false" onclick="switchGame('everyday', this)">
+                        <span class="nav-icon">🥤</span>
+                        <span id="navEveryday">Everyday Things</span>
+                    </button>
+                    <button class="nav-tab" role="tab" aria-selected="false" onclick="switchGame('music', this)">
+                        <span class="nav-icon">🥁</span>
+                        <span id="navMusic">Music Studio</span>
+                    </button>
+                    <button class="nav-tab" role="tab" aria-selected="false" onclick="switchGame('beat', this)">
+                        <span class="nav-icon">👏</span>
+                        <span id="navBeat">Copy the Beat</span>
+                    </button>
+                    <button class="nav-tab" role="tab" aria-selected="false" onclick="switchGame('dance', this)">
+                        <span class="nav-icon">🕺</span>
+                        <span id="navDance">Dance & Freeze</span>
+                    </button>
+                    <button class="nav-tab" role="tab" aria-selected="false" onclick="switchGame('bells', this)">
+                        <span class="nav-icon">🔔</span>
+                        <span id="navBells">Santa's Bells</span>
+                    </button>
                 </nav>
                 <button class="nav-scroll-button next" id="nextGameButton" type="button" onclick="scrollGames(1)" aria-label="Next game">›</button>
                 <div class="game-nav-dots" id="gameNavDots" aria-hidden="true">
@@ -1493,6 +1647,57 @@
     <!-- 4. ANIMAL SOUNDBOARD -->
     <div id="game-animals" class="game-view">
         <div class="card-grid" id="animalsGrid"></div>
+    </div>
+
+    <!-- 5. EVERYDAY WORDS -->
+    <div id="game-everyday" class="game-view">
+        <main class="learning-game">
+            <h2 class="learning-title" id="everydayTitle">Πράγματα κάθε μέρας</h2>
+            <p class="learning-prompt" id="everydayPrompt">Άγγιξε κάτι και πες τη λέξη</p>
+            <div class="everyday-grid" id="everydayGrid"></div>
+        </main>
+    </div>
+
+    <!-- 6. MUSIC STUDIO -->
+    <div id="game-music" class="game-view">
+        <main class="learning-game">
+            <h2 class="learning-title" id="musicTitle">Μουσικό στούντιο</h2>
+            <p class="learning-prompt" id="musicPrompt">Φτιάξε τη δική σου μουσική</p>
+            <div class="music-pad-grid" id="musicGrid"></div>
+        </main>
+    </div>
+
+    <!-- 7. COPY THE BEAT -->
+    <div id="game-beat" class="game-view">
+        <main class="learning-game">
+            <h2 class="learning-title" id="beatTitle">Αντέγραψε τον ρυθμό</h2>
+            <p class="learning-prompt" id="beatPrompt" aria-live="polite">Άκου και παίξε τον ίδιο ρυθμό</p>
+            <button class="game-action-button" id="beatStart" type="button" onclick="startBeatRound()">▶ Παίξε τον ρυθμό</button>
+            <div class="beat-grid" id="beatGrid"></div>
+        </main>
+    </div>
+
+    <!-- 8. DANCE AND FREEZE -->
+    <div id="game-dance" class="game-view">
+        <main class="learning-game">
+            <h2 class="learning-title" id="danceTitle">Χόρεψε και πάγωσε</h2>
+            <div class="dance-stage">
+                <div class="dance-cue" id="danceCue">Έτοιμος;</div>
+                <div class="dance-character" id="danceCharacter" aria-hidden="true">🎅</div>
+                <button class="game-action-button" id="danceButton" type="button" onclick="toggleDanceParty()">▶ Ξεκίνα τον χορό</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- 9. SANTA'S JINGLE BELLS -->
+    <div id="game-bells" class="game-view">
+        <main class="learning-game">
+            <h2 class="learning-title" id="bellsTitle">Τα κουδουνάκια του Άγιου Βασίλη</h2>
+            <p class="learning-prompt" id="bellsPrompt">Παίξε μαζί με τον Άγιο Βασίλη</p>
+            <div class="santa-band" aria-hidden="true">🎅🔔</div>
+            <button class="game-action-button" id="jingleButton" type="button" onclick="playJingleBells()">🎶 Παίξε το Jingle Bells</button>
+            <div class="bell-keyboard" id="bellKeyboard"></div>
+        </main>
     </div>
 
     <script>
@@ -1798,6 +2003,47 @@
             { num: 10, en: "Ten", es: "Diez", fr: "Dix", el: "Δέκα" }
         ];
 
+        const everydayItems = [
+            { emoji:'🥤', en:'Straw', es:'Popote', fr:'Paille', el:'Καλαμάκι' },
+            { emoji:'🥛', en:'Cup', es:'Taza', fr:'Tasse', el:'Ποτήρι' },
+            { emoji:'🍽️', en:'Plate', es:'Plato', fr:'Assiette', el:'Πιάτο' },
+            { emoji:'🥣', en:'Bowl', es:'Tazón', fr:'Bol', el:'Μπολ' },
+            { emoji:'🥄', en:'Spoon', es:'Cuchara', fr:'Cuillère', el:'Κουτάλι' },
+            { emoji:'🍴', en:'Fork', es:'Tenedor', fr:'Fourchette', el:'Πιρούνι' },
+            { emoji:'🧻', en:'Napkin', es:'Servilleta', fr:'Serviette', el:'Χαρτοπετσέτα' },
+            { emoji:'🍼', en:'Bottle', es:'Botella', fr:'Bouteille', el:'Μπουκάλι' },
+            { emoji:'🍳', en:'Pan', es:'Sartén', fr:'Poêle', el:'Τηγάνι' },
+            { emoji:'🍲', en:'Pot', es:'Olla', fr:'Casserole', el:'Κατσαρόλα' },
+            { emoji:'🧊', en:'Fridge', es:'Refrigerador', fr:'Réfrigérateur', el:'Ψυγείο' },
+            { emoji:'🪑', en:'Chair', es:'Silla', fr:'Chaise', el:'Καρέκλα' },
+            { emoji:'🪥', en:'Toothbrush', es:'Cepillo de dientes', fr:'Brosse à dents', el:'Οδοντόβουρτσα' },
+            { emoji:'🧼', en:'Soap', es:'Jabón', fr:'Savon', el:'Σαπούνι' },
+            { emoji:'🧦', en:'Sock', es:'Calcetín', fr:'Chaussette', el:'Κάλτσα' },
+            { emoji:'👟', en:'Shoe', es:'Zapato', fr:'Chaussure', el:'Παπούτσι' },
+            { emoji:'🛏️', en:'Bed', es:'Cama', fr:'Lit', el:'Κρεβάτι' },
+            { emoji:'🛁', en:'Bath', es:'Baño', fr:'Bain', el:'Μπάνιο' },
+            { emoji:'🚪', en:'Door', es:'Puerta', fr:'Porte', el:'Πόρτα' },
+            { emoji:'🔑', en:'Keys', es:'Llaves', fr:'Clés', el:'Κλειδιά' }
+        ];
+
+        const instruments = [
+            { emoji:'🥁', kind:'drum', en:'Drums', es:'Batería', fr:'Batterie', el:'Ντραμς' },
+            { emoji:'🎸', kind:'guitar', en:'Guitar', es:'Guitarra', fr:'Guitare', el:'Κιθάρα' },
+            { emoji:'🎹', kind:'piano', en:'Keyboard', es:'Teclado', fr:'Clavier', el:'Πλήκτρα' },
+            { emoji:'🔔', kind:'bells', en:'Bells', es:'Campanas', fr:'Cloches', el:'Κουδουνάκια' },
+            { emoji:'🪇', kind:'maracas', en:'Maracas', es:'Maracas', fr:'Maracas', el:'Μαράκες' },
+            { emoji:'🪘', kind:'tambourine', en:'Tambourine', es:'Pandero', fr:'Tambourin', el:'Ντέφι' },
+            { emoji:'🎺', kind:'trumpet', en:'Trumpet', es:'Trompeta', fr:'Trompette', el:'Τρομπέτα' },
+            { emoji:'🎤', kind:'voice', en:'Sing', es:'Canta', fr:'Chante', el:'Τραγούδα' }
+        ];
+
+        const bellNoteLabels = {
+            en:['C','D','E','F','G'],
+            es:['Do','Re','Mi','Fa','Sol'],
+            fr:['Do','Ré','Mi','Fa','Sol'],
+            el:['Ντο','Ρε','Μι','Φα','Σολ']
+        };
+
         const interfaceText = {
             en: {
                 pageTitle: 'Toddler Fun Arcade', allLanguages: 'All 4', feedSanta: 'Feed Santa',
@@ -1807,7 +2053,10 @@
                 swipeForGames: 'Swipe for more games', hideControls: 'Hide controls', showControls: 'Games and languages',
                 santaPrompt: 'Ari can you feed Santa? 🎅', morePlease: 'More please Ari! 🎅',
                 tickle: 'Ho ho ho! That tickles Ari! 😆', popBalloons: 'Pop the balloons! 🎈',
-                popped: number => `Popped #${number}! ⭐`, santaLabel: 'Santa Claus'
+                popped: number => `Popped #${number}! ⭐`, santaLabel: 'Santa Claus',
+                everyday:'Everyday Things', music:'Music Studio', beat:'Copy the Beat', dance:'Dance & Freeze', bells:"Santa's Bells",
+                everydayPrompt:'Tap something and say the word', musicPrompt:'Make your own music', beatPrompt:'Listen then copy the beat', beatStart:'▶ Play the beat', beatYourTurn:'Your turn!', beatGreat:'Great rhythm!', beatAgain:'Let’s try again',
+                danceReady:'Ready?', danceStart:'▶ Start dancing', danceStop:'■ Stop', bellsPrompt:'Play along with Santa', jingleStart:'🎶 Play Jingle Bells'
             },
             es: {
                 pageTitle: 'Juegos infantiles divertidos', allLanguages: 'Los 4', feedSanta: 'Dale de comer a Santa',
@@ -1817,7 +2066,10 @@
                 swipeForGames: 'Desliza para ver más juegos', hideControls: 'Ocultar controles', showControls: 'Juegos e idiomas',
                 santaPrompt: 'Ari ¿puedes darle de comer a Santa? 🎅', morePlease: '¡Más por favor Ari! 🎅',
                 tickle: '¡Jo jo jo! ¡Eso me da cosquillas Ari! 😆', popBalloons: '¡Revienta los globos! 🎈',
-                popped: number => `¡Reventaste el globo número ${number}! ⭐`, santaLabel: 'Santa Claus'
+                popped: number => `¡Reventaste el globo número ${number}! ⭐`, santaLabel: 'Santa Claus',
+                everyday:'Cosas de cada día', music:'Estudio musical', beat:'Copia el ritmo', dance:'Baila y congélate', bells:'Campanas de Santa',
+                everydayPrompt:'Toca algo y di la palabra', musicPrompt:'Haz tu propia música', beatPrompt:'Escucha y copia el ritmo', beatStart:'▶ Toca el ritmo', beatYourTurn:'¡Tu turno!', beatGreat:'¡Qué buen ritmo!', beatAgain:'Intentemos otra vez',
+                danceReady:'¿Listo?', danceStart:'▶ Empieza a bailar', danceStop:'■ Detener', bellsPrompt:'Toca con Santa', jingleStart:'🎶 Toca Jingle Bells'
             },
             fr: {
                 pageTitle: 'Jeux amusants pour enfants', allLanguages: 'Les 4', feedSanta: 'Nourris le Père Noël',
@@ -1827,7 +2079,10 @@
                 swipeForGames: 'Fais glisser pour voir plus de jeux', hideControls: 'Masquer les commandes', showControls: 'Jeux et langues',
                 santaPrompt: 'Ari peux-tu nourrir le Père Noël ? 🎅', morePlease: 'Encore s’il te plaît Ari ! 🎅',
                 tickle: 'Ho ho ho ! Ça me chatouille Ari ! 😆', popBalloons: 'Éclate les ballons ! 🎈',
-                popped: number => `Tu as éclaté le ballon numéro ${number} ! ⭐`, santaLabel: 'Père Noël'
+                popped: number => `Tu as éclaté le ballon numéro ${number} ! ⭐`, santaLabel: 'Père Noël',
+                everyday:'Objets du quotidien', music:'Studio de musique', beat:'Copie le rythme', dance:'Danse et ne bouge plus', bells:'Cloches du Père Noël',
+                everydayPrompt:'Touche un objet et dis le mot', musicPrompt:'Crée ta propre musique', beatPrompt:'Écoute puis copie le rythme', beatStart:'▶ Joue le rythme', beatYourTurn:'À toi !', beatGreat:'Super rythme !', beatAgain:'On réessaie',
+                danceReady:'Prêt ?', danceStart:'▶ Commence à danser', danceStop:'■ Arrêter', bellsPrompt:'Joue avec le Père Noël', jingleStart:'🎶 Joue Jingle Bells'
             },
             el: {
                 pageTitle: 'Χαρούμενα παιδικά παιχνίδια', allLanguages: 'Και οι 4', feedSanta: 'Τάισε τον Άγιο Βασίλη',
@@ -1837,7 +2092,10 @@
                 swipeForGames: 'Σύρε για περισσότερα παιχνίδια', hideControls: 'Κρύψε τα κουμπιά', showControls: 'Παιχνίδια και γλώσσες',
                 santaPrompt: 'Άρι μπορείς να ταΐσεις τον Άγιο Βασίλη; 🎅', morePlease: 'Κι άλλο παρακαλώ Άρι! 🎅',
                 tickle: 'Χο χο χο! Με γαργαλάς Άρι! 😆', popBalloons: 'Σκάσε τα μπαλόνια! 🎈',
-                popped: number => `Έσκασες το μπαλόνι με τον αριθμό ${number}! ⭐`, santaLabel: 'Άγιος Βασίλης'
+                popped: number => `Έσκασες το μπαλόνι με τον αριθμό ${number}! ⭐`, santaLabel: 'Άγιος Βασίλης',
+                everyday:'Πράγματα κάθε μέρας', music:'Μουσικό στούντιο', beat:'Αντέγραψε τον ρυθμό', dance:'Χόρεψε και πάγωσε', bells:'Τα κουδουνάκια του Άγιου Βασίλη',
+                everydayPrompt:'Άγγιξε κάτι και πες τη λέξη', musicPrompt:'Φτιάξε τη δική σου μουσική', beatPrompt:'Άκου και παίξε τον ίδιο ρυθμό', beatStart:'▶ Παίξε τον ρυθμό', beatYourTurn:'Η σειρά σου!', beatGreat:'Τέλειος ρυθμός!', beatAgain:'Πάμε ξανά',
+                danceReady:'Έτοιμος;', danceStart:'▶ Ξεκίνα τον χορό', danceStop:'■ Σταμάτα', bellsPrompt:'Παίξε μαζί με τον Άγιο Βασίλη', jingleStart:'🎶 Παίξε το Jingle Bells'
             }
         };
 
@@ -2523,6 +2781,11 @@
             document.getElementById('navTrucks').textContent = text.trucks;
             document.getElementById('navBalloons').textContent = text.balloons;
             document.getElementById('navAnimals').textContent = text.animals;
+            document.getElementById('navEveryday').textContent = text.everyday;
+            document.getElementById('navMusic').textContent = text.music;
+            document.getElementById('navBeat').textContent = text.beat;
+            document.getElementById('navDance').textContent = text.dance;
+            document.getElementById('navBells').textContent = text.bells;
             document.getElementById('gameNav').setAttribute('aria-label', text.chooseGame);
             document.getElementById('previousGameButton').setAttribute('aria-label', text.previousGame);
             document.getElementById('nextGameButton').setAttribute('aria-label', text.nextGame);
@@ -2539,6 +2802,19 @@
             document.getElementById('monsterAvatar').setAttribute('aria-label', text.santaLabel);
             document.getElementById('dancingSanta').setAttribute('aria-label', text.santaLabel);
             document.getElementById('balloonStatus').textContent = text.popBalloons;
+            document.getElementById('everydayTitle').textContent = text.everyday;
+            document.getElementById('everydayPrompt').textContent = text.everydayPrompt;
+            document.getElementById('musicTitle').textContent = text.music;
+            document.getElementById('musicPrompt').textContent = text.musicPrompt;
+            document.getElementById('beatTitle').textContent = text.beat;
+            if (!beatAcceptingInput) document.getElementById('beatPrompt').textContent = text.beatPrompt;
+            document.getElementById('beatStart').textContent = text.beatStart;
+            document.getElementById('danceTitle').textContent = text.dance;
+            if (!dancePartyActive) document.getElementById('danceCue').textContent = text.danceReady;
+            document.getElementById('danceButton').textContent = dancePartyActive ? text.danceStop : text.danceStart;
+            document.getElementById('bellsTitle').textContent = text.bells;
+            document.getElementById('bellsPrompt').textContent = text.bellsPrompt;
+            document.getElementById('jingleButton').textContent = text.jingleStart;
             updateSettingsLanguage(displayLanguage);
 
             document.querySelectorAll('[data-item-kind]').forEach(card => {
@@ -2560,6 +2836,19 @@
 
             document.querySelectorAll('.food-item').forEach((button, index) => {
                 button.setAttribute('aria-label', foods[index][displayLanguage]);
+            });
+
+            document.querySelectorAll('.everyday-card').forEach((button, index) => {
+                button.querySelector('.everyday-label').textContent = everydayItems[index][displayLanguage];
+                button.setAttribute('aria-label', everydayItems[index][displayLanguage]);
+            });
+            document.querySelectorAll('.music-pad').forEach((button, index) => {
+                button.querySelector('.music-label').textContent = instruments[index][displayLanguage];
+                button.setAttribute('aria-label', instruments[index][displayLanguage]);
+            });
+            document.querySelectorAll('.bell-key').forEach((button,index) => {
+                button.textContent = bellNoteLabels[displayLanguage][index];
+                button.setAttribute('aria-label', bellNoteLabels[displayLanguage][index]);
             });
         }
 
@@ -2812,12 +3101,14 @@
             document.querySelectorAll('.game-nav-dot').forEach((dot, index) => {
                 dot.classList.toggle('active', index === activeIndex);
             });
-            const gameIcons = { monster: '🎅', trucks: '🚜', balloons: '🎈', animals: '🦁' };
+            const gameIcons = { monster:'🎅', trucks:'🚜', balloons:'🎈', animals:'🦁', everyday:'🥤', music:'🥁', beat:'👏', dance:'🕺', bells:'🔔' };
             document.getElementById('collapsedGameIcon').textContent = gameIcons[gameId];
             dismissGameSwipeHint();
             revealActiveGame();
             cancelRepeatSequence();
             stopRealSound();
+            if (gameId !== 'dance') stopDanceParty();
+            if (gameId !== 'beat') resetBeatGame();
 
             if (gameId === 'balloons') {
                 startBalloonSpawner();
@@ -3160,6 +3451,244 @@
         function stopBalloonSpawner() {
             if (balloonInterval) clearInterval(balloonInterval);
             balloonSky.innerHTML = '';
+        }
+
+        // --- Game 5: Everyday Things ---
+        const everydayGrid = document.getElementById('everydayGrid');
+        everydayItems.forEach(item => {
+            const button = document.createElement('button');
+            button.className = 'everyday-card';
+            button.type = 'button';
+            button.innerHTML = `<span class="everyday-emoji" aria-hidden="true">${item.emoji}</span><span class="everyday-label">${item.el}</span>`;
+            button.onclick = () => pronounceItem(item);
+            everydayGrid.appendChild(button);
+        });
+
+        // --- Game 6: Music Studio ---
+        const musicGrid = document.getElementById('musicGrid');
+        const instrumentTapCounts = {};
+        let musicLanguageIndex = 0;
+
+        function tone(frequency, duration = .28, type = 'sine', volume = .22, delay = 0) {
+            const ctx = getAudioContext();
+            const oscillator = ctx.createOscillator();
+            const gain = ctx.createGain();
+            const startsAt = ctx.currentTime + delay;
+            oscillator.type = type;
+            oscillator.frequency.setValueAtTime(frequency, startsAt);
+            gain.gain.setValueAtTime(volume, startsAt);
+            gain.gain.exponentialRampToValueAtTime(.001, startsAt + duration);
+            oscillator.connect(gain);
+            gain.connect(ctx.destination);
+            oscillator.start(startsAt);
+            oscillator.stop(startsAt + duration);
+        }
+
+        function noiseBurst(duration = .16, volume = .28, delay = 0) {
+            const ctx = getAudioContext();
+            const buffer = ctx.createBuffer(1, Math.ceil(ctx.sampleRate * duration), ctx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+            const source = ctx.createBufferSource();
+            const gain = ctx.createGain();
+            const startsAt = ctx.currentTime + delay;
+            source.buffer = buffer;
+            gain.gain.setValueAtTime(volume, startsAt);
+            gain.gain.exponentialRampToValueAtTime(.001, startsAt + duration);
+            source.connect(gain);
+            gain.connect(ctx.destination);
+            source.start(startsAt);
+        }
+
+        function playInstrument(kind) {
+            if (kind === 'drum') { tone(115,.22,'sine',.45); noiseBurst(.08,.18); }
+            if (kind === 'guitar') [196,247,294].forEach((note,i) => tone(note,.55,'triangle',.15,i*.035));
+            if (kind === 'piano') [262,330,392].forEach((note,i) => tone(note,.42,'sine',.17,i*.08));
+            if (kind === 'bells') [659,784].forEach((note,i) => tone(note,.7,'sine',.16,i*.12));
+            if (kind === 'maracas') { noiseBurst(.1,.3); noiseBurst(.1,.3,.13); }
+            if (kind === 'tambourine') { noiseBurst(.28,.25); tone(850,.22,'square',.06); }
+            if (kind === 'trumpet') { tone(392,.22,'sawtooth',.13); tone(523,.4,'sawtooth',.13,.2); }
+            if (kind === 'voice') [392,440,523].forEach((note,i) => tone(note,.28,'sine',.14,i*.22));
+        }
+
+        function tapInstrument(item) {
+            playInstrument(item.kind);
+            instrumentTapCounts[item.kind] = (instrumentTapCounts[item.kind] || 0) + 1;
+            if (instrumentTapCounts[item.kind] % 2 === 0) return;
+            const language = currentLangMode === 'all' ? allLanguageOrder[musicLanguageIndex++ % allLanguageOrder.length] : currentLangMode;
+            speakSingle(languageSettings[language].code, item[language]);
+        }
+
+        instruments.forEach(item => {
+            const button = document.createElement('button');
+            button.className = 'music-pad';
+            button.type = 'button';
+            button.innerHTML = `<span class="music-emoji" aria-hidden="true">${item.emoji}</span><span class="music-label">${item.el}</span>`;
+            button.onclick = () => tapInstrument(item);
+            musicGrid.appendChild(button);
+        });
+
+        // --- Game 7: Copy the Beat ---
+        const beatGrid = document.getElementById('beatGrid');
+        const beatColors = ['#f56565','#4299e1','#ecc94b','#48bb78'];
+        const beatEmojis = ['🥁','⭐','👏','🔔'];
+        let beatSequence = [];
+        let beatInputIndex = 0;
+        let beatLength = 2;
+        let beatAcceptingInput = false;
+        let beatTimers = [];
+
+        function playBeatPad(index, demo = false) {
+            const pad = beatGrid.children[index];
+            tone([120,190,280,520][index],.2,index === 0 ? 'sine' : 'triangle',.3);
+            if (index === 0 || index === 2) noiseBurst(.09,.13);
+            pad.classList.toggle('demo', demo);
+            if (demo) setTimeout(() => pad.classList.remove('demo'), 360);
+        }
+
+        function resetBeatGame() {
+            beatTimers.forEach(clearTimeout);
+            beatTimers = [];
+            beatAcceptingInput = false;
+            beatInputIndex = 0;
+            if (typeof interfaceText !== 'undefined') {
+                const language = currentLangMode === 'all' ? 'el' : currentLangMode;
+                document.getElementById('beatPrompt').textContent = interfaceText[language].beatPrompt;
+            }
+        }
+
+        function startBeatRound() {
+            resetBeatGame();
+            beatSequence = Array.from({length:beatLength}, () => Math.floor(Math.random()*4));
+            const language = currentLangMode === 'all' ? 'el' : currentLangMode;
+            document.getElementById('beatPrompt').textContent = interfaceText[language].beatPrompt;
+            beatSequence.forEach((padIndex, index) => {
+                beatTimers.push(setTimeout(() => playBeatPad(padIndex,true), 550 + index * 650));
+            });
+            beatTimers.push(setTimeout(() => {
+                beatAcceptingInput = true;
+                document.getElementById('beatPrompt').textContent = interfaceText[language].beatYourTurn;
+                speakSingle(languageSettings[language].code, interfaceText[language].beatYourTurn);
+            }, 650 + beatSequence.length * 650));
+        }
+
+        function enterBeat(index) {
+            playBeatPad(index);
+            if (!beatAcceptingInput) return;
+            const language = currentLangMode === 'all' ? 'el' : currentLangMode;
+            if (index !== beatSequence[beatInputIndex]) {
+                beatAcceptingInput = false;
+                document.getElementById('beatPrompt').textContent = interfaceText[language].beatAgain;
+                speakSingle(languageSettings[language].code, interfaceText[language].beatAgain);
+                beatTimers.push(setTimeout(startBeatRound, 1100));
+                return;
+            }
+            beatInputIndex++;
+            if (beatInputIndex === beatSequence.length) {
+                beatAcceptingInput = false;
+                document.getElementById('beatPrompt').textContent = interfaceText[language].beatGreat;
+                speakSingle(languageSettings[language].code, interfaceText[language].beatGreat);
+                beatLength = Math.min(4, beatLength + 1);
+                beatTimers.push(setTimeout(startBeatRound, 1300));
+            }
+        }
+
+        beatColors.forEach((color,index) => {
+            const button = document.createElement('button');
+            button.className = 'beat-pad';
+            button.type = 'button';
+            button.style.background = color;
+            button.textContent = beatEmojis[index];
+            button.onclick = () => enterBeat(index);
+            beatGrid.appendChild(button);
+        });
+
+        // --- Game 8: Dance & Freeze ---
+        const danceMoves = [
+            {emoji:'💃', en:'Dance!', es:'¡Baila!', fr:'Danse !', el:'Χόρεψε!'},
+            {emoji:'👏', en:'Clap!', es:'¡Aplaude!', fr:'Tape des mains !', el:'Παλαμάκια!'},
+            {emoji:'🦶', en:'Stomp!', es:'¡Pisa fuerte!', fr:'Tape des pieds !', el:'Χτύπα τα πόδια!'},
+            {emoji:'🌀', en:'Spin!', es:'¡Gira!', fr:'Tourne !', el:'Στριφογύρισε!'},
+            {emoji:'🙌', en:'Hands up!', es:'¡Manos arriba!', fr:'Les mains en l’air !', el:'Χέρια ψηλά!'},
+            {emoji:'🤸', en:'Wiggle!', es:'¡Muévete!', fr:'Remue-toi !', el:'Κουνήσου!'}
+        ];
+        const freezeMove = {emoji:'🧊', en:'Freeze!', es:'¡Congélate!', fr:'Ne bouge plus !', el:'Πάγωσε!'};
+        let dancePartyActive = false;
+        let danceStepTimer = null;
+        let danceBeatTimer = null;
+
+        function danceLanguage() { return currentLangMode === 'all' ? allLanguageOrder[Math.floor(Math.random()*allLanguageOrder.length)] : currentLangMode; }
+        function startDanceBeat() {
+            clearInterval(danceBeatTimer);
+            danceBeatTimer = setInterval(() => { tone(110,.12,'sine',.24); noiseBurst(.05,.08); }, 520);
+        }
+        function runDanceMove() {
+            if (!dancePartyActive) return;
+            const move = danceMoves[Math.floor(Math.random()*danceMoves.length)];
+            const language = danceLanguage();
+            const character = document.getElementById('danceCharacter');
+            character.textContent = Math.random() > .35 ? '🎅' : move.emoji;
+            character.className = 'dance-character moving';
+            document.getElementById('danceCue').textContent = `${move.emoji} ${move[language]}`;
+            speakSingle(languageSettings[language].code, move[language]);
+            startDanceBeat();
+            danceStepTimer = setTimeout(() => {
+                if (!dancePartyActive) return;
+                clearInterval(danceBeatTimer);
+                character.textContent = '🎅';
+                character.className = 'dance-character frozen';
+                const freezeLanguage = danceLanguage();
+                document.getElementById('danceCue').textContent = `${freezeMove.emoji} ${freezeMove[freezeLanguage]}`;
+                speakSingle(languageSettings[freezeLanguage].code, freezeMove[freezeLanguage]);
+                danceStepTimer = setTimeout(runDanceMove, 1800);
+            }, 3600);
+        }
+        function toggleDanceParty() { dancePartyActive ? stopDanceParty() : startDanceParty(); }
+        function startDanceParty() {
+            dancePartyActive = true;
+            const language = currentLangMode === 'all' ? 'el' : currentLangMode;
+            document.getElementById('danceButton').textContent = interfaceText[language].danceStop;
+            runDanceMove();
+        }
+        function stopDanceParty() {
+            dancePartyActive = false;
+            clearTimeout(danceStepTimer);
+            clearInterval(danceBeatTimer);
+            const language = currentLangMode === 'all' ? 'el' : currentLangMode;
+            document.getElementById('danceCharacter').className = 'dance-character';
+            document.getElementById('danceCharacter').textContent = '🎅';
+            document.getElementById('danceCue').textContent = interfaceText[language].danceReady;
+            document.getElementById('danceButton').textContent = interfaceText[language].danceStart;
+        }
+
+        // --- Game 9: Santa's Bells ---
+        const bellKeyboard = document.getElementById('bellKeyboard');
+        const bellNotes = [262,294,330,349,392];
+        const bellColors = ['#ef476f','#f78c6b','#ffd166','#06d6a0','#118ab2'];
+        let jingleRunId = 0;
+        function ringBell(index, duration = .42) {
+            tone(bellNotes[index],duration,'sine',.2);
+            tone(bellNotes[index]*2,duration*.75,'sine',.07);
+            const key = bellKeyboard.children[index];
+            key.classList.add('playing');
+            setTimeout(() => key.classList.remove('playing'), 220);
+        }
+        bellNotes.forEach((note,index) => {
+            const button = document.createElement('button');
+            button.className = 'bell-key';
+            button.type = 'button';
+            button.style.background = bellColors[index];
+            button.textContent = bellNoteLabels.el[index];
+            button.onclick = () => ringBell(index);
+            bellKeyboard.appendChild(button);
+        });
+        function playJingleBells() {
+            const runId = ++jingleRunId;
+            const melody = [2,2,2,null,2,2,2,null,2,4,0,1,2,null,3,3,3,3,3,2,2,2,2,1,1,2,1,4];
+            melody.forEach((note,index) => {
+                if (note === null) return;
+                setTimeout(() => { if (runId === jingleRunId) ringBell(note,.34); }, index * 310);
+            });
         }
 
         populateSoundCredits();
