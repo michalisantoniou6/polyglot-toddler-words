@@ -189,7 +189,7 @@
             scroll-snap-type: x mandatory;
             scroll-padding-inline: 52px;
             overscroll-behavior-x: contain;
-            touch-action: pan-x;
+            touch-action: none;
         }
         .game-nav::-webkit-scrollbar { display: none; }
 
@@ -335,18 +335,43 @@
 
         /* ---------------- GAME 1: HUNGRY MONSTER ---------------- */
         .monster-stage {
+            position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
+            width: min(100%, 320px);
+            min-height: 138px;
             margin-top: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 8px;
+            padding: 8px 30px;
+            border: 4px solid transparent;
+            border-radius: 999px;
+            transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+        }
+
+        .monster-stage.food-drag-active {
+            border-color: #f6ad55;
+            background: #fffaf0;
+        }
+
+        .monster-stage.drop-ready {
+            border-color: #48bb78;
+            background: #f0fff4;
+            transform: scale(1.05);
         }
 
         .monster-avatar {
             font-size: 6.5rem;
+            line-height: 1;
             cursor: pointer;
             transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: inline-block;
+            padding: 0 12px;
+            border: 0;
+            background: transparent;
+            font-family: inherit;
+            touch-action: manipulation;
         }
 
         .monster-avatar.chewing {
@@ -461,28 +486,91 @@
             text-align: center;
         }
 
+        .santa-drag-hint {
+            margin: 0 0 10px;
+            color: #718096;
+            font-size: 0.96rem;
+            font-weight: 850;
+            text-align: center;
+        }
+
         .food-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
+            grid-auto-flow: column;
+            grid-template-rows: repeat(2, minmax(78px, 1fr));
+            grid-auto-columns: clamp(86px, 24vw, 112px);
+            gap: 10px;
             width: 100%;
+            padding: 4px 4px 12px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            overscroll-behavior-x: contain;
+            scroll-snap-type: x proximity;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
         }
+
+        .food-grid::-webkit-scrollbar { display: none; }
 
         .food-item {
             background: white;
             border: 3px solid #e2e8f0;
             border-radius: 20px;
-            padding: 14px 6px;
-            font-size: 3rem;
+            min-height: 78px;
+            padding: 8px 6px;
             text-align: center;
             cursor: pointer;
             transition: transform 0.1s ease;
             box-shadow: 0 4px 8px rgba(0,0,0,0.04);
+            font: inherit;
+            scroll-snap-align: start;
+            touch-action: pan-x;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .food-emoji {
+            display: block;
+            font-size: 3.25rem;
+            line-height: 1;
+            pointer-events: none;
         }
 
         .food-item:active {
             transform: scale(0.85);
             background: #feebc8;
+        }
+
+        .food-item.drag-source { opacity: 0.35; transform: scale(0.9); }
+        .food-item.drag-return { animation: foodReturn 0.32s ease; }
+
+        .food-drag-ghost {
+            position: fixed;
+            z-index: 2400;
+            left: 0;
+            top: 0;
+            width: 82px;
+            height: 82px;
+            display: grid;
+            place-items: center;
+            border: 4px solid #f6ad55;
+            border-radius: 24px;
+            background: white;
+            box-shadow: 0 16px 35px rgba(45,55,72,0.28);
+            font-size: 3.7rem;
+            line-height: 1;
+            pointer-events: none;
+            transform: translate(-50%, -125%) scale(1.04);
+            transition: left 0.17s ease, top 0.17s ease, transform 0.17s ease, opacity 0.17s ease;
+        }
+
+        .food-drag-ghost.over-target { border-color: #48bb78; transform: translate(-50%, -125%) scale(1.18); }
+        .food-drag-ghost.feeding { transform: translate(-50%, -50%) scale(0.25); opacity: 0.2; }
+        body.food-dragging { overflow: hidden; }
+
+        @keyframes foodReturn {
+            40% { transform: translateY(-8px) rotate(-6deg); }
+            75% { transform: translateY(3px) rotate(5deg); }
         }
 
         button:focus-visible,
@@ -1610,7 +1698,33 @@
             touch-action:manipulation;
         }
         .bell-key.playing { filter:brightness(1.35); transform:translateY(6px) scale(.97); }
-        .santa-band { font-size:clamp(5rem,25vw,10rem); line-height:1; }
+        .santa-band {
+            width: min(100%, 390px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+        }
+        .santa-band-button {
+            min-width: 112px;
+            min-height: 108px;
+            padding: 4px 10px;
+            border: 4px solid #dbe7f1;
+            border-radius: 28px;
+            background: white;
+            box-shadow: 0 8px 0 rgba(45,55,72,.12);
+            font: inherit;
+            font-size: clamp(4.6rem, 22vw, 7.5rem);
+            line-height: 1;
+            touch-action: manipulation;
+            transition: transform .12s ease, filter .12s ease;
+        }
+        .santa-band-button:active { transform: translateY(5px) scale(.94); }
+        .santa-band-button.playing { animation: bandButtonPop .42s ease; filter: brightness(1.1); }
+        @keyframes bandButtonPop {
+            45% { transform: translateY(-9px) rotate(-7deg) scale(1.12); }
+            75% { transform: translateY(2px) rotate(5deg) scale(.98); }
+        }
         .activity-mode-switch {
             width:min(100%,560px);
             display:grid;
@@ -1946,10 +2060,11 @@
 
     <!-- 1. FEED SANTA GAME -->
     <div id="game-monster" class="game-view">
-        <div class="speech-bubble" id="monsterSpeech">Άρι μπορείς να ταΐσεις τον Άγιο Βασίλη; 🎅</div>
-        <div class="monster-stage">
-            <div class="monster-avatar" id="monsterAvatar" onclick="tickleMonster()" role="img" aria-label="Santa Claus">🎅</div>
+        <div class="speech-bubble" id="monsterSpeech" aria-live="polite" aria-atomic="true">Άρι μπορείς να ταΐσεις τον Άγιο Βασίλη; 🎅</div>
+        <div class="monster-stage" id="santaDropZone">
+            <button class="monster-avatar" id="monsterAvatar" type="button" onclick="tickleMonster()" aria-label="Santa Claus">🎅</button>
         </div>
+        <div class="santa-drag-hint" id="santaDragHint">🍎 ⬆️ 🎅 Σύρε ή πάτησε ένα φαγητό</div>
         <div class="food-grid" id="monsterFoodGrid"></div>
     </div>
 
@@ -2032,7 +2147,10 @@
         <main class="learning-game">
             <h2 class="learning-title" id="bellsTitle">Τα κουδουνάκια του Άγιου Βασίλη</h2>
             <p class="learning-prompt" id="bellsPrompt">Παίξε μαζί με τον Άγιο Βασίλη</p>
-            <div class="santa-band" aria-hidden="true">🎅🔔</div>
+            <div class="santa-band">
+                <button class="santa-band-button" id="bellsSantaButton" type="button" onclick="playBellsSantaLaugh()" aria-label="Άκου τον Άγιο Βασίλη">🎅</button>
+                <button class="santa-band-button" id="bellsBellButton" type="button" onclick="ringBandBell()" aria-label="Χτύπα το κουδούνι">🔔</button>
+            </div>
             <button class="game-action-button" id="jingleButton" type="button" onclick="toggleJingleBells()">🎶 Παίξε το Jingle Bells</button>
             <div class="bell-keyboard" id="bellKeyboard"></div>
         </main>
@@ -2338,7 +2456,17 @@
             { num: 7, en: "Seven", es: "Siete", fr: "Sept", el: "Επτά" },
             { num: 8, en: "Eight", es: "Ocho", fr: "Huit", el: "Οκτώ" },
             { num: 9, en: "Nine", es: "Nueve", fr: "Neuf", el: "Εννέα" },
-            { num: 10, en: "Ten", es: "Diez", fr: "Dix", el: "Δέκα" }
+            { num: 10, en: "Ten", es: "Diez", fr: "Dix", el: "Δέκα" },
+            { num: 11, en: "Eleven", es: "Once", fr: "Onze", el: "Έντεκα" },
+            { num: 12, en: "Twelve", es: "Doce", fr: "Douze", el: "Δώδεκα" },
+            { num: 13, en: "Thirteen", es: "Trece", fr: "Treize", el: "Δεκατρία" },
+            { num: 14, en: "Fourteen", es: "Catorce", fr: "Quatorze", el: "Δεκατέσσερα" },
+            { num: 15, en: "Fifteen", es: "Quince", fr: "Quinze", el: "Δεκαπέντε" },
+            { num: 16, en: "Sixteen", es: "Dieciséis", fr: "Seize", el: "Δεκαέξι" },
+            { num: 17, en: "Seventeen", es: "Diecisiete", fr: "Dix-sept", el: "Δεκαεπτά" },
+            { num: 18, en: "Eighteen", es: "Dieciocho", fr: "Dix-huit", el: "Δεκαοκτώ" },
+            { num: 19, en: "Nineteen", es: "Diecinueve", fr: "Dix-neuf", el: "Δεκαεννέα" },
+            { num: 20, en: "Twenty", es: "Veinte", fr: "Vingt", el: "Είκοσι" }
         ];
 
         const everydayItems = [
@@ -2390,12 +2518,12 @@
                 chooseLanguage: 'Language', gamesLabel: 'Games', menuLabel: 'Play menu', playNow: 'Play now',
                 swipeForGames: 'Swipe for more games', hideControls: 'Hide controls', showControls: 'Games and languages',
                 santaPrompt: 'Ari can you feed Santa? 🎅', morePlease: 'What should Santa eat next Ari? 🎅',
-                tickle: 'Ho ho ho! That tickles Ari! 😆', popBalloons: 'Pop the balloons! 🎈',
-                popped: number => `Popped #${number}! ⭐`, santaLabel: 'Santa Claus',
+                tickle: 'Ho ho ho! That tickles Ari! 😆', santaLaugh: 'Ho! Ho! Ho!', dragFood: 'Drag or tap some food', popBalloons: 'Pop the balloons! 🎈',
+                popped: number => `Popped #${number}! ⭐`, balloonLevelUp: number => `Amazing! Now 1 to ${number}! 🚀`, santaLabel: 'Santa Claus',
                 everyday:'Everyday Things', music:'Music Studio', beat:'Copy the Pattern', dance:'Dance & Freeze', bells:"Santa's Bells",
                 everydayPrompt:'Explore six things at a time', everydayExplore:'👀 Explore', everydayFind:'🔎 Find it', everydayMore:'More things →', findQuestion:item=>`Find: ${item}`, findTry:'Look again', findFound:()=>`That’s the one!`, findNext:'▶ Next one', findReal:()=>`Can you find one like this nearby and show a grown-up?`,
                 musicPrompt:'Make your own music', musicTogether:'Take turns and copy each other', beatPrompt:'Watch then copy the pattern', beatStart:'▶ Show the pattern', beatNext:'▶ New pattern', beatYourTurn:'Your turn!', beatGreat:'You remembered it!', beatAgain:'Watch the same pattern again',
-                danceReady:'Ready?', danceStart:'▶ Start dancing', danceStop:'■ Stop', danceTogether:'Make a clear space and dance together', bellsPrompt:'Play along with Santa', jingleStart:'🎶 Play Jingle Bells', jingleStop:'■ Stop the song'
+                danceReady:'Ready?', danceStart:'▶ Start dancing', danceStop:'■ Stop', danceTogether:'Make a clear space and dance together', bellsPrompt:'Play along with Santa', bellsSantaAction:'Hear Santa laugh', bellsBellAction:'Ring the big bell', jingleStart:'🎶 Play Jingle Bells', jingleStop:'■ Stop the song'
             },
             es: {
                 pageTitle: 'Juegos infantiles divertidos', allLanguages: 'Los 4', feedSanta: 'Dale de comer a Santa',
@@ -2404,12 +2532,12 @@
                 chooseLanguage: 'Idioma', gamesLabel: 'Juegos', menuLabel: 'Menú de juego', playNow: 'Jugar ahora',
                 swipeForGames: 'Desliza para ver más juegos', hideControls: 'Ocultar controles', showControls: 'Juegos e idiomas',
                 santaPrompt: 'Ari ¿qué le damos de comer a Santa ahora? 🎅', morePlease: '¿Qué va a comer Santa ahora Ari? 🎅',
-                tickle: '¡Jo jo jo! ¡Eso me da cosquillas Ari! 😆', popBalloons: '¡Revienta los globos! 🎈',
-                popped: number => `¡Reventaste el globo número ${number}! ⭐`, santaLabel: 'Santa Claus',
+                tickle: '¡Jo jo jo! ¡Eso me da cosquillas Ari! 😆', santaLaugh: '¡Jo! ¡Jo! ¡Jo!', dragFood: 'Arrastra o toca la comida', popBalloons: '¡Revienta los globos! 🎈',
+                popped: number => `¡Reventaste el globo número ${number}! ⭐`, balloonLevelUp: number => `¡Genial! ¡Ahora del 1 al ${number}! 🚀`, santaLabel: 'Santa Claus',
                 everyday:'Cosas de cada día', music:'Estudio musical', beat:'Copia el patrón', dance:'Baila y congélate', bells:'Campanas de Santa',
                 everydayPrompt:'Explora seis cosas a la vez', everydayExplore:'👀 Explora', everydayFind:'🔎 Encuéntralo', everydayMore:'Más cosas →', findQuestion:item=>`Encuentra: ${item}`, findTry:'Mira otra vez', findFound:()=>`¡Ese es!`, findNext:'▶ Otro', findReal:()=>`¿Puedes encontrar uno igual cerca y mostrárselo a un adulto?`,
                 musicPrompt:'Haz tu propia música', musicTogether:'Tomen turnos e imítense', beatPrompt:'Mira y copia el patrón', beatStart:'▶ Muestra el patrón', beatNext:'▶ Nuevo patrón', beatYourTurn:'¡Tu turno!', beatGreat:'¡Lo recordaste!', beatAgain:'Mira el mismo patrón otra vez',
-                danceReady:'¿Listo?', danceStart:'▶ Empieza a bailar', danceStop:'■ Detener', danceTogether:'Dejen espacio y bailen juntos', bellsPrompt:'Toca con Santa', jingleStart:'🎶 Toca Jingle Bells', jingleStop:'■ Detén la canción'
+                danceReady:'¿Listo?', danceStart:'▶ Empieza a bailar', danceStop:'■ Detener', danceTogether:'Dejen espacio y bailen juntos', bellsPrompt:'Toca con Santa', bellsSantaAction:'Escucha a Santa', bellsBellAction:'Toca la campana grande', jingleStart:'🎶 Toca Jingle Bells', jingleStop:'■ Detén la canción'
             },
             fr: {
                 pageTitle: 'Jeux amusants pour enfants', allLanguages: 'Les 4', feedSanta: 'Nourris le Père Noël',
@@ -2418,12 +2546,12 @@
                 chooseLanguage: 'Langue', gamesLabel: 'Jeux', menuLabel: 'Menu de jeu', playNow: 'Jouer maintenant',
                 swipeForGames: 'Fais glisser pour voir plus de jeux', hideControls: 'Masquer les commandes', showControls: 'Jeux et langues',
                 santaPrompt: 'Ari que va manger le Père Noël maintenant ? 🎅', morePlease: 'Que va manger le Père Noël maintenant Ari ? 🎅',
-                tickle: 'Ho ho ho ! Ça me chatouille Ari ! 😆', popBalloons: 'Éclate les ballons ! 🎈',
-                popped: number => `Tu as éclaté le ballon numéro ${number} ! ⭐`, santaLabel: 'Père Noël',
+                tickle: 'Ho ho ho ! Ça me chatouille Ari ! 😆', santaLaugh: 'Ho ! Ho ! Ho !', dragFood: 'Fais glisser ou touche un aliment', popBalloons: 'Éclate les ballons ! 🎈',
+                popped: number => `Tu as éclaté le ballon numéro ${number} ! ⭐`, balloonLevelUp: number => `Bravo ! Maintenant de 1 à ${number} ! 🚀`, santaLabel: 'Père Noël',
                 everyday:'Objets du quotidien', music:'Studio de musique', beat:'Copie la suite', dance:'Danse et ne bouge plus', bells:'Cloches du Père Noël',
                 everydayPrompt:'Explore six objets à la fois', everydayExplore:'👀 Explore', everydayFind:'🔎 Trouve-le', everydayMore:'Autres objets →', findQuestion:item=>`Trouve : ${item}`, findTry:'Regarde encore', findFound:()=>`C’est celui-là !`, findNext:'▶ Le suivant', findReal:()=>`Peux-tu en trouver un pareil près de toi et le montrer à un adulte ?`,
                 musicPrompt:'Crée ta propre musique', musicTogether:'Jouez chacun votre tour et imitez-vous', beatPrompt:'Regarde puis copie la suite', beatStart:'▶ Montre la suite', beatNext:'▶ Nouvelle suite', beatYourTurn:'À toi !', beatGreat:'Tu t’en es souvenu !', beatAgain:'Regarde encore la même suite',
-                danceReady:'Prêt ?', danceStart:'▶ Commence à danser', danceStop:'■ Arrêter', danceTogether:'Faites de la place et dansez ensemble', bellsPrompt:'Joue avec le Père Noël', jingleStart:'🎶 Joue Jingle Bells', jingleStop:'■ Arrête la chanson'
+                danceReady:'Prêt ?', danceStart:'▶ Commence à danser', danceStop:'■ Arrêter', danceTogether:'Faites de la place et dansez ensemble', bellsPrompt:'Joue avec le Père Noël', bellsSantaAction:'Écoute le Père Noël', bellsBellAction:'Fais sonner la grande cloche', jingleStart:'🎶 Joue Jingle Bells', jingleStop:'■ Arrête la chanson'
             },
             el: {
                 pageTitle: 'Χαρούμενα παιδικά παιχνίδια', allLanguages: 'Και οι 4', feedSanta: 'Τάισε τον Άγιο Βασίλη',
@@ -2432,12 +2560,12 @@
                 chooseLanguage: 'Γλώσσα', gamesLabel: 'Παιχνίδια', menuLabel: 'Μενού παιχνιδιού', playNow: 'Παίξε τώρα',
                 swipeForGames: 'Σύρε για περισσότερα παιχνίδια', hideControls: 'Κρύψε τα κουμπιά', showControls: 'Παιχνίδια και γλώσσες',
                 santaPrompt: 'Άρι τι θα φάει τώρα ο Άγιος Βασίλης; 🎅', morePlease: 'Τι θα φάει τώρα ο Άγιος Βασίλης Άρι; 🎅',
-                tickle: 'Χο χο χο! Με γαργαλάς Άρι! 😆', popBalloons: 'Σκάσε τα μπαλόνια! 🎈',
-                popped: number => `Έσκασες το μπαλόνι με τον αριθμό ${number}! ⭐`, santaLabel: 'Άγιος Βασίλης',
+                tickle: 'Χο χο χο! Με γαργαλάς Άρι! 😆', santaLaugh: 'Χο! Χο! Χο!', dragFood: 'Σύρε ή πάτησε ένα φαγητό', popBalloons: 'Σκάσε τα μπαλόνια! 🎈',
+                popped: number => `Έσκασες το μπαλόνι με τον αριθμό ${number}! ⭐`, balloonLevelUp: number => `Μπράβο! Τώρα από το 1 ως το ${number}! 🚀`, santaLabel: 'Άγιος Βασίλης',
                 everyday:'Πράγματα κάθε μέρας', music:'Μουσικό στούντιο', beat:'Αντέγραψε το μοτίβο', dance:'Χόρεψε και πάγωσε', bells:'Τα κουδουνάκια του Άγιου Βασίλη',
                 everydayPrompt:'Εξερεύνησε έξι πράγματα κάθε φορά', everydayExplore:'👀 Εξερεύνησε', everydayFind:'🔎 Βρες το', everydayMore:'Άλλα πράγματα →', findQuestion:item=>`Βρες: ${item}`, findTry:'Κοίτα ξανά', findFound:()=>`Αυτό είναι!`, findNext:'▶ Επόμενο', findReal:()=>`Μπορείς να βρεις κάτι ίδιο κοντά σου και να το δείξεις σε έναν μεγάλο;`,
                 musicPrompt:'Φτιάξε τη δική σου μουσική', musicTogether:'Παίξτε με τη σειρά και αντιγράψτε ο ένας τον άλλον', beatPrompt:'Κοίτα και αντέγραψε το μοτίβο', beatStart:'▶ Δείξε το μοτίβο', beatNext:'▶ Νέο μοτίβο', beatYourTurn:'Η σειρά σου!', beatGreat:'Το θυμήθηκες!', beatAgain:'Κοίτα ξανά το ίδιο μοτίβο',
-                danceReady:'Έτοιμος;', danceStart:'▶ Ξεκίνα τον χορό', danceStop:'■ Σταμάτα', danceTogether:'Αδειάστε λίγο χώρο και χορέψτε μαζί', bellsPrompt:'Παίξε μαζί με τον Άγιο Βασίλη', jingleStart:'🎶 Παίξε το Jingle Bells', jingleStop:'■ Σταμάτα το τραγούδι'
+                danceReady:'Έτοιμος;', danceStart:'▶ Ξεκίνα τον χορό', danceStop:'■ Σταμάτα', danceTogether:'Αδειάστε λίγο χώρο και χορέψτε μαζί', bellsPrompt:'Παίξε μαζί με τον Άγιο Βασίλη', bellsSantaAction:'Άκου τον Άγιο Βασίλη', bellsBellAction:'Χτύπα το μεγάλο κουδούνι', jingleStart:'🎶 Παίξε το Jingle Bells', jingleStop:'■ Σταμάτα το τραγούδι'
             }
         };
 
@@ -3467,6 +3595,7 @@
 
         function pauseActivePlay() {
             cancelRepeatSequence();
+            cancelFoodDrag(false);
             stopRealSound();
             stopBalloonSpawner();
             stopDanceParty();
@@ -3548,6 +3677,7 @@
             document.getElementById('monsterSpeech').textContent = personalizeText(text.santaPrompt, displayLanguage);
             document.getElementById('monsterAvatar').setAttribute('aria-label', text.santaLabel);
             document.getElementById('dancingSanta').setAttribute('aria-label', text.santaLabel);
+            document.getElementById('santaDragHint').textContent = `🍎 ⬆️ 🎅 ${text.dragFood}`;
             document.getElementById('balloonStatus').textContent = text.popBalloons;
             document.getElementById('everydayTitle').textContent = text.everyday;
             document.getElementById('everydayPrompt').textContent = text.everydayPrompt;
@@ -3568,6 +3698,8 @@
             document.getElementById('danceButton').textContent = dancePartyActive ? text.danceStop : text.danceStart;
             document.getElementById('bellsTitle').textContent = text.bells;
             document.getElementById('bellsPrompt').textContent = text.bellsPrompt;
+            document.getElementById('bellsSantaButton').setAttribute('aria-label', text.bellsSantaAction);
+            document.getElementById('bellsBellButton').setAttribute('aria-label', text.bellsBellAction);
             document.getElementById('jingleButton').textContent = jinglePlaying ? text.jingleStop : text.jingleStart;
             updateSettingsLanguage(displayLanguage);
 
@@ -3919,18 +4051,195 @@
         const monsterAvatar = document.getElementById('monsterAvatar');
         const monsterSpeech = document.getElementById('monsterSpeech');
         const monsterFoodGrid = document.getElementById('monsterFoodGrid');
+        const santaDropZone = document.getElementById('santaDropZone');
         let santaCelebrationTimeout = null;
         let santaIdleTimeout = null;
+        let foodDragState = null;
+        let foodDropTimeout = null;
+        let pendingFoodGhost = null;
+        let suppressedFoodClickButton = null;
+        let suppressedFoodClickUntil = 0;
 
-        foods.forEach(f => {
-            const btn = document.createElement('div');
+        foods.forEach((f, index) => {
+            const btn = document.createElement('button');
             btn.className = 'food-item';
-            btn.textContent = f.emoji;
-            btn.setAttribute('role', 'button');
+            btn.type = 'button';
+            btn.dataset.foodIndex = String(index);
+            btn.innerHTML = `<span class="food-emoji" aria-hidden="true">${f.emoji}</span>`;
             btn.setAttribute('aria-label', f.en);
-            btn.onclick = () => feedMonster(f);
+            btn.addEventListener('pointerdown', event => beginFoodPointer(event, btn, f));
+            btn.addEventListener('pointermove', moveFoodPointer);
+            btn.addEventListener('pointerup', finishFoodPointer);
+            btn.addEventListener('pointercancel', () => cancelFoodDrag(true));
+            btn.onclick = event => {
+                if (btn === suppressedFoodClickButton && Date.now() < suppressedFoodClickUntil) {
+                    event.preventDefault();
+                    return;
+                }
+                feedMonster(f);
+            };
             monsterFoodGrid.appendChild(btn);
         });
+
+        function suppressFoodClick(button) {
+            suppressedFoodClickButton = button;
+            suppressedFoodClickUntil = Date.now() + 800;
+        }
+
+        function beginFoodPointer(event, source, food) {
+            if (foodDragState || event.isPrimary === false) return;
+            if (event.pointerType === 'mouse' && event.button !== 0) return;
+            clearSantaIdleTimer();
+            foodDragState = {
+                pointerId: event.pointerId,
+                source,
+                food,
+                startX: event.clientX,
+                startY: event.clientY,
+                startScrollLeft: monsterFoodGrid.scrollLeft,
+                scrolling: false,
+                dragging: false,
+                ghost: null
+            };
+            try { source.setPointerCapture(event.pointerId); } catch (error) { /* Pointer capture is optional. */ }
+        }
+
+        function activateFoodDrag(state) {
+            state.dragging = true;
+            state.scrolling = false;
+            suppressFoodClick(state.source);
+            state.source.classList.add('drag-source');
+            santaDropZone.classList.add('food-drag-active');
+            document.body.classList.add('food-dragging');
+            state.ghost = document.createElement('div');
+            state.ghost.className = 'food-drag-ghost';
+            state.ghost.setAttribute('aria-hidden', 'true');
+            state.ghost.textContent = state.food.emoji;
+            document.body.appendChild(state.ghost);
+        }
+
+        function moveFoodPointer(event) {
+            const state = foodDragState;
+            if (!state || event.pointerId !== state.pointerId) return;
+            const horizontalDistance = event.clientX - state.startX;
+            const verticalDistance = event.clientY - state.startY;
+
+            if (!state.dragging) {
+                if (Math.hypot(horizontalDistance, verticalDistance) < 11) return;
+                const becameVertical = Math.abs(verticalDistance) > 16;
+                if (state.scrolling && !becameVertical) {
+                    event.preventDefault();
+                    monsterFoodGrid.scrollLeft = state.startScrollLeft - horizontalDistance;
+                    return;
+                }
+                if (!state.scrolling && !becameVertical && Math.abs(horizontalDistance) > 16) {
+                    state.scrolling = true;
+                    suppressFoodClick(state.source);
+                    event.preventDefault();
+                    monsterFoodGrid.scrollLeft = state.startScrollLeft - horizontalDistance;
+                    return;
+                }
+                if (state.scrolling) monsterFoodGrid.scrollLeft = state.startScrollLeft;
+                activateFoodDrag(state);
+            }
+
+            event.preventDefault();
+            updateFoodDragPosition(state, event.clientX, event.clientY);
+        }
+
+        function isFoodNearSanta(clientX, clientY) {
+            const rect = santaDropZone.getBoundingClientRect();
+            const forgiveness = 58;
+            return clientX >= rect.left - forgiveness
+                && clientX <= rect.right + forgiveness
+                && clientY >= rect.top - forgiveness
+                && clientY <= rect.bottom + forgiveness;
+        }
+
+        function updateFoodDragPosition(state, clientX, clientY) {
+            if (!state.ghost) return;
+            state.ghost.style.left = `${clientX}px`;
+            state.ghost.style.top = `${clientY}px`;
+            const isReady = isFoodNearSanta(clientX, clientY);
+            state.ghost.classList.toggle('over-target', isReady);
+            santaDropZone.classList.toggle('drop-ready', isReady);
+        }
+
+        function clearFoodDragVisuals(state, removeGhost = true) {
+            state.source.classList.remove('drag-source');
+            santaDropZone.classList.remove('food-drag-active', 'drop-ready');
+            document.body.classList.remove('food-dragging');
+            try {
+                if (state.source.hasPointerCapture(state.pointerId)) state.source.releasePointerCapture(state.pointerId);
+            } catch (error) { /* The pointer may already have been released. */ }
+            if (removeGhost && state.ghost) state.ghost.remove();
+        }
+
+        function finishFoodPointer(event) {
+            const state = foodDragState;
+            if (!state || event.pointerId !== state.pointerId) return;
+            const movedDistance = Math.hypot(event.clientX - state.startX, event.clientY - state.startY);
+
+            if (!state.dragging && movedDistance > 11 && isFoodNearSanta(event.clientX, event.clientY)) {
+                monsterFoodGrid.scrollLeft = state.startScrollLeft;
+                activateFoodDrag(state);
+                updateFoodDragPosition(state, event.clientX, event.clientY);
+            }
+
+            if (!state.dragging) {
+                foodDragState = null;
+                if (movedDistance > 11) suppressFoodClick(state.source);
+                clearFoodDragVisuals(state);
+                resetSantaIdleTimer();
+                return;
+            }
+
+            event.preventDefault();
+            suppressFoodClick(state.source);
+            const wasFed = isFoodNearSanta(event.clientX, event.clientY);
+            clearFoodDragVisuals(state, !wasFed);
+            foodDragState = null;
+
+            if (!wasFed) {
+                state.source.classList.remove('drag-return');
+                void state.source.offsetWidth;
+                state.source.classList.add('drag-return');
+                setTimeout(() => state.source.classList.remove('drag-return'), 340);
+                resetSantaIdleTimer();
+                return;
+            }
+
+            const santaRect = monsterAvatar.getBoundingClientRect();
+            pendingFoodGhost = state.ghost;
+            state.ghost.style.left = `${santaRect.left + santaRect.width / 2}px`;
+            state.ghost.style.top = `${santaRect.top + santaRect.height * 0.58}px`;
+            state.ghost.classList.add('feeding');
+            foodDropTimeout = setTimeout(() => {
+                if (pendingFoodGhost) pendingFoodGhost.remove();
+                pendingFoodGhost = null;
+                foodDropTimeout = null;
+                feedMonster(state.food);
+            }, 180);
+        }
+
+        function cancelFoodDrag(shouldResetIdle = true) {
+            if (foodDropTimeout) {
+                clearTimeout(foodDropTimeout);
+                foodDropTimeout = null;
+            }
+            if (pendingFoodGhost) {
+                pendingFoodGhost.remove();
+                pendingFoodGhost = null;
+            }
+            if (foodDragState) {
+                if (foodDragState.dragging) suppressFoodClick(foodDragState.source);
+                clearFoodDragVisuals(foodDragState);
+                foodDragState = null;
+            }
+            if (shouldResetIdle && document.getElementById('game-monster').classList.contains('active')) {
+                resetSantaIdleTimer();
+            }
+        }
 
         function feedMonster(food) {
             cancelRepeatSequence();
@@ -3959,24 +4268,24 @@
             const name = childName[language];
             const responses = {
                 en: [
-                    `Ho ho ho! Thank you for ${foodName} ${name}!`,
-                    `That was delicious! Thank you for ${foodName} ${name}!`,
-                    `I loved that! Thank you for ${foodName} ${name}!`
+                    `${food.en}! Thank you for ${foodName} ${name}!`,
+                    `${food.en}! That was delicious! Thank you for ${foodName} ${name}!`,
+                    `${food.en}! I loved it! Thank you for ${foodName} ${name}!`
                 ],
                 es: [
-                    `¡Jo jo jo! ¡Gracias por ${foodName} ${name}!`,
-                    `¡Qué delicia! ¡Gracias por ${foodName} ${name}!`,
-                    `¡Me encantó! ¡Gracias por ${foodName} ${name}!`
+                    `¡${food.es}! ¡Gracias por ${foodName} ${name}!`,
+                    `¡${food.es}! ¡Qué rico! ¡Gracias por ${foodName} ${name}!`,
+                    `¡${food.es}! ¡Me encantó! ¡Gracias por ${foodName} ${name}!`
                 ],
                 fr: [
-                    `Ho ho ho ! Merci pour ${foodName} ${name} !`,
-                    `C’était délicieux ! Merci pour ${foodName} ${name} !`,
-                    `J’ai adoré ! Merci pour ${foodName} ${name} !`
+                    `${food.fr} ! Merci pour ${foodName} ${name} !`,
+                    `${food.fr} ! C’était délicieux ! Merci pour ${foodName} ${name} !`,
+                    `${food.fr} ! J’ai adoré ! Merci pour ${foodName} ${name} !`
                 ],
                 el: [
-                    `Χο χο χο! Ευχαριστώ για ${foodName} ${name}!`,
-                    `Τι νοστιμιά! Ευχαριστώ για ${foodName} ${name}!`,
-                    `Μου άρεσε πολύ! Ευχαριστώ για ${foodName} ${name}!`
+                    `${food.el}! Ευχαριστώ για ${foodName} ${name}!`,
+                    `${food.el}! Τι νοστιμιά! Ευχαριστώ για ${foodName} ${name}!`,
+                    `${food.el}! Μου άρεσε πολύ! Ευχαριστώ για ${foodName} ${name}!`
                 ]
             };
             return responses[language][responseIndex];
@@ -4156,37 +4465,76 @@
         // --- Game 4: Balloon Pop & Count ---
         const balloonSky = document.getElementById('balloonSky');
         const balloonStatus = document.getElementById('balloonStatus');
-        let balloonInterval = null;
+        const balloonProgressStorageKey = 'polyglotToddler.balloonPops.v1';
+        const balloonLevels = [
+            { pops: 0, max: 5, spawnMs: 2900, minSpeed: 55, maxSpeed: 73 },
+            { pops: 8, max: 8, spawnMs: 2700, minSpeed: 60, maxSpeed: 78 },
+            { pops: 20, max: 10, spawnMs: 2500, minSpeed: 65, maxSpeed: 83 },
+            { pops: 36, max: 15, spawnMs: 2250, minSpeed: 72, maxSpeed: 90 },
+            { pops: 60, max: 20, spawnMs: 2000, minSpeed: 78, maxSpeed: 98 }
+        ];
+        let balloonSpawnTimeout = null;
+        let balloonSuccessfulPops = loadBalloonPops();
         let currentNumberIndex = 0;
         const balloonColors = ['#f56565', '#48bb78', '#4299e1', '#ed8936', '#9f7aea', '#ecc94b'];
 
-        function spawnBalloon() {
+        function loadBalloonPops() {
+            try {
+                const storedPops = Number.parseInt(localStorage.getItem(balloonProgressStorageKey), 10);
+                return Number.isFinite(storedPops) ? Math.min(60, Math.max(0, storedPops)) : 0;
+            } catch (error) {
+                return 0;
+            }
+        }
+
+        function saveBalloonPops() {
+            try {
+                localStorage.setItem(balloonProgressStorageKey, String(balloonSuccessfulPops));
+            } catch (error) {
+                // Progress stays available for this play session when storage is unavailable.
+            }
+        }
+
+        function getBalloonLevel(pops = balloonSuccessfulPops) {
+            let level = balloonLevels[0];
+            balloonLevels.forEach(candidate => {
+                if (pops >= candidate.pops) level = candidate;
+            });
+            return level;
+        }
+
+        function spawnBalloon(isFirstBalloon = false) {
             if (!document.getElementById('game-balloons').classList.contains('active')) return;
+            if (balloonSky.querySelectorAll('.balloon').length >= 4) return;
 
             const b = document.createElement('div');
             b.className = 'balloon';
-            
-            const beginnerNumbers = numbers.slice(0, 5);
-            const numItem = beginnerNumbers[currentNumberIndex];
-            b.innerHTML = `<span class="balloon-number">${numItem.num}</span><span class="balloon-dots" aria-hidden="true">${'●'.repeat(numItem.num)}</span>`;
+
+            const level = getBalloonLevel();
+            const availableNumbers = numbers.slice(0, level.max);
+            const numItem = availableNumbers[currentNumberIndex % availableNumbers.length];
+            const quantityDots = numItem.num <= 5 ? '●'.repeat(numItem.num) : '';
+            b.innerHTML = `<span class="balloon-number">${numItem.num}</span><span class="balloon-dots" aria-hidden="true">${quantityDots}</span>`;
             b.setAttribute('aria-label', numItem[currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode]);
-            currentNumberIndex = (currentNumberIndex + 1) % beginnerNumbers.length;
+            currentNumberIndex = (currentNumberIndex + 1) % availableNumbers.length;
 
             const randomColor = balloonColors[Math.floor(Math.random() * balloonColors.length)];
             b.style.backgroundColor = randomColor;
 
-            const maxLeft = balloonSky.clientWidth - 85;
-            b.style.left = Math.max(10, Math.floor(Math.random() * maxLeft)) + 'px';
+            const availableWidth = Math.max(0, balloonSky.clientWidth - 105);
+            b.style.left = `${10 + Math.floor(Math.random() * availableWidth)}px`;
 
             balloonSky.appendChild(b);
 
-            const pixelsPerSecond = 55 + Math.random() * 18;
+            const startingBottom = isFirstBalloon ? 12 : -90;
+            const pixelsPerSecond = level.minSpeed + Math.random() * (level.maxSpeed - level.minSpeed);
+            b.style.bottom = `${startingBottom}px`;
             let startedAt = null;
 
             function floatUp(timestamp) {
                 if (!b.parentElement) return;
                 if (startedAt === null) startedAt = timestamp;
-                const pos = -90 + ((timestamp - startedAt) / 1000) * pixelsPerSecond;
+                const pos = startingBottom + ((timestamp - startedAt) / 1000) * pixelsPerSecond;
                 b.style.bottom = pos + 'px';
 
                 if (pos > balloonSky.clientHeight + 10) {
@@ -4204,6 +4552,7 @@
         }
 
         function popBalloon(balloonEl, numItem) {
+            if (!balloonEl.isConnected) return;
             SoundFX.pop();
             const rect = balloonEl.getBoundingClientRect();
             const skyRect = balloonSky.getBoundingClientRect();
@@ -4219,7 +4568,16 @@
 
             balloonEl.remove();
             const displayLanguage = currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode;
-            balloonStatus.textContent = interfaceText[displayLanguage].popped(numItem.num);
+            const previousLevel = getBalloonLevel();
+            balloonSuccessfulPops = Math.min(60, balloonSuccessfulPops + 1);
+            saveBalloonPops();
+            const nextLevel = getBalloonLevel();
+            if (nextLevel.max > previousLevel.max) {
+                currentNumberIndex = 0;
+                balloonStatus.textContent = interfaceText[displayLanguage].balloonLevelUp(nextLevel.max);
+            } else {
+                balloonStatus.textContent = interfaceText[displayLanguage].popped(numItem.num);
+            }
             pronounceBalloonNumber(numItem);
         }
 
@@ -4241,17 +4599,26 @@
             speakNextNumber();
         }
 
+        function scheduleNextBalloon() {
+            if (balloonSpawnTimeout) clearTimeout(balloonSpawnTimeout);
+            balloonSpawnTimeout = setTimeout(() => {
+                balloonSpawnTimeout = null;
+                if (!document.getElementById('game-balloons').classList.contains('active')) return;
+                spawnBalloon();
+                scheduleNextBalloon();
+            }, getBalloonLevel().spawnMs);
+        }
+
         function startBalloonSpawner() {
-            if (balloonInterval) clearInterval(balloonInterval);
-            balloonSky.innerHTML = '';
+            stopBalloonSpawner();
             currentNumberIndex = 0;
-            spawnBalloon();
-            balloonInterval = setInterval(spawnBalloon, 2900);
+            spawnBalloon(true);
+            scheduleNextBalloon();
         }
 
         function stopBalloonSpawner() {
-            if (balloonInterval) clearInterval(balloonInterval);
-            balloonInterval = null;
+            if (balloonSpawnTimeout) clearTimeout(balloonSpawnTimeout);
+            balloonSpawnTimeout = null;
             balloonSky.innerHTML = '';
         }
 
@@ -4616,13 +4983,58 @@
         let jingleRunId = 0;
         let jinglePlaying = false;
         let jingleTimers = [];
+
+        function playBellTone(frequency, duration = .72) {
+            const ctx = getAudioContext();
+            const startsAt = ctx.currentTime;
+            const partials = [
+                { ratio: 1, volume: .22, decay: 1 },
+                { ratio: 2.01, volume: .11, decay: .86 },
+                { ratio: 2.72, volume: .065, decay: .72 },
+                { ratio: 4.07, volume: .035, decay: .58 }
+            ];
+            partials.forEach((partial, index) => {
+                const oscillator = ctx.createOscillator();
+                const gain = ctx.createGain();
+                const attackEndsAt = startsAt + .012 + index * .002;
+                const endsAt = startsAt + duration * partial.decay;
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(frequency * partial.ratio, startsAt);
+                gain.gain.setValueAtTime(.0001, startsAt);
+                gain.gain.exponentialRampToValueAtTime(partial.volume, attackEndsAt);
+                gain.gain.exponentialRampToValueAtTime(.0001, endsAt);
+                oscillator.connect(gain);
+                gain.connect(ctx.destination);
+                oscillator.start(startsAt);
+                oscillator.stop(endsAt + .02);
+            });
+        }
+
         function ringBell(index, duration = .42) {
-            tone(bellNotes[index],duration,'sine',.2);
-            tone(bellNotes[index]*2,duration*.75,'sine',.07);
+            playBellTone(bellNotes[index], Math.max(.58, duration));
             const key = bellKeyboard.children[index];
             key.classList.add('playing');
             setTimeout(() => key.classList.remove('playing'), 220);
         }
+
+        function animateSantaBandButton(button) {
+            button.classList.remove('playing');
+            void button.offsetWidth;
+            button.classList.add('playing');
+            setTimeout(() => button.classList.remove('playing'), 440);
+        }
+
+        function ringBandBell() {
+            playBellTone(659, .9);
+            animateSantaBandButton(document.getElementById('bellsBellButton'));
+        }
+
+        function playBellsSantaLaugh() {
+            const language = currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode;
+            animateSantaBandButton(document.getElementById('bellsSantaButton'));
+            speakSingle(languageSettings[language].code, interfaceText[language].santaLaugh);
+        }
+
         bellNotes.forEach((note,index) => {
             const button = document.createElement('button');
             button.className = 'bell-key';
@@ -4633,6 +5045,7 @@
             bellKeyboard.appendChild(button);
         });
         function toggleJingleBells() {
+            getAudioContext();
             jinglePlaying ? stopJingleBells() : playJingleBells();
         }
         function stopJingleBells() {
