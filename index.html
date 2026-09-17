@@ -1274,22 +1274,43 @@
         }
 
         .controls-expand-button {
-            min-width: 82px;
-            min-height: 56px;
-            padding: 7px 13px;
-            border-radius: 999px;
-            background: rgba(49,130,206,0.96);
-            gap: 9px;
-            font-size: 1.32rem;
-            box-shadow: 0 5px 18px rgba(0,0,0,0.22);
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
+            top: auto;
+            right: max(14px, env(safe-area-inset-right));
+            bottom: max(16px, env(safe-area-inset-bottom));
+            width: 44px;
+            min-width: 44px;
+            height: 44px;
+            min-height: 44px;
+            padding: 0;
+            border: 1.5px solid rgba(49,130,206,0.34);
+            border-radius: 50%;
+            background: rgba(255,255,255,0.76);
+            color: #2b6cb0;
+            gap: 0;
+            font-size: 1rem;
+            box-shadow: 0 3px 12px rgba(45,55,72,0.16);
+            opacity: 0.62;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: transform 0.15s ease, opacity 0.15s ease, background 0.15s ease;
         }
 
-        #collapsedLanguageFlag {
-            padding-right: 9px;
-            border-right: 1px solid rgba(255,255,255,0.55);
+        .controls-expand-button::before {
+            content: '•••';
+            letter-spacing: 1px;
+            transform: translateY(-2px);
         }
+
+        .controls-expand-button:hover,
+        .controls-expand-button:focus-visible {
+            opacity: 1;
+            background: rgba(255,255,255,0.96);
+            outline: 3px solid rgba(49,130,206,0.22);
+            outline-offset: 2px;
+        }
+
+        #collapsedLanguageFlag,
+        #collapsedGameIcon { display: none; }
 
         .game-view.active {
             min-height: 100svh;
@@ -1693,9 +1714,9 @@
                 clip('https://upload.wikimedia.org/wikipedia/commons/8/8a/Gr%C3%A9vys_zebra_%28Sound_Effects%29.ogg', 'Grévy’s zebra', 'DiegoC472', 'CC BY-SA 4.0', 'https://commons.wikimedia.org/wiki/File:Gr%C3%A9vys_zebra_(Sound_Effects).ogg', 6, 2.5)
             ],
             crocodile: [
-                clip('https://cdn.freesound.org/previews/516/516293_8992398-hq.mp3', 'Crocodile vocalization', 'tvilgiat', 'CC0', freesoundPage(516293), 0, 2.6),
-                clip('https://cdn.freesound.org/previews/516/516293_8992398-hq.mp3', 'Crocodile vocalization', 'tvilgiat', 'CC0', freesoundPage(516293), 5, 2.6),
-                clip('https://cdn.freesound.org/previews/516/516293_8992398-hq.mp3', 'Crocodile vocalization', 'tvilgiat', 'CC0', freesoundPage(516293), 10, 2.6)
+                clip('https://cdn.freesound.org/previews/527/527844_11431915-hq.mp3', 'Alligator growl', 'D.jones', 'CC0', freesoundPage(527844), 0.3, 2.5),
+                clip('https://cdn.freesound.org/previews/527/527844_11431915-hq.mp3', 'Alligator growl', 'D.jones', 'CC0', freesoundPage(527844), 3.3, 2.5),
+                clip('https://cdn.freesound.org/previews/527/527844_11431915-hq.mp3', 'Alligator growl', 'D.jones', 'CC0', freesoundPage(527844), 6.6, 2.5)
             ],
             whale: [
                 clip(commonsFile('Humpbackwhale2.ogg'), 'Humpback whale', 'Wikimedia Commons contributor', 'CC0', 'https://commons.wikimedia.org/wiki/File:Humpbackwhale2.ogg'),
