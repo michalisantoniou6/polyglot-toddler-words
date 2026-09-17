@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html lang="el">
+<html lang="el" translate="no" class="notranslate">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="google" content="notranslate">
+    <meta name="robots" content="notranslate">
     <title>Χαρούμενα παιδικά παιχνίδια</title>
     <style>
         * {
@@ -540,7 +542,8 @@
         #repeatOverlay[data-language="es"] { --repeat-bg-start: #fbd38d; --repeat-bg-end: #fff5b8; }
         #repeatOverlay[data-language="fr"] { --repeat-bg-start: #bee3f8; --repeat-bg-end: #c6f6d5; }
 
-        body.repeat-open { overflow: hidden; }
+        body.repeat-open,
+        body.translation-warning-open { overflow: hidden; }
 
         .repeat-close {
             position: fixed;
@@ -710,6 +713,71 @@
             .repeat-visual { animation: none !important; }
         }
 
+        #translationWarning {
+            position: fixed;
+            inset: 0;
+            z-index: 5000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: max(22px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) max(22px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
+            background: rgba(26, 32, 44, 0.88);
+            backdrop-filter: blur(10px);
+            overflow-y: auto;
+        }
+
+        #translationWarning.active { display: flex; }
+
+        .translation-warning-card {
+            width: min(92vw, 520px);
+            max-height: calc(100dvh - 44px);
+            margin: auto;
+            padding: clamp(22px, 6vw, 38px);
+            border: 5px solid #fbd38d;
+            border-radius: 32px;
+            background: white;
+            color: #2d3748;
+            text-align: center;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.35);
+            overflow-y: auto;
+        }
+
+        .translation-warning-icon {
+            font-size: clamp(4rem, 18vw, 7rem);
+            line-height: 1;
+        }
+
+        .translation-warning-card h2 {
+            margin: 14px 0 10px;
+            color: #c53030;
+            font-size: clamp(1.55rem, 7vw, 2.4rem);
+            line-height: 1.1;
+        }
+
+        .translation-warning-card p {
+            margin: 10px 0;
+            font-size: clamp(1rem, 4.5vw, 1.3rem);
+            line-height: 1.35;
+            font-weight: 700;
+        }
+
+        .translation-warning-card strong { color: #975a16; }
+
+        .translation-warning-card button {
+            min-width: 170px;
+            min-height: 56px;
+            margin-top: 12px;
+            padding: 12px 22px;
+            border: 0;
+            border-radius: 999px;
+            background: #3182ce;
+            color: white;
+            font-size: 1.15rem;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 6px 14px rgba(49,130,206,0.3);
+        }
+
         @media (min-width: 620px) {
             .game-nav {
                 justify-content: center;
@@ -766,6 +834,16 @@
     </style>
 </head>
 <body>
+
+    <div id="translationWarning" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="translationWarningTitle" translate="no" class="notranslate">
+        <div class="translation-warning-card">
+            <div class="translation-warning-icon" aria-hidden="true">🌐🚫</div>
+            <h2 id="translationWarningTitle">Μην μεταφράζεις αυτή τη σελίδα</h2>
+            <p>Οι λέξεις είναι ήδη σε τέσσερις γλώσσες. Η αυτόματη μετάφραση θα χαλάσει το παιχνίδι.</p>
+            <p>Άνοιξε το μενού μετάφρασης του προγράμματος περιήγησης (π.χ. Chrome) και διάλεξε <strong>«Να μην μεταφράζεται ποτέ αυτός ο ιστότοπος»</strong>.</p>
+            <button id="translationWarningDismiss" type="button" onclick="hideTranslationWarning()">Το κατάλαβα</button>
+        </div>
+    </div>
 
     <!-- Header & Language Mode Selector -->
     <header>
@@ -830,7 +908,7 @@
 
     <!-- 1. FEED SANTA GAME -->
     <div id="game-monster" class="game-view">
-        <div class="speech-bubble" id="monsterSpeech">Ari, can you feed Santa? 🎅</div>
+        <div class="speech-bubble" id="monsterSpeech">Άρι, μπορείς να ταΐσεις τον Άγιο Βασίλη; 🎅</div>
         <div class="monster-stage">
             <div class="monster-avatar" id="monsterAvatar" onclick="tickleMonster()" role="img" aria-label="Santa Claus">🎅</div>
         </div>
@@ -1197,11 +1275,29 @@
             fr: { code: 'fr-FR', flag: '🇫🇷' }
         };
         const allLanguageOrder = ['el', 'en', 'es', 'fr'];
+        const childNames = [
+            { el: 'Άρι', en: 'Ari', es: 'Ari', fr: 'Ari' },
+            { el: 'Αρούλλη', en: 'Aroulli', es: 'Aroulli', fr: 'Aroulli' },
+            { el: 'Αριστοφάνη', en: 'Aristofani', es: 'Aristofani', fr: 'Aristofani' }
+        ];
+        let activeChildName = childNames[0];
+        let nextChildNameIndex = 0;
+
+        function nextChildName() {
+            activeChildName = childNames[nextChildNameIndex];
+            nextChildNameIndex = (nextChildNameIndex + 1) % childNames.length;
+            return activeChildName;
+        }
+
+        function personalizeText(text, language, childName = activeChildName) {
+            return text.replace(language === 'el' ? 'Άρι' : 'Ari', childName[language]);
+        }
+
         const repeatCopy = {
-            el: { listen: '👂 Άκου καλά…', repeat: '🎤 Πες το κι εσύ, Άρι!', spokenRepeat: 'Πες το κι εσύ, Άρι!', close: 'Κλείσιμο' },
-            en: { listen: '👂 Listen…', repeat: '🎤 Your turn, Ari!', spokenRepeat: 'Your turn, Ari!', close: 'Close' },
-            es: { listen: '👂 Escucha…', repeat: '🎤 ¡Tu turno, Ari!', spokenRepeat: '¡Tu turno, Ari!', close: 'Cerrar' },
-            fr: { listen: '👂 Écoute…', repeat: '🎤 À toi, Ari !', spokenRepeat: 'À toi, Ari !', close: 'Fermer' }
+            el: { listen: '👂 Άκου καλά…', repeat: name => `🎤 Πες το κι εσύ, ${name}!`, spokenRepeat: name => `Πες το κι εσύ, ${name}!`, encourage: name => `✨ Μπράβο, ${name}!`, close: 'Κλείσιμο' },
+            en: { listen: '👂 Listen…', repeat: name => `🎤 Your turn, ${name}!`, spokenRepeat: name => `Your turn, ${name}!`, encourage: name => `✨ Great job, ${name}!`, close: 'Close' },
+            es: { listen: '👂 Escucha…', repeat: name => `🎤 ¡Tu turno, ${name}!`, spokenRepeat: name => `¡Tu turno, ${name}!`, encourage: name => `✨ ¡Muy bien, ${name}!`, close: 'Cerrar' },
+            fr: { listen: '👂 Écoute…', repeat: name => `🎤 À toi, ${name} !`, spokenRepeat: name => `À toi, ${name} !`, encourage: name => `✨ Bravo, ${name} !`, close: 'Fermer' }
         };
         const repeatAnimationClasses = ['repeat-bounce', 'repeat-wiggle', 'repeat-float', 'repeat-pop'];
         let voices = [];
@@ -1227,8 +1323,45 @@
         let speechSequenceTimeout = null;
         let repeatSequenceRunId = 0;
         let repeatFinishCallback = null;
+        let singleLanguagePromptNext = true;
+        let itemPronunciationTimeout = null;
+        let pendingPronunciationCard = null;
+
+        function browserTranslationDetected() {
+            const root = document.documentElement;
+            const translatedByClass = root.classList.contains('translated-ltr') || root.classList.contains('translated-rtl');
+            const translatedProxy = location.hostname.endsWith('.translate.goog') || location.hostname === 'translate.google.com';
+            const translatedBanner = Boolean(document.querySelector('iframe.goog-te-banner-frame, iframe.skiptranslate, .goog-te-banner-frame'));
+            return translatedByClass || translatedProxy || translatedBanner;
+        }
+
+        function showTranslationWarning() {
+            const warning = document.getElementById('translationWarning');
+            if (warning.classList.contains('active')) return;
+            cancelRepeatSequence();
+            warning.classList.add('active');
+            warning.setAttribute('aria-hidden', 'false');
+            document.body.classList.add('translation-warning-open');
+            requestAnimationFrame(() => document.getElementById('translationWarningDismiss').focus({ preventScroll: true }));
+        }
+
+        function hideTranslationWarning() {
+            const warning = document.getElementById('translationWarning');
+            warning.classList.remove('active');
+            warning.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('translation-warning-open');
+        }
+
+        function checkBrowserTranslation() {
+            if (browserTranslationDetected()) showTranslationWarning();
+        }
+
+        const translationObserver = new MutationObserver(checkBrowserTranslation);
+        translationObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+        translationObserver.observe(document.body, { childList: true });
 
         function setLanguage(mode, button) {
+            if (currentLangMode !== mode) singleLanguagePromptNext = true;
             currentLangMode = mode;
             document.querySelectorAll('.lang-pill').forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
@@ -1251,7 +1384,7 @@
             document.getElementById('previousGameButton').setAttribute('aria-label', text.previousGame);
             document.getElementById('nextGameButton').setAttribute('aria-label', text.nextGame);
             document.getElementById('gameSwipeHintText').textContent = text.swipeForGames;
-            document.getElementById('monsterSpeech').textContent = text.santaPrompt;
+            document.getElementById('monsterSpeech').textContent = personalizeText(text.santaPrompt, displayLanguage);
             document.getElementById('monsterAvatar').setAttribute('aria-label', text.santaLabel);
             document.getElementById('dancingSanta').setAttribute('aria-label', text.santaLabel);
             document.getElementById('balloonStatus').textContent = text.popBalloons;
@@ -1343,6 +1476,14 @@
                 clearTimeout(speechSequenceTimeout);
                 speechSequenceTimeout = null;
             }
+            if (itemPronunciationTimeout) {
+                clearTimeout(itemPronunciationTimeout);
+                itemPronunciationTimeout = null;
+            }
+            if (pendingPronunciationCard) {
+                pendingPronunciationCard.classList.remove('playing');
+                pendingPronunciationCard = null;
+            }
             hideToast();
             const finish = repeatFinishCallback;
             repeatFinishCallback = null;
@@ -1357,14 +1498,19 @@
             if (finish) finish();
         }
 
-        function playRepeatStep(item, text, language, stepIndex, totalSteps, runId, onDone) {
+        function playRepeatStep(item, text, language, stepIndex, totalSteps, runId, shouldSpeakPrompt, childName, onDone) {
             if (runId !== repeatSequenceRunId) return;
             showToast(item, text, language, stepIndex, totalSteps);
             speakSingle(languageSettings[language].code, text, () => {
                 if (runId !== repeatSequenceRunId) return;
                 document.getElementById('repeatCard').classList.add('your-turn');
-                document.getElementById('repeatPrompt').textContent = repeatCopy[language].repeat;
-                speakSingle(languageSettings[language].code, repeatCopy[language].spokenRepeat, () => {
+                if (!shouldSpeakPrompt) {
+                    document.getElementById('repeatPrompt').textContent = repeatCopy[language].encourage(childName[language]);
+                    onDone();
+                    return;
+                }
+                document.getElementById('repeatPrompt').textContent = repeatCopy[language].repeat(childName[language]);
+                speakSingle(languageSettings[language].code, repeatCopy[language].spokenRepeat(childName[language]), () => {
                     if (runId === repeatSequenceRunId) onDone();
                 });
             });
@@ -1375,9 +1521,12 @@
             cancelRepeatSequence();
             const runId = ++repeatSequenceRunId;
             repeatFinishCallback = onFinish || null;
+            const childName = nextChildName();
 
             if (currentLangMode !== 'all') {
-                playRepeatStep(item, item[currentLangMode], currentLangMode, 0, 1, runId, () => {
+                const shouldSpeakPrompt = singleLanguagePromptNext;
+                singleLanguagePromptNext = !singleLanguagePromptNext;
+                playRepeatStep(item, item[currentLangMode], currentLangMode, 0, 1, runId, shouldSpeakPrompt, childName, () => {
                     speechSequenceTimeout = setTimeout(() => finishRepeatSequence(runId), 1700);
                 });
                 return;
@@ -1397,12 +1546,23 @@
                     return;
                 }
                 const cur = seq[index];
-                playRepeatStep(item, cur.text, cur.language, index, seq.length, runId, () => {
+                playRepeatStep(item, cur.text, cur.language, index, seq.length, runId, true, childName, () => {
                     index++;
                     speechSequenceTimeout = setTimeout(runNext, 1700);
                 });
             }
             runNext();
+        }
+
+        function schedulePronunciation(card, item, delay) {
+            cancelRepeatSequence();
+            card.classList.add('playing');
+            pendingPronunciationCard = card;
+            itemPronunciationTimeout = setTimeout(() => {
+                itemPronunciationTimeout = null;
+                pendingPronunciationCard = null;
+                pronounceItem(item, () => card.classList.remove('playing'));
+            }, delay);
         }
 
         /* -------------------------------------------------------------
@@ -1450,8 +1610,12 @@
         gameNav.addEventListener('pointerdown', dismissGameSwipeHint, { passive: true });
         window.addEventListener('resize', updateGameNavControls);
         document.addEventListener('keydown', event => {
-            if (event.key === 'Escape' && document.getElementById('repeatOverlay').classList.contains('active')) {
-                cancelRepeatSequence();
+            if (event.key === 'Escape') {
+                if (document.getElementById('translationWarning').classList.contains('active')) {
+                    hideTranslationWarning();
+                } else if (document.getElementById('repeatOverlay').classList.contains('active')) {
+                    cancelRepeatSequence();
+                }
             }
         });
 
@@ -1508,43 +1672,45 @@
             SoundFX.chomp();
             monsterAvatar.classList.add('chewing');
             const responseIndex = Math.floor(Math.random() * 3);
+            const childName = nextChildName();
             const displayLanguage = currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode;
-            const displayResponse = getSantaResponse(food, displayLanguage, responseIndex);
+            const displayResponse = getSantaResponse(food, displayLanguage, responseIndex, childName);
             monsterSpeech.textContent = `${displayResponse} 🎁`;
             showSantaCelebration(displayResponse);
 
             setTimeout(() => monsterAvatar.classList.remove('chewing'), 1200);
 
-            speakSantaThanks(food, responseIndex, () => {
-                monsterSpeech.textContent = interfaceText[displayLanguage].morePlease;
+            speakSantaThanks(food, responseIndex, childName, () => {
+                monsterSpeech.textContent = personalizeText(interfaceText[displayLanguage].morePlease, displayLanguage, childName);
                 resetSantaIdleTimer();
             });
         }
 
-        function getSantaResponse(food, language, responseIndex) {
+        function getSantaResponse(food, language, responseIndex, childName) {
             const foodName = language === 'en'
                 ? `the ${food.en.toLowerCase()}`
                 : santaFoodNames[food.emoji][language];
+            const name = childName[language];
             const responses = {
                 en: [
-                    `Ho, ho, ho! Thank you for ${foodName}, Ari!`,
-                    `That was delicious! Thank you for ${foodName}, Ari!`,
-                    `I loved that! Thank you for ${foodName}, Ari!`
+                    `Ho, ho, ho! Thank you for ${foodName}, ${name}!`,
+                    `That was delicious! Thank you for ${foodName}, ${name}!`,
+                    `I loved that! Thank you for ${foodName}, ${name}!`
                 ],
                 es: [
-                    `¡Jo, jo, jo! ¡Gracias por ${foodName}, Ari!`,
-                    `¡Qué delicia! ¡Gracias por ${foodName}, Ari!`,
-                    `¡Me encantó! ¡Gracias por ${foodName}, Ari!`
+                    `¡Jo, jo, jo! ¡Gracias por ${foodName}, ${name}!`,
+                    `¡Qué delicia! ¡Gracias por ${foodName}, ${name}!`,
+                    `¡Me encantó! ¡Gracias por ${foodName}, ${name}!`
                 ],
                 fr: [
-                    `Ho, ho, ho ! Merci pour ${foodName}, Ari !`,
-                    `C’était délicieux ! Merci pour ${foodName}, Ari !`,
-                    `J’ai adoré ! Merci pour ${foodName}, Ari !`
+                    `Ho, ho, ho ! Merci pour ${foodName}, ${name} !`,
+                    `C’était délicieux ! Merci pour ${foodName}, ${name} !`,
+                    `J’ai adoré ! Merci pour ${foodName}, ${name} !`
                 ],
                 el: [
-                    `Χο, χο, χο! Ευχαριστώ για ${foodName}, Άρι!`,
-                    `Τι νοστιμιά! Ευχαριστώ για ${foodName}, Άρι!`,
-                    `Μου άρεσε πολύ! Ευχαριστώ για ${foodName}, Άρι!`
+                    `Χο, χο, χο! Ευχαριστώ για ${foodName}, ${name}!`,
+                    `Τι νοστιμιά! Ευχαριστώ για ${foodName}, ${name}!`,
+                    `Μου άρεσε πολύ! Ευχαριστώ για ${foodName}, ${name}!`
                 ]
             };
             return responses[language][responseIndex];
@@ -1567,7 +1733,7 @@
             }, 2800);
         }
 
-        function speakSantaThanks(food, responseIndex, onFinish) {
+        function speakSantaThanks(food, responseIndex, childName, onFinish) {
             const languages = {
                 en: 'en-US',
                 es: 'es-MX',
@@ -1576,7 +1742,7 @@
             };
 
             if (currentLangMode !== 'all') {
-                speakSingle(languages[currentLangMode], getSantaResponse(food, currentLangMode, responseIndex), onFinish);
+                speakSingle(languages[currentLangMode], getSantaResponse(food, currentLangMode, responseIndex, childName), onFinish);
                 return;
             }
 
@@ -1588,7 +1754,7 @@
                     return;
                 }
                 const language = sequence[index++];
-                const response = getSantaResponse(food, language, responseIndex);
+                const response = getSantaResponse(food, language, responseIndex, childName);
                 document.getElementById('santaCelebrationMessage').textContent = response;
                 speakSingle(languages[language], response, () => {
                     speechSequenceTimeout = setTimeout(speakNextThankYou, 450);
@@ -1613,15 +1779,16 @@
         function promptSantaForMore() {
             if (!document.getElementById('game-monster').classList.contains('active')) return;
             const languageCodes = { en: 'en-US', es: 'es-MX', fr: 'fr-FR', el: 'el-GR' };
+            const childName = nextChildName();
             const displayLanguage = currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode;
-            monsterSpeech.textContent = interfaceText[displayLanguage].morePlease;
+            monsterSpeech.textContent = personalizeText(interfaceText[displayLanguage].morePlease, displayLanguage, childName);
             monsterAvatar.classList.remove('asking');
             void monsterAvatar.offsetWidth;
             monsterAvatar.classList.add('asking');
             setTimeout(() => monsterAvatar.classList.remove('asking'), 1600);
 
             if (currentLangMode !== 'all') {
-                speakSingle(languageCodes[currentLangMode], getSpeechText(interfaceText[currentLangMode].morePlease));
+                speakSingle(languageCodes[currentLangMode], getSpeechText(personalizeText(interfaceText[currentLangMode].morePlease, currentLangMode, childName)));
                 return;
             }
 
@@ -1630,8 +1797,9 @@
             function speakNextPrompt() {
                 if (index >= sequence.length) return;
                 const language = sequence[index++];
-                monsterSpeech.textContent = interfaceText[language].morePlease;
-                speakSingle(languageCodes[language], getSpeechText(interfaceText[language].morePlease), () => {
+                const prompt = personalizeText(interfaceText[language].morePlease, language, childName);
+                monsterSpeech.textContent = prompt;
+                speakSingle(languageCodes[language], getSpeechText(prompt), () => {
                     speechSequenceTimeout = setTimeout(speakNextPrompt, 350);
                 });
             }
@@ -1642,12 +1810,13 @@
             clearSantaIdleTimer();
             cancelRepeatSequence();
             SoundFX.animal('cat');
+            const childName = nextChildName();
             const displayLanguage = currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode;
-            monsterSpeech.textContent = interfaceText[displayLanguage].tickle;
+            monsterSpeech.textContent = personalizeText(interfaceText[displayLanguage].tickle, displayLanguage, childName);
             const languageCodes = { en: 'en-US', es: 'es-MX', fr: 'fr-FR', el: 'el-GR' };
 
             if (currentLangMode !== 'all') {
-                speakSingle(languageCodes[displayLanguage], getSpeechText(interfaceText[displayLanguage].tickle), resetSantaIdleTimer);
+                speakSingle(languageCodes[displayLanguage], getSpeechText(personalizeText(interfaceText[displayLanguage].tickle, displayLanguage, childName)), resetSantaIdleTimer);
                 return;
             }
 
@@ -1658,8 +1827,9 @@
                     return;
                 }
                 const language = allLanguageOrder[index++];
-                monsterSpeech.textContent = interfaceText[language].tickle;
-                speakSingle(languageCodes[language], getSpeechText(interfaceText[language].tickle), () => {
+                const tickle = personalizeText(interfaceText[language].tickle, language, childName);
+                monsterSpeech.textContent = tickle;
+                speakSingle(languageCodes[language], getSpeechText(tickle), () => {
                     speechSequenceTimeout = setTimeout(speakNextTickle, 350);
                 });
             }
@@ -1685,14 +1855,10 @@
                 <div class="card-sub">${t.el}</div>
             `;
             card.onclick = () => {
-                card.classList.add('playing');
                 if (t.type === 'siren') SoundFX.siren();
                 else if (t.type === 'crane' || t.type === 'truck') SoundFX.horn();
                 else SoundFX.engine();
-
-                setTimeout(() => {
-                    pronounceItem(t, () => card.classList.remove('playing'));
-                }, 400);
+                schedulePronunciation(card, t, 400);
             };
             trucksGrid.appendChild(card);
         });
@@ -1712,11 +1878,8 @@
                 <div class="card-sub">${a.el}</div>
             `;
             card.onclick = () => {
-                card.classList.add('playing');
                 SoundFX.animal(a.sound);
-                setTimeout(() => {
-                    pronounceItem(a, () => card.classList.remove('playing'));
-                }, 450);
+                schedulePronunciation(card, a, 450);
             };
             animalsGrid.appendChild(card);
         });
@@ -1785,7 +1948,25 @@
             balloonEl.remove();
             const displayLanguage = currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode;
             balloonStatus.textContent = interfaceText[displayLanguage].popped(numItem.num);
-            pronounceItem(numItem);
+            pronounceBalloonNumber(numItem);
+        }
+
+        function pronounceBalloonNumber(numItem) {
+            cancelRepeatSequence();
+            const runId = ++repeatSequenceRunId;
+            const sequence = currentLangMode === 'all' ? allLanguageOrder : [currentLangMode];
+            let index = 0;
+
+            function speakNextNumber() {
+                if (runId !== repeatSequenceRunId || index >= sequence.length) return;
+                const language = sequence[index++];
+                speakSingle(languageSettings[language].code, numItem[language], () => {
+                    if (runId !== repeatSequenceRunId || index >= sequence.length) return;
+                    speechSequenceTimeout = setTimeout(speakNextNumber, 250);
+                });
+            }
+
+            speakNextNumber();
         }
 
         function startBalloonSpawner() {
@@ -1800,6 +1981,7 @@
             balloonSky.innerHTML = '';
         }
 
+        checkBrowserTranslation();
         updateInterfaceLanguage();
         startBalloonSpawner();
         requestAnimationFrame(() => revealActiveGame(false));
