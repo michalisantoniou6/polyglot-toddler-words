@@ -4244,6 +4244,7 @@
         function startBalloonSpawner() {
             if (balloonInterval) clearInterval(balloonInterval);
             balloonSky.innerHTML = '';
+            currentNumberIndex = 0;
             spawnBalloon();
             balloonInterval = setInterval(spawnBalloon, 2900);
         }
