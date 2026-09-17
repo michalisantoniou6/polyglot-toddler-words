@@ -1118,9 +1118,214 @@
             .game-swipe-hint { animation: none; }
             .game-nav { scroll-behavior: auto; }
         }
+
+        /* Focused play: gameplay stays primary and choices live in one calm sheet. */
+        header {
+            position: fixed;
+            inset: 0;
+            z-index: 85;
+            padding: 0;
+            background: rgba(26, 32, 44, 0.42);
+            box-shadow: none;
+            display: flex;
+            flex-direction: row;
+            align-items: flex-end;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        body:not(.controls-collapsed) { overflow: hidden; }
+
+        .controls-panel {
+            width: 100%;
+            max-width: 620px;
+            max-height: min(88svh, 760px);
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            padding: 18px max(16px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+            border-radius: 30px 30px 0 0;
+            background: #ffffff;
+            box-shadow: 0 -12px 44px rgba(26, 32, 44, 0.24);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            animation: controlsSheetIn 0.24s ease-out both;
+        }
+
+        @keyframes controlsSheetIn {
+            from { transform: translateY(24px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .controls-panel-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .controls-panel-eyebrow {
+            color: #718096;
+            font-size: 0.8rem;
+            font-weight: 900;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .controls-panel-title {
+            margin: 2px 0 0;
+            color: #2d3748;
+            font-size: clamp(1.35rem, 6vw, 1.9rem);
+            line-height: 1.1;
+        }
+
+        .controls-panel-title:focus { outline: none; }
+
+        .controls-section {
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 22px;
+            background: #f8fbff;
+        }
+
+        .controls-section-label {
+            margin: 0 0 10px 2px;
+            color: #4a5568;
+            font-size: 0.86rem;
+            font-weight: 900;
+        }
+
+        .controls-panel .header-controls,
+        .controls-panel .game-picker {
+            width: 100%;
+            max-width: none;
+            padding: 0;
+        }
+
+        .controls-panel .lang-bar {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 7px;
+            width: 100%;
+            padding: 0;
+            overflow: visible;
+            background: transparent;
+        }
+
+        .controls-panel .lang-pill {
+            min-width: 0;
+            min-height: 50px;
+            padding: 7px 3px;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            background: white;
+            font-size: clamp(0.75rem, 3.2vw, 0.95rem);
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .controls-panel .lang-pill.active {
+            border-color: #3182ce;
+            background: #3182ce;
+            color: white;
+            box-shadow: 0 4px 12px rgba(49,130,206,0.25);
+        }
+
+        .controls-panel .game-nav {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            width: 100%;
+            padding: 0;
+            overflow: visible;
+        }
+
+        .controls-panel .nav-tab,
+        .controls-panel .nav-tab.active {
+            width: 100%;
+            min-width: 0;
+            min-height: 92px;
+            padding: 10px 8px;
+            border-radius: 18px;
+            transform: none;
+            scroll-snap-align: none;
+            font-size: clamp(0.83rem, 3.7vw, 1rem);
+        }
+
+        .controls-panel .nav-icon {
+            margin-bottom: 4px;
+            font-size: 2rem;
+        }
+
+        .controls-panel .nav-scroll-button,
+        .controls-panel .game-nav-dots,
+        .controls-panel .game-swipe-hint { display: none; }
+
+        .controls-panel .controls-collapse-button {
+            width: 100%;
+            min-height: 54px;
+            justify-content: center;
+            border-radius: 18px;
+            background: #3182ce;
+            color: white;
+            font-size: 1rem;
+            box-shadow: 0 6px 16px rgba(49,130,206,0.26);
+        }
+
+        .controls-expand-button {
+            min-width: 82px;
+            min-height: 56px;
+            padding: 7px 13px;
+            border-radius: 999px;
+            background: rgba(49,130,206,0.96);
+            gap: 9px;
+            font-size: 1.32rem;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.22);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+
+        #collapsedLanguageFlag {
+            padding-right: 9px;
+            border-right: 1px solid rgba(255,255,255,0.55);
+        }
+
+        .game-view.active {
+            min-height: 100svh;
+            padding-top: max(12px, env(safe-area-inset-top));
+            padding-bottom: max(12px, env(safe-area-inset-bottom));
+        }
+
+        .balloon-sky,
+        body.controls-collapsed .balloon-sky {
+            flex: 1;
+            height: auto;
+            min-height: calc(100svh - 78px);
+            max-height: none;
+        }
+
+        @media (max-width: 480px) {
+            header { padding: 0; }
+            .controls-panel { gap: 12px; }
+            .controls-panel .header-controls { padding: 0; }
+            .game-view,
+            body.controls-collapsed .game-view { padding-inline: 8px; }
+            .balloon-sky,
+            body.controls-collapsed .balloon-sky {
+                height: auto;
+                min-height: calc(100svh - 72px);
+                max-height: none;
+                border-radius: 20px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .controls-panel { animation: none; }
+        }
     </style>
 </head>
-<body>
+<body class="controls-collapsed">
 
     <div id="translationWarning" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="translationWarningTitle" translate="no" class="notranslate">
         <div class="translation-warning-card">
@@ -1160,59 +1365,71 @@
     </div>
 
     <!-- Header & Language Mode Selector -->
-    <header id="gameControlsHeader">
-        <div class="header-controls" id="headerControls">
-            <div class="lang-bar">
-                <button class="lang-pill active" onclick="setLanguage('el', this)">🇬🇷 ΕΛ</button>
-                <button class="lang-pill" onclick="setLanguage('en', this)">🇬🇧 EN</button>
-                <button class="lang-pill" onclick="setLanguage('es', this)">🇲🇽 MX</button>
-                <button class="lang-pill" onclick="setLanguage('fr', this)">🇫🇷 FR</button>
-                <button class="lang-pill" onclick="setLanguage('all', this)">🌍 All 4</button>
+    <header id="gameControlsHeader" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="controlsPanelTitle" onclick="if (event.target === this) setControlsCollapsed(true)">
+        <div class="controls-panel">
+            <div class="controls-panel-top">
+                <div>
+                    <div class="controls-panel-eyebrow" id="controlsPanelEyebrow">🎮 Παιχνίδι</div>
+                    <h2 class="controls-panel-title" id="controlsPanelTitle" tabindex="-1">Διάλεξε παιχνίδι</h2>
+                </div>
+                <button class="parent-settings-button" id="settingsButton" type="button" onclick="openSettings()" aria-label="Ρυθμίσεις για γονείς" aria-haspopup="dialog">⚙️</button>
             </div>
-            <button class="parent-settings-button" id="settingsButton" type="button" onclick="openSettings()" aria-label="Ρυθμίσεις για γονείς" aria-haspopup="dialog">⚙️</button>
-        </div>
 
-        <!-- Game picker stays reachable while a long game scrolls -->
-        <div class="game-picker" id="gamePicker">
-            <button class="nav-scroll-button previous" id="previousGameButton" type="button" onclick="scrollGames(-1)" aria-label="Previous game">‹</button>
-            <nav class="game-nav" id="gameNav" role="tablist" aria-label="Choose a game">
-                <button class="nav-tab" role="tab" aria-selected="false" onclick="switchGame('monster', this)">
-                    <span class="nav-icon">🎅</span>
-                    <span id="navMonster">Feed Santa</span>
-                </button>
-                <button class="nav-tab" role="tab" aria-selected="false" onclick="switchGame('trucks', this)">
-                    <span class="nav-icon">🚜</span>
-                    <span id="navTrucks">Big Trucks</span>
-                </button>
-                <button class="nav-tab active" role="tab" aria-selected="true" onclick="switchGame('balloons', this)">
-                    <span class="nav-icon">🎈</span>
-                    <span id="navBalloons">Balloon Pop</span>
-                </button>
-                <button class="nav-tab" role="tab" aria-selected="false" onclick="switchGame('animals', this)">
-                    <span class="nav-icon">🦁</span>
-                    <span id="navAnimals">Animals</span>
-                </button>
-            </nav>
-            <button class="nav-scroll-button next" id="nextGameButton" type="button" onclick="scrollGames(1)" aria-label="Next game">›</button>
-            <div class="game-nav-dots" id="gameNavDots" aria-hidden="true">
-                <span class="game-nav-dot"></span>
-                <span class="game-nav-dot"></span>
-                <span class="game-nav-dot active"></span>
-                <span class="game-nav-dot"></span>
-            </div>
-            <div class="game-swipe-hint" id="gameSwipeHint" aria-hidden="true">
-                <span>👈</span><span id="gameSwipeHintText">Swipe for more games</span><span>👉</span>
-            </div>
+            <section class="controls-section" aria-labelledby="languagePickerLabel">
+                <div class="controls-section-label" id="languagePickerLabel">🌍 Γλώσσα</div>
+                <div class="header-controls" id="headerControls">
+                    <div class="lang-bar">
+                        <button class="lang-pill active" onclick="setLanguage('el', this)">🇬🇷 ΕΛ</button>
+                        <button class="lang-pill" onclick="setLanguage('en', this)">🇬🇧 EN</button>
+                        <button class="lang-pill" onclick="setLanguage('es', this)">🇲🇽 MX</button>
+                        <button class="lang-pill" onclick="setLanguage('fr', this)">🇫🇷 FR</button>
+                        <button class="lang-pill" onclick="setLanguage('all', this)">🌍 All 4</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="controls-section game-picker" id="gamePicker" aria-labelledby="gamePickerLabel">
+                <div class="controls-section-label" id="gamePickerLabel">🧸 Παιχνίδια</div>
+                <button class="nav-scroll-button previous" id="previousGameButton" type="button" onclick="scrollGames(-1)" aria-label="Previous game">‹</button>
+                <nav class="game-nav" id="gameNav" role="tablist" aria-label="Choose a game">
+                    <button class="nav-tab" role="tab" aria-selected="false" onclick="switchGame('monster', this)">
+                        <span class="nav-icon">🎅</span>
+                        <span id="navMonster">Feed Santa</span>
+                    </button>
+                    <button class="nav-tab" role="tab" aria-selected="false" onclick="switchGame('trucks', this)">
+                        <span class="nav-icon">🚜</span>
+                        <span id="navTrucks">Big Trucks</span>
+                    </button>
+                    <button class="nav-tab active" role="tab" aria-selected="true" onclick="switchGame('balloons', this)">
+                        <span class="nav-icon">🎈</span>
+                        <span id="navBalloons">Balloon Pop</span>
+                    </button>
+                    <button class="nav-tab" role="tab" aria-selected="false" onclick="switchGame('animals', this)">
+                        <span class="nav-icon">🦁</span>
+                        <span id="navAnimals">Animals</span>
+                    </button>
+                </nav>
+                <button class="nav-scroll-button next" id="nextGameButton" type="button" onclick="scrollGames(1)" aria-label="Next game">›</button>
+                <div class="game-nav-dots" id="gameNavDots" aria-hidden="true">
+                    <span class="game-nav-dot"></span>
+                    <span class="game-nav-dot"></span>
+                    <span class="game-nav-dot active"></span>
+                    <span class="game-nav-dot"></span>
+                </div>
+                <div class="game-swipe-hint" id="gameSwipeHint" aria-hidden="true">
+                    <span>👈</span><span id="gameSwipeHintText">Swipe for more games</span><span>👉</span>
+                </div>
+            </section>
+            <button class="controls-collapse-button" id="collapseControlsButton" type="button" onclick="setControlsCollapsed(true)" aria-controls="gameControlsHeader" aria-expanded="true">
+                <span aria-hidden="true">▶</span>
+                <span id="collapseControlsText">Παίξε τώρα</span>
+            </button>
         </div>
-        <button class="controls-collapse-button" id="collapseControlsButton" type="button" onclick="setControlsCollapsed(true)" aria-controls="gameControlsHeader" aria-expanded="true">
-            <span aria-hidden="true">⌃</span>
-            <span id="collapseControlsText">Κρύψε τα κουμπιά</span>
-        </button>
     </header>
 
     <button class="controls-expand-button" id="expandControlsButton" type="button" onclick="setControlsCollapsed(false)" aria-controls="gameControlsHeader" aria-expanded="false" aria-label="Παιχνίδια και γλώσσες">
+        <span id="collapsedLanguageFlag" aria-hidden="true">🇬🇷</span>
         <span id="collapsedGameIcon" aria-hidden="true">🎈</span>
-        <span class="controls-expand-chevron" aria-hidden="true">⌄</span>
     </button>
 
     <!-- Full-screen listen-and-repeat stage -->
@@ -1565,6 +1782,7 @@
                 pageTitle: 'Toddler Fun Arcade', allLanguages: 'All 4', feedSanta: 'Feed Santa',
                 trucks: 'Big Trucks', balloons: 'Balloon Pop', animals: 'Animals',
                 chooseGame: 'Choose a game', previousGame: 'Previous game', nextGame: 'Next game',
+                chooseLanguage: 'Language', gamesLabel: 'Games', menuLabel: 'Play menu', playNow: 'Play now',
                 swipeForGames: 'Swipe for more games', hideControls: 'Hide controls', showControls: 'Games and languages',
                 santaPrompt: 'Ari can you feed Santa? 🎅', morePlease: 'More please Ari! 🎅',
                 tickle: 'Ho ho ho! That tickles Ari! 😆', popBalloons: 'Pop the balloons! 🎈',
@@ -1574,6 +1792,7 @@
                 pageTitle: 'Juegos infantiles divertidos', allLanguages: 'Los 4', feedSanta: 'Dale de comer a Santa',
                 trucks: 'Camiones grandes', balloons: 'Revienta globos', animals: 'Animales',
                 chooseGame: 'Elige un juego', previousGame: 'Juego anterior', nextGame: 'Siguiente juego',
+                chooseLanguage: 'Idioma', gamesLabel: 'Juegos', menuLabel: 'Menú de juego', playNow: 'Jugar ahora',
                 swipeForGames: 'Desliza para ver más juegos', hideControls: 'Ocultar controles', showControls: 'Juegos e idiomas',
                 santaPrompt: 'Ari ¿puedes darle de comer a Santa? 🎅', morePlease: '¡Más por favor Ari! 🎅',
                 tickle: '¡Jo jo jo! ¡Eso me da cosquillas Ari! 😆', popBalloons: '¡Revienta los globos! 🎈',
@@ -1583,6 +1802,7 @@
                 pageTitle: 'Jeux amusants pour enfants', allLanguages: 'Les 4', feedSanta: 'Nourris le Père Noël',
                 trucks: 'Gros camions', balloons: 'Éclate les ballons', animals: 'Animaux',
                 chooseGame: 'Choisis un jeu', previousGame: 'Jeu précédent', nextGame: 'Jeu suivant',
+                chooseLanguage: 'Langue', gamesLabel: 'Jeux', menuLabel: 'Menu de jeu', playNow: 'Jouer maintenant',
                 swipeForGames: 'Fais glisser pour voir plus de jeux', hideControls: 'Masquer les commandes', showControls: 'Jeux et langues',
                 santaPrompt: 'Ari peux-tu nourrir le Père Noël ? 🎅', morePlease: 'Encore s’il te plaît Ari ! 🎅',
                 tickle: 'Ho ho ho ! Ça me chatouille Ari ! 😆', popBalloons: 'Éclate les ballons ! 🎈',
@@ -1592,6 +1812,7 @@
                 pageTitle: 'Χαρούμενα παιδικά παιχνίδια', allLanguages: 'Και οι 4', feedSanta: 'Τάισε τον Άγιο Βασίλη',
                 trucks: 'Μεγάλα οχήματα', balloons: 'Σκάσε τα μπαλόνια', animals: 'Ζώα',
                 chooseGame: 'Διάλεξε παιχνίδι', previousGame: 'Προηγούμενο παιχνίδι', nextGame: 'Επόμενο παιχνίδι',
+                chooseLanguage: 'Γλώσσα', gamesLabel: 'Παιχνίδια', menuLabel: 'Μενού παιχνιδιού', playNow: 'Παίξε τώρα',
                 swipeForGames: 'Σύρε για περισσότερα παιχνίδια', hideControls: 'Κρύψε τα κουμπιά', showControls: 'Παιχνίδια και γλώσσες',
                 santaPrompt: 'Άρι μπορείς να ταΐσεις τον Άγιο Βασίλη; 🎅', morePlease: 'Κι άλλο παρακαλώ Άρι! 🎅',
                 tickle: 'Χο χο χο! Με γαργαλάς Άρι! 😆', popBalloons: 'Σκάσε τα μπαλόνια! 🎈',
@@ -1946,7 +2167,7 @@
         };
         const allLanguageOrder = ['el', 'en', 'es', 'fr'];
         const childNameStorageKey = 'polyglotToddler.childNames.v1';
-        const controlsCollapsedStorageKey = 'polyglotToddler.controlsCollapsed.v1';
+        const controlsCollapsedStorageKey = 'polyglotToddler.controlsCollapsed.v2';
         const defaultChildNames = [
             { el: 'Άρι', en: 'Ari', es: 'Ari', fr: 'Ari' },
             { el: 'Αρούλλη', en: 'Aroulli', es: 'Aroulli', fr: 'Aroulli' },
@@ -2236,9 +2457,10 @@
 
         function getStoredControlsCollapsed() {
             try {
-                return localStorage.getItem(controlsCollapsedStorageKey) === 'true';
+                const storedValue = localStorage.getItem(controlsCollapsedStorageKey);
+                return storedValue === null ? true : storedValue === 'true';
             } catch (error) {
-                return false;
+                return true;
             }
         }
 
@@ -2261,7 +2483,12 @@
 
             requestAnimationFrame(() => {
                 revealActiveGame(false);
-                if (shouldStore) (isCollapsed ? expandButton : collapseButton).focus({ preventScroll: true });
+                if (!shouldStore) return;
+                if (isCollapsed) {
+                    expandButton.focus({ preventScroll: true });
+                } else {
+                    document.getElementById('controlsPanelTitle').focus({ preventScroll: true });
+                }
             });
         }
 
@@ -2279,9 +2506,14 @@
             document.getElementById('previousGameButton').setAttribute('aria-label', text.previousGame);
             document.getElementById('nextGameButton').setAttribute('aria-label', text.nextGame);
             document.getElementById('gameSwipeHintText').textContent = text.swipeForGames;
-            document.getElementById('collapseControlsText').textContent = text.hideControls;
-            document.getElementById('collapseControlsButton').setAttribute('aria-label', text.hideControls);
+            document.getElementById('controlsPanelEyebrow').textContent = `🎮 ${text.menuLabel}`;
+            document.getElementById('controlsPanelTitle').textContent = text.chooseGame;
+            document.getElementById('languagePickerLabel').textContent = `🌍 ${text.chooseLanguage}`;
+            document.getElementById('gamePickerLabel').textContent = `🧸 ${text.gamesLabel}`;
+            document.getElementById('collapseControlsText').textContent = text.playNow;
+            document.getElementById('collapseControlsButton').setAttribute('aria-label', text.playNow);
             document.getElementById('expandControlsButton').setAttribute('aria-label', text.showControls);
+            document.getElementById('collapsedLanguageFlag').textContent = currentLangMode === 'all' ? '🌍' : languageSettings[currentLangMode].flag;
             document.getElementById('monsterSpeech').textContent = personalizeText(text.santaPrompt, displayLanguage);
             document.getElementById('monsterAvatar').setAttribute('aria-label', text.santaLabel);
             document.getElementById('dancingSanta').setAttribute('aria-label', text.santaLabel);
@@ -2539,6 +2771,8 @@
                     closeSettings();
                 } else if (document.getElementById('repeatOverlay').classList.contains('active')) {
                     cancelRepeatSequence();
+                } else if (!document.body.classList.contains('controls-collapsed')) {
+                    setControlsCollapsed(true);
                 }
             }
         });
@@ -2575,6 +2809,8 @@
             } else {
                 clearSantaIdleTimer();
             }
+
+            setControlsCollapsed(true);
         }
 
         // --- Game 1: Feed Santa ---
