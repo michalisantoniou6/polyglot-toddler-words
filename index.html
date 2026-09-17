@@ -1702,10 +1702,32 @@
         };
 
         const soundProfileIndices = new Map();
+        const realSoundCache = new Map();
+        const unavailableRealSounds = new Set();
         let activeRealSound = null;
         let realSoundStopTimeout = null;
+        let realSoundAttemptId = 0;
+
+        function cachedRealSound(src) {
+            if (!realSoundCache.has(src)) {
+                const sound = new Audio();
+                sound.preload = 'auto';
+                sound.playsInline = true;
+                sound.src = src;
+                realSoundCache.set(src, sound);
+            }
+            return realSoundCache.get(src);
+        }
+
+        function preloadNextRealSound(sounds, index) {
+            const nextClip = sounds[(index + 1) % sounds.length];
+            if (!nextClip || unavailableRealSounds.has(nextClip.src)) return;
+            const nextSound = cachedRealSound(nextClip.src);
+            if (nextSound.readyState === 0) nextSound.load();
+        }
 
         function stopRealSound() {
+            realSoundAttemptId++;
             if (realSoundStopTimeout) {
                 clearTimeout(realSoundStopTimeout);
                 realSoundStopTimeout = null;
@@ -1714,56 +1736,106 @@
             activeRealSound = null;
             if (sound) {
                 sound.pause();
-                sound.removeAttribute('src');
-                sound.load();
+                sound.onloadedmetadata = null;
+                sound.onplaying = null;
+                sound.onended = null;
+                sound.onerror = null;
             }
         }
 
-        function playRealSound(profileName, fallback) {
+        function playRealSound(profileName) {
             const sounds = realSoundProfiles[profileName] || [];
-            if (sounds.length === 0) {
-                fallback();
-                return 700;
-            }
+            if (sounds.length === 0) return 450;
 
             const index = soundProfileIndices.get(profileName) || 0;
             soundProfileIndices.set(profileName, (index + 1) % sounds.length);
-            const selectedClip = sounds[index];
             stopRealSound();
+            const attemptId = realSoundAttemptId;
+            const rotatedCandidates = sounds.map((sound, offset) => {
+                const rotatedIndex = (index + offset) % sounds.length;
+                return { sound: sounds[rotatedIndex], index: rotatedIndex };
+            });
+            let candidateIndex = 0;
 
-            const sound = new Audio();
-            activeRealSound = sound;
-            sound.preload = 'auto';
-            sound.playsInline = true;
-            sound.volume = 0.92;
-            sound.src = selectedClip.src;
-
-            let usedFallback = false;
-            const useFallback = () => {
-                if (activeRealSound !== sound || usedFallback) return;
-                usedFallback = true;
-                activeRealSound = null;
-                fallback();
-            };
-
-            sound.addEventListener('loadedmetadata', () => {
-                if (activeRealSound !== sound || !selectedClip.start) return;
-                try {
-                    sound.currentTime = Math.min(selectedClip.start, Math.max(0, sound.duration - 0.2));
-                } catch (error) {
-                    // Some mobile browsers seek once enough audio has buffered.
+            function tryNextRecording() {
+                if (attemptId !== realSoundAttemptId) return;
+                const candidate = rotatedCandidates[candidateIndex++];
+                if (!candidate) {
+                    activeRealSound = null;
+                    return;
                 }
-            }, { once: true });
-            sound.addEventListener('error', useFallback, { once: true });
+                const selectedClip = candidate.sound;
+                if (unavailableRealSounds.has(selectedClip.src)) {
+                    tryNextRecording();
+                    return;
+                }
 
-            const playPromise = sound.play();
-            if (playPromise) playPromise.catch(useFallback);
+                const sound = cachedRealSound(selectedClip.src);
+                activeRealSound = sound;
+                sound.volume = 0.92;
+                let hasStarted = false;
+                let loadTimeout = setTimeout(() => {
+                    if (!hasStarted) failAndTryNext();
+                }, 1400);
 
-            realSoundStopTimeout = setTimeout(() => {
-                if (activeRealSound === sound) stopRealSound();
-            }, selectedClip.duration * 1000);
+                function clearClipHandlers() {
+                    clearTimeout(loadTimeout);
+                    sound.onloadedmetadata = null;
+                    sound.onplaying = null;
+                    sound.onended = null;
+                    sound.onerror = null;
+                }
 
-            return selectedClip.duration * 1000;
+                function failAndTryNext() {
+                    if (activeRealSound !== sound || attemptId !== realSoundAttemptId) return;
+                    clearClipHandlers();
+                    sound.pause();
+                    unavailableRealSounds.add(selectedClip.src);
+                    activeRealSound = null;
+                    tryNextRecording();
+                }
+
+                function seekToCleanExcerpt() {
+                    if (!selectedClip.start || !Number.isFinite(sound.duration)) return;
+                    const hasEnoughAudio = sound.duration >= selectedClip.start + 0.75;
+                    sound.currentTime = hasEnoughAudio ? selectedClip.start : 0;
+                }
+
+                sound.onloadedmetadata = () => {
+                    if (activeRealSound !== sound) return;
+                    try {
+                        seekToCleanExcerpt();
+                    } catch (error) {
+                        // Playback at the beginning is safer than a broken late seek.
+                    }
+                };
+                sound.onplaying = () => {
+                    if (activeRealSound !== sound) return;
+                    hasStarted = true;
+                    clearTimeout(loadTimeout);
+                    preloadNextRealSound(sounds, candidate.index);
+                    realSoundStopTimeout = setTimeout(() => {
+                        if (activeRealSound === sound) stopRealSound();
+                    }, selectedClip.duration * 1000);
+                };
+                sound.onended = () => {
+                    if (activeRealSound === sound) stopRealSound();
+                };
+                sound.onerror = failAndTryNext;
+
+                try {
+                    if (sound.readyState >= 1) seekToCleanExcerpt();
+                } catch (error) {
+                    sound.currentTime = 0;
+                }
+                const playPromise = sound.play();
+                if (playPromise) playPromise.catch(failAndTryNext);
+            }
+
+            tryNextRecording();
+
+            // Includes a short mobile-network buffer without overlapping speech.
+            return Math.max(...sounds.map(sound => sound.duration)) * 1000 + 900;
         }
 
         function populateSoundCredits() {
@@ -2596,12 +2668,7 @@
                 <div class="card-sub">${t.el}</div>
             `;
             card.onclick = () => {
-                const fallback = () => {
-                    if (t.type === 'siren') SoundFX.siren();
-                    else if (t.type === 'crane' || t.type === 'truck') SoundFX.horn();
-                    else SoundFX.engine();
-                };
-                schedulePronunciation(card, t, 400, () => playRealSound(t.soundProfile, fallback));
+                schedulePronunciation(card, t, 400, () => playRealSound(t.soundProfile));
             };
             trucksGrid.appendChild(card);
         });
@@ -2621,7 +2688,7 @@
                 <div class="card-sub">${a.el}</div>
             `;
             card.onclick = () => {
-                schedulePronunciation(card, a, 450, () => playRealSound(a.sound, () => SoundFX.animal(a.sound)));
+                schedulePronunciation(card, a, 450, () => playRealSound(a.sound));
             };
             animalsGrid.appendChild(card);
         });
