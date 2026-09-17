@@ -4467,11 +4467,11 @@
         const balloonStatus = document.getElementById('balloonStatus');
         const balloonProgressStorageKey = 'polyglotToddler.balloonPops.v1';
         const balloonLevels = [
-            { pops: 0, max: 5, spawnMs: 2900, minSpeed: 55, maxSpeed: 73 },
-            { pops: 8, max: 8, spawnMs: 2700, minSpeed: 60, maxSpeed: 78 },
-            { pops: 20, max: 10, spawnMs: 2500, minSpeed: 65, maxSpeed: 83 },
-            { pops: 36, max: 15, spawnMs: 2250, minSpeed: 72, maxSpeed: 90 },
-            { pops: 60, max: 20, spawnMs: 2000, minSpeed: 78, maxSpeed: 98 }
+            { pops: 0, max: 5, spawnMs: 1750, minTravelSeconds: 7.5, maxTravelSeconds: 9 },
+            { pops: 6, max: 8, spawnMs: 1450, minTravelSeconds: 6.5, maxTravelSeconds: 8 },
+            { pops: 15, max: 10, spawnMs: 1200, minTravelSeconds: 5.7, maxTravelSeconds: 7 },
+            { pops: 28, max: 15, spawnMs: 1000, minTravelSeconds: 5, maxTravelSeconds: 6.2 },
+            { pops: 45, max: 20, spawnMs: 800, minTravelSeconds: 4.2, maxTravelSeconds: 5.3 }
         ];
         let balloonSpawnTimeout = null;
         let balloonSuccessfulPops = loadBalloonPops();
@@ -4481,7 +4481,7 @@
         function loadBalloonPops() {
             try {
                 const storedPops = Number.parseInt(localStorage.getItem(balloonProgressStorageKey), 10);
-                return Number.isFinite(storedPops) ? Math.min(60, Math.max(0, storedPops)) : 0;
+                return Number.isFinite(storedPops) ? Math.min(45, Math.max(0, storedPops)) : 0;
             } catch (error) {
                 return 0;
             }
@@ -4527,7 +4527,8 @@
             balloonSky.appendChild(b);
 
             const startingBottom = isFirstBalloon ? 12 : -90;
-            const pixelsPerSecond = level.minSpeed + Math.random() * (level.maxSpeed - level.minSpeed);
+            const travelSeconds = level.minTravelSeconds + Math.random() * (level.maxTravelSeconds - level.minTravelSeconds);
+            const pixelsPerSecond = (balloonSky.clientHeight + 10 - startingBottom) / travelSeconds;
             b.style.bottom = `${startingBottom}px`;
             let startedAt = null;
 
@@ -4569,7 +4570,7 @@
             balloonEl.remove();
             const displayLanguage = currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode;
             const previousLevel = getBalloonLevel();
-            balloonSuccessfulPops = Math.min(60, balloonSuccessfulPops + 1);
+            balloonSuccessfulPops = Math.min(45, balloonSuccessfulPops + 1);
             saveBalloonPops();
             const nextLevel = getBalloonLevel();
             if (nextLevel.max > previousLevel.max) {
