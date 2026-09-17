@@ -40,15 +40,54 @@
             z-index: 50;
         }
 
+        .header-controls {
+            width: 100%;
+            max-width: 620px;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding-inline: 4px;
+        }
+
         .lang-bar {
             display: flex;
+            flex: 1;
+            min-width: 0;
             gap: 6px;
             background: #edf2f7;
             padding: 4px;
             border-radius: 30px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .lang-bar::-webkit-scrollbar { display: none; }
+
+        .parent-settings-button {
+            flex: 0 0 44px;
+            width: 44px;
+            height: 44px;
+            border: 2px solid #e2e8f0;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: #f7fafc;
+            color: #4a5568;
+            font-size: 1.2rem;
+            line-height: 1;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            transition: transform 0.15s ease, opacity 0.15s ease, background 0.15s ease;
+        }
+
+        .parent-settings-button:active {
+            transform: scale(0.9);
+            opacity: 1;
+            background: #edf2f7;
         }
 
         .lang-pill {
+            flex: 0 0 auto;
             padding: 6px 12px;
             border-radius: 20px;
             border: none;
@@ -57,7 +96,14 @@
             font-weight: 700;
             cursor: pointer;
             color: #4a5568;
+            white-space: nowrap;
             transition: all 0.2s ease;
+        }
+
+        .parent-settings-button:focus-visible,
+        .settings-card button:focus-visible {
+            outline: 3px solid #3182ce;
+            outline-offset: 3px;
         }
 
         .lang-pill.active {
@@ -543,7 +589,8 @@
         #repeatOverlay[data-language="fr"] { --repeat-bg-start: #bee3f8; --repeat-bg-end: #c6f6d5; }
 
         body.repeat-open,
-        body.translation-warning-open { overflow: hidden; }
+        body.translation-warning-open,
+        body.settings-open { overflow: hidden; }
 
         .repeat-close {
             position: fixed;
@@ -778,6 +825,149 @@
             box-shadow: 0 6px 14px rgba(49,130,206,0.3);
         }
 
+        #settingsModal {
+            position: fixed;
+            inset: 0;
+            z-index: 4500;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: max(18px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
+            background: rgba(26, 32, 44, 0.72);
+            backdrop-filter: blur(9px);
+            overflow-y: auto;
+        }
+
+        #settingsModal.active { display: flex; }
+
+        .settings-card {
+            position: relative;
+            width: min(94vw, 520px);
+            max-height: calc(100dvh - 36px);
+            margin: auto;
+            padding: 28px clamp(20px, 6vw, 34px) 24px;
+            border: 4px solid #cbd5e0;
+            border-radius: 28px;
+            background: white;
+            color: #2d3748;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.34);
+            overflow-y: auto;
+        }
+
+        .settings-close {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            float: right;
+            margin: -12px -12px 0 0;
+            width: 44px;
+            height: 44px;
+            border: 0;
+            border-radius: 50%;
+            background: #edf2f7;
+            color: #4a5568;
+            font-size: 1.7rem;
+            font-weight: 900;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .settings-icon {
+            margin-bottom: 2px;
+            color: #718096;
+            font-size: 2.4rem;
+            line-height: 1;
+        }
+
+        .settings-card h2 {
+            margin: 8px 52px 20px 0;
+            color: #2d3748;
+            font-size: clamp(1.45rem, 6vw, 2rem);
+            line-height: 1.1;
+        }
+
+        .settings-field { margin-top: 16px; }
+
+        .settings-field label {
+            display: block;
+            margin-bottom: 7px;
+            color: #4a5568;
+            font-size: 1rem;
+            line-height: 1.25;
+            font-weight: 850;
+        }
+
+        .settings-field input {
+            width: 100%;
+            min-height: 52px;
+            padding: 11px 13px;
+            border: 3px solid #cbd5e0;
+            border-radius: 14px;
+            background: #f7fafc;
+            color: #1a202c;
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.25;
+            user-select: text;
+            touch-action: auto;
+            -webkit-user-select: text;
+        }
+
+        .settings-field input:focus {
+            border-color: #3182ce;
+            outline: 3px solid rgba(49,130,206,0.18);
+        }
+
+        .settings-help {
+            margin: 14px 0 0;
+            color: #718096;
+            font-size: 0.94rem;
+            line-height: 1.35;
+            font-weight: 650;
+        }
+
+        .settings-error {
+            min-height: 22px;
+            margin: 9px 0 0;
+            color: #c53030;
+            font-size: 0.94rem;
+            line-height: 1.3;
+            font-weight: 800;
+        }
+
+        .settings-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .settings-actions button {
+            min-height: 50px;
+            padding: 10px 12px;
+            border: 0;
+            border-radius: 14px;
+            font-size: 1rem;
+            line-height: 1.15;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        .settings-save {
+            background: #3182ce;
+            color: white;
+            box-shadow: 0 5px 12px rgba(49,130,206,0.28);
+        }
+
+        .settings-cancel { background: #edf2f7; color: #4a5568; }
+
+        .settings-restore {
+            grid-column: 1 / -1;
+            background: transparent;
+            color: #718096;
+            border: 2px solid #cbd5e0 !important;
+        }
+
         @media (min-width: 620px) {
             .game-nav {
                 justify-content: center;
@@ -792,8 +982,10 @@
         @media (max-width: 480px) {
             header { padding-inline: 0; }
 
+            .header-controls { padding-inline: 6px; }
+
             .lang-bar {
-                max-width: calc(100vw - 12px);
+                max-width: none;
                 overflow-x: auto;
                 scrollbar-width: none;
             }
@@ -845,14 +1037,40 @@
         </div>
     </div>
 
+    <div id="settingsModal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="settingsTitle" translate="no" class="notranslate">
+        <form class="settings-card" id="settingsForm" onsubmit="saveSettings(event)">
+            <button class="settings-close" id="settingsClose" type="button" onclick="closeSettings()" aria-label="Κλείσιμο">×</button>
+            <div class="settings-icon" aria-hidden="true">⚙️</div>
+            <h2 id="settingsTitle">Ρυθμίσεις για γονείς</h2>
+            <div class="settings-field">
+                <label id="settingsGreekNamesLabel" for="settingsGreekNames">🇬🇷 Ονόματα στα Ελληνικά</label>
+                <input id="settingsGreekNames" name="greekNames" type="text" value="Άρι, Αρούλλη, Αριστοφάνη" maxlength="240" autocomplete="off" autocapitalize="words" spellcheck="false" aria-describedby="settingsHelp settingsError" aria-invalid="false" oninput="clearSettingsError()">
+            </div>
+            <div class="settings-field">
+                <label id="settingsOtherNamesLabel" for="settingsOtherNames">🇬🇧 🇲🇽 🇫🇷 Ονόματα στις άλλες γλώσσες</label>
+                <input id="settingsOtherNames" name="otherNames" type="text" value="Ari, Aroulli, Aristofani" maxlength="240" autocomplete="off" autocapitalize="words" spellcheck="false" aria-describedby="settingsHelp settingsError" aria-invalid="false" oninput="clearSettingsError()">
+            </div>
+            <p class="settings-help" id="settingsHelp">Χώρισέ τα με κόμμα. Κράτησε την ίδια σειρά και στις δύο λίστες.</p>
+            <p class="settings-error" id="settingsError" role="alert" aria-live="polite"></p>
+            <div class="settings-actions">
+                <button class="settings-cancel" id="settingsCancel" type="button" onclick="closeSettings()">Ακύρωση</button>
+                <button class="settings-save" id="settingsSave" type="submit">Αποθήκευση</button>
+                <button class="settings-restore" id="settingsRestore" type="button" onclick="restoreDefaultSettings()">Επαναφορά αρχικών</button>
+            </div>
+        </form>
+    </div>
+
     <!-- Header & Language Mode Selector -->
     <header>
-        <div class="lang-bar">
-            <button class="lang-pill active" onclick="setLanguage('el', this)">🇬🇷 ΕΛ</button>
-            <button class="lang-pill" onclick="setLanguage('en', this)">🇬🇧 EN</button>
-            <button class="lang-pill" onclick="setLanguage('es', this)">🇲🇽 MX</button>
-            <button class="lang-pill" onclick="setLanguage('fr', this)">🇫🇷 FR</button>
-            <button class="lang-pill" onclick="setLanguage('all', this)">🌍 All 4</button>
+        <div class="header-controls">
+            <div class="lang-bar">
+                <button class="lang-pill active" onclick="setLanguage('el', this)">🇬🇷 ΕΛ</button>
+                <button class="lang-pill" onclick="setLanguage('en', this)">🇬🇧 EN</button>
+                <button class="lang-pill" onclick="setLanguage('es', this)">🇲🇽 MX</button>
+                <button class="lang-pill" onclick="setLanguage('fr', this)">🇫🇷 FR</button>
+                <button class="lang-pill" onclick="setLanguage('all', this)">🌍 All 4</button>
+            </div>
+            <button class="parent-settings-button" id="settingsButton" type="button" onclick="openSettings()" aria-label="Ρυθμίσεις για γονείς" aria-haspopup="dialog">⚙️</button>
         </div>
 
         <!-- Game picker stays reachable while a long game scrolls -->
@@ -908,7 +1126,7 @@
 
     <!-- 1. FEED SANTA GAME -->
     <div id="game-monster" class="game-view">
-        <div class="speech-bubble" id="monsterSpeech">Άρι, μπορείς να ταΐσεις τον Άγιο Βασίλη; 🎅</div>
+        <div class="speech-bubble" id="monsterSpeech">Άρι μπορείς να ταΐσεις τον Άγιο Βασίλη; 🎅</div>
         <div class="monster-stage">
             <div class="monster-avatar" id="monsterAvatar" onclick="tickleMonster()" role="img" aria-label="Santa Claus">🎅</div>
         </div>
@@ -1051,8 +1269,8 @@
                 trucks: 'Big Trucks', balloons: 'Balloon Pop', animals: 'Animals',
                 chooseGame: 'Choose a game', previousGame: 'Previous game', nextGame: 'Next game',
                 swipeForGames: 'Swipe for more games',
-                santaPrompt: 'Ari, can you feed Santa? 🎅', morePlease: 'More, please, Ari! 🎅',
-                tickle: 'Ho, ho, ho! That tickles, Ari! 😆', popBalloons: 'Pop the balloons! 🎈',
+                santaPrompt: 'Ari can you feed Santa? 🎅', morePlease: 'More please Ari! 🎅',
+                tickle: 'Ho ho ho! That tickles Ari! 😆', popBalloons: 'Pop the balloons! 🎈',
                 popped: number => `Popped #${number}! ⭐`, santaLabel: 'Santa Claus'
             },
             es: {
@@ -1060,8 +1278,8 @@
                 trucks: 'Camiones grandes', balloons: 'Revienta globos', animals: 'Animales',
                 chooseGame: 'Elige un juego', previousGame: 'Juego anterior', nextGame: 'Siguiente juego',
                 swipeForGames: 'Desliza para ver más juegos',
-                santaPrompt: 'Ari, ¿puedes darle de comer a Santa? 🎅', morePlease: '¡Más, por favor, Ari! 🎅',
-                tickle: '¡Jo, jo, jo! ¡Eso me da cosquillas, Ari! 😆', popBalloons: '¡Revienta los globos! 🎈',
+                santaPrompt: 'Ari ¿puedes darle de comer a Santa? 🎅', morePlease: '¡Más por favor Ari! 🎅',
+                tickle: '¡Jo jo jo! ¡Eso me da cosquillas Ari! 😆', popBalloons: '¡Revienta los globos! 🎈',
                 popped: number => `¡Reventaste el globo número ${number}! ⭐`, santaLabel: 'Santa Claus'
             },
             fr: {
@@ -1069,8 +1287,8 @@
                 trucks: 'Gros camions', balloons: 'Éclate les ballons', animals: 'Animaux',
                 chooseGame: 'Choisis un jeu', previousGame: 'Jeu précédent', nextGame: 'Jeu suivant',
                 swipeForGames: 'Fais glisser pour voir plus de jeux',
-                santaPrompt: 'Ari, peux-tu nourrir le Père Noël ? 🎅', morePlease: 'Encore, s’il te plaît, Ari ! 🎅',
-                tickle: 'Ho, ho, ho ! Ça me chatouille, Ari ! 😆', popBalloons: 'Éclate les ballons ! 🎈',
+                santaPrompt: 'Ari peux-tu nourrir le Père Noël ? 🎅', morePlease: 'Encore s’il te plaît Ari ! 🎅',
+                tickle: 'Ho ho ho ! Ça me chatouille Ari ! 😆', popBalloons: 'Éclate les ballons ! 🎈',
                 popped: number => `Tu as éclaté le ballon numéro ${number} ! ⭐`, santaLabel: 'Père Noël'
             },
             el: {
@@ -1078,8 +1296,8 @@
                 trucks: 'Μεγάλα οχήματα', balloons: 'Σκάσε τα μπαλόνια', animals: 'Ζώα',
                 chooseGame: 'Διάλεξε παιχνίδι', previousGame: 'Προηγούμενο παιχνίδι', nextGame: 'Επόμενο παιχνίδι',
                 swipeForGames: 'Σύρε για περισσότερα παιχνίδια',
-                santaPrompt: 'Άρι, μπορείς να ταΐσεις τον Άγιο Βασίλη; 🎅', morePlease: 'Κι άλλο, παρακαλώ, Άρι! 🎅',
-                tickle: 'Χο, χο, χο! Με γαργαλάς, Άρι! 😆', popBalloons: 'Σκάσε τα μπαλόνια! 🎈',
+                santaPrompt: 'Άρι μπορείς να ταΐσεις τον Άγιο Βασίλη; 🎅', morePlease: 'Κι άλλο παρακαλώ Άρι! 🎅',
+                tickle: 'Χο χο χο! Με γαργαλάς Άρι! 😆', popBalloons: 'Σκάσε τα μπαλόνια! 🎈',
                 popped: number => `Έσκασες το μπαλόνι με τον αριθμό ${number}! ⭐`, santaLabel: 'Άγιος Βασίλης'
             }
         };
@@ -1275,11 +1493,82 @@
             fr: { code: 'fr-FR', flag: '🇫🇷' }
         };
         const allLanguageOrder = ['el', 'en', 'es', 'fr'];
-        const childNames = [
+        const childNameStorageKey = 'polyglotToddler.childNames.v1';
+        const defaultChildNames = [
             { el: 'Άρι', en: 'Ari', es: 'Ari', fr: 'Ari' },
             { el: 'Αρούλλη', en: 'Aroulli', es: 'Aroulli', fr: 'Aroulli' },
             { el: 'Αριστοφάνη', en: 'Aristofani', es: 'Aristofani', fr: 'Aristofani' }
         ];
+        const settingsCopy = {
+            el: {
+                button: 'Ρυθμίσεις για γονείς', title: 'Ρυθμίσεις για γονείς',
+                greekNames: '🇬🇷 Ονόματα στα Ελληνικά', otherNames: '🇬🇧 🇲🇽 🇫🇷 Ονόματα στις άλλες γλώσσες',
+                help: 'Χώρισέ τα με κόμμα. Κράτησε την ίδια σειρά και στις δύο λίστες.',
+                required: 'Γράψε τουλάχιστον ένα όνομα σε κάθε λίστα.',
+                error: 'Οι δύο λίστες πρέπει να έχουν τον ίδιο αριθμό ονομάτων.',
+                close: 'Κλείσιμο', cancel: 'Ακύρωση', save: 'Αποθήκευση', restore: 'Επαναφορά αρχικών'
+            },
+            en: {
+                button: 'Parent settings', title: 'Parent settings',
+                greekNames: '🇬🇷 Names in Greek', otherNames: '🇬🇧 🇲🇽 🇫🇷 Names in the other languages',
+                help: 'Separate nicknames with commas. Keep both lists in the same order.',
+                required: 'Enter at least one name in each list.',
+                error: 'Both lists need the same number of names.',
+                close: 'Close', cancel: 'Cancel', save: 'Save', restore: 'Restore defaults'
+            },
+            es: {
+                button: 'Ajustes para adultos', title: 'Ajustes para adultos',
+                greekNames: '🇬🇷 Nombres en griego', otherNames: '🇬🇧 🇲🇽 🇫🇷 Nombres en los otros idiomas',
+                help: 'Separa los apodos con comas. Mantén el mismo orden en las dos listas.',
+                required: 'Escribe al menos un nombre en cada lista.',
+                error: 'Las dos listas deben tener la misma cantidad de nombres.',
+                close: 'Cerrar', cancel: 'Cancelar', save: 'Guardar', restore: 'Restaurar valores'
+            },
+            fr: {
+                button: 'Réglages pour adultes', title: 'Réglages pour adultes',
+                greekNames: '🇬🇷 Prénoms en grec', otherNames: '🇬🇧 🇲🇽 🇫🇷 Prénoms dans les autres langues',
+                help: 'Sépare les surnoms par des virgules. Garde le même ordre dans les deux listes.',
+                required: 'Saisis au moins un prénom dans chaque liste.',
+                error: 'Les deux listes doivent contenir le même nombre de prénoms.',
+                close: 'Fermer', cancel: 'Annuler', save: 'Enregistrer', restore: 'Valeurs par défaut'
+            }
+        };
+
+        function cloneDefaultChildNames() {
+            return defaultChildNames.map(name => ({ ...name }));
+        }
+
+        function cleanName(value) {
+            return String(value).trim().replace(/\s+/g, ' ');
+        }
+
+        function parseNameList(value) {
+            return String(value)
+                .split(/[,，]+/)
+                .map(cleanName)
+                .filter(Boolean);
+        }
+
+        function loadChildNames() {
+            try {
+                const saved = JSON.parse(localStorage.getItem(childNameStorageKey));
+                const greekNames = Array.isArray(saved?.greekNames) ? saved.greekNames.map(cleanName).filter(Boolean) : [];
+                const otherNames = Array.isArray(saved?.otherNames) ? saved.otherNames.map(cleanName).filter(Boolean) : [];
+                if (greekNames.length > 0 && greekNames.length === otherNames.length) {
+                    return greekNames.map((greekName, index) => ({
+                        el: greekName,
+                        en: otherNames[index],
+                        es: otherNames[index],
+                        fr: otherNames[index]
+                    }));
+                }
+            } catch (error) {
+                // Local storage can be unavailable in private browsing; defaults remain usable.
+            }
+            return cloneDefaultChildNames();
+        }
+
+        let childNames = loadChildNames();
         let activeChildName = childNames[0];
         let nextChildNameIndex = 0;
 
@@ -1293,11 +1582,120 @@
             return text.replace(language === 'el' ? 'Άρι' : 'Ari', childName[language]);
         }
 
+        function settingsLanguage() {
+            return currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode;
+        }
+
+        function updateSettingsLanguage(language = settingsLanguage()) {
+            const copy = settingsCopy[language];
+            document.getElementById('settingsButton').setAttribute('aria-label', copy.button);
+            document.getElementById('settingsTitle').textContent = copy.title;
+            document.getElementById('settingsGreekNamesLabel').textContent = copy.greekNames;
+            document.getElementById('settingsOtherNamesLabel').textContent = copy.otherNames;
+            document.getElementById('settingsHelp').textContent = copy.help;
+            document.getElementById('settingsClose').setAttribute('aria-label', copy.close);
+            document.getElementById('settingsCancel').textContent = copy.cancel;
+            document.getElementById('settingsSave').textContent = copy.save;
+            document.getElementById('settingsRestore').textContent = copy.restore;
+        }
+
+        function clearSettingsError() {
+            document.getElementById('settingsError').textContent = '';
+            document.getElementById('settingsGreekNames').setAttribute('aria-invalid', 'false');
+            document.getElementById('settingsOtherNames').setAttribute('aria-invalid', 'false');
+        }
+
+        function showSettingsError(message) {
+            document.getElementById('settingsError').textContent = message;
+            document.getElementById('settingsGreekNames').setAttribute('aria-invalid', 'true');
+            document.getElementById('settingsOtherNames').setAttribute('aria-invalid', 'true');
+        }
+
+        function setSettingsBackgroundInert(isInert) {
+            document.querySelectorAll('header, .game-view, #repeatOverlay, #santaCelebration').forEach(element => {
+                element.inert = isInert;
+            });
+        }
+
+        function namesAreDefaults(greekNames, otherNames) {
+            return greekNames.length === defaultChildNames.length
+                && defaultChildNames.every((name, index) => name.el === greekNames[index] && name.en === otherNames[index]);
+        }
+
+        function openSettings() {
+            if (document.getElementById('settingsModal').classList.contains('active')) return;
+            cancelRepeatSequence();
+            clearSantaIdleTimer();
+            updateSettingsLanguage();
+            document.getElementById('settingsGreekNames').value = childNames.map(name => name.el).join(', ');
+            document.getElementById('settingsOtherNames').value = childNames.map(name => name.en).join(', ');
+            clearSettingsError();
+            const modal = document.getElementById('settingsModal');
+            modal.classList.add('active');
+            modal.setAttribute('aria-hidden', 'false');
+            document.body.classList.add('settings-open');
+            setSettingsBackgroundInert(true);
+            requestAnimationFrame(() => document.getElementById('settingsGreekNames').focus({ preventScroll: true }));
+        }
+
+        function closeSettings() {
+            const modal = document.getElementById('settingsModal');
+            modal.classList.remove('active');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('settings-open');
+            setSettingsBackgroundInert(false);
+            clearSettingsError();
+            resetSantaIdleTimer();
+            document.getElementById('settingsButton').focus({ preventScroll: true });
+        }
+
+        function saveSettings(event) {
+            event.preventDefault();
+            const greekNames = parseNameList(document.getElementById('settingsGreekNames').value);
+            const otherNames = parseNameList(document.getElementById('settingsOtherNames').value);
+            const copy = settingsCopy[settingsLanguage()];
+            if (greekNames.length === 0 || otherNames.length === 0) {
+                showSettingsError(copy.required);
+                return;
+            }
+            if (greekNames.length !== otherNames.length) {
+                showSettingsError(copy.error);
+                return;
+            }
+
+            childNames = greekNames.map((greekName, index) => ({
+                el: greekName,
+                en: otherNames[index],
+                es: otherNames[index],
+                fr: otherNames[index]
+            }));
+            activeChildName = childNames[0];
+            nextChildNameIndex = 0;
+            try {
+                if (namesAreDefaults(greekNames, otherNames)) {
+                    localStorage.removeItem(childNameStorageKey);
+                } else {
+                    localStorage.setItem(childNameStorageKey, JSON.stringify({ greekNames, otherNames }));
+                }
+            } catch (error) {
+                // The setting still works for this visit when storage is unavailable.
+            }
+            updateInterfaceLanguage();
+            closeSettings();
+        }
+
+        function restoreDefaultSettings() {
+            document.getElementById('settingsGreekNames').value = defaultChildNames.map(name => name.el).join(', ');
+            document.getElementById('settingsOtherNames').value = defaultChildNames.map(name => name.en).join(', ');
+            clearSettingsError();
+            document.getElementById('settingsGreekNames').focus({ preventScroll: true });
+        }
+
         const repeatCopy = {
-            el: { listen: '👂 Άκου καλά…', repeat: name => `🎤 Πες το κι εσύ, ${name}!`, spokenRepeat: name => `Πες το κι εσύ, ${name}!`, encourage: name => `✨ Μπράβο, ${name}!`, close: 'Κλείσιμο' },
-            en: { listen: '👂 Listen…', repeat: name => `🎤 Your turn, ${name}!`, spokenRepeat: name => `Your turn, ${name}!`, encourage: name => `✨ Great job, ${name}!`, close: 'Close' },
-            es: { listen: '👂 Escucha…', repeat: name => `🎤 ¡Tu turno, ${name}!`, spokenRepeat: name => `¡Tu turno, ${name}!`, encourage: name => `✨ ¡Muy bien, ${name}!`, close: 'Cerrar' },
-            fr: { listen: '👂 Écoute…', repeat: name => `🎤 À toi, ${name} !`, spokenRepeat: name => `À toi, ${name} !`, encourage: name => `✨ Bravo, ${name} !`, close: 'Fermer' }
+            el: { listen: '👂 Άκου καλά…', repeat: name => `🎤 Πες το κι εσύ ${name}!`, spokenRepeat: name => `Πες το κι εσύ ${name}!`, encourage: name => `✨ Μπράβο ${name}!`, close: 'Κλείσιμο' },
+            en: { listen: '👂 Listen…', repeat: name => `🎤 Your turn ${name}!`, spokenRepeat: name => `Your turn ${name}!`, encourage: name => `✨ Great job ${name}!`, close: 'Close' },
+            es: { listen: '👂 Escucha…', repeat: name => `🎤 ¡Tu turno ${name}!`, spokenRepeat: name => `¡Tu turno ${name}!`, encourage: name => `✨ ¡Muy bien ${name}!`, close: 'Cerrar' },
+            fr: { listen: '👂 Écoute…', repeat: name => `🎤 À toi ${name} !`, spokenRepeat: name => `À toi ${name} !`, encourage: name => `✨ Bravo ${name} !`, close: 'Fermer' }
         };
         const repeatAnimationClasses = ['repeat-bounce', 'repeat-wiggle', 'repeat-float', 'repeat-pop'];
         let voices = [];
@@ -1320,6 +1718,7 @@
         }
 
         window._activeUtterance = null;
+        let speechGeneration = 0;
         let speechSequenceTimeout = null;
         let repeatSequenceRunId = 0;
         let repeatFinishCallback = null;
@@ -1339,6 +1738,7 @@
             const warning = document.getElementById('translationWarning');
             if (warning.classList.contains('active')) return;
             cancelRepeatSequence();
+            clearSantaIdleTimer();
             warning.classList.add('active');
             warning.setAttribute('aria-hidden', 'false');
             document.body.classList.add('translation-warning-open');
@@ -1350,6 +1750,11 @@
             warning.classList.remove('active');
             warning.setAttribute('aria-hidden', 'true');
             document.body.classList.remove('translation-warning-open');
+            if (document.getElementById('settingsModal').classList.contains('active')) {
+                document.getElementById('settingsGreekNames').focus({ preventScroll: true });
+            } else {
+                resetSantaIdleTimer();
+            }
         }
 
         function checkBrowserTranslation() {
@@ -1388,6 +1793,7 @@
             document.getElementById('monsterAvatar').setAttribute('aria-label', text.santaLabel);
             document.getElementById('dancingSanta').setAttribute('aria-label', text.santaLabel);
             document.getElementById('balloonStatus').textContent = text.popBalloons;
+            updateSettingsLanguage(displayLanguage);
 
             document.querySelectorAll('[data-item-kind]').forEach(card => {
                 const source = card.dataset.itemKind === 'truck' ? trucks : animals;
@@ -1412,22 +1818,23 @@
         }
 
         function speakSingle(langCode, text, onDone) {
+            const generation = ++speechGeneration;
             window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(text);
+            const speechText = text.replace(/,/g, '');
+            const utterance = new SpeechSynthesisUtterance(speechText);
             utterance.lang = langCode;
             utterance.rate = 0.78;
             const voice = getVoiceForLang(langCode);
             if (voice) utterance.voice = voice;
             window._activeUtterance = utterance;
 
-            utterance.onend = () => {
+            const finish = () => {
+                if (generation !== speechGeneration) return;
                 window._activeUtterance = null;
                 if (onDone) onDone();
             };
-            utterance.onerror = () => {
-                window._activeUtterance = null;
-                if (onDone) onDone();
-            };
+            utterance.onend = finish;
+            utterance.onerror = finish;
             window.speechSynthesis.speak(utterance);
         }
 
@@ -1471,7 +1878,9 @@
 
         function cancelRepeatSequence() {
             repeatSequenceRunId++;
+            speechGeneration++;
             window.speechSynthesis.cancel();
+            window._activeUtterance = null;
             if (speechSequenceTimeout) {
                 clearTimeout(speechSequenceTimeout);
                 speechSequenceTimeout = null;
@@ -1610,9 +2019,30 @@
         gameNav.addEventListener('pointerdown', dismissGameSwipeHint, { passive: true });
         window.addEventListener('resize', updateGameNavControls);
         document.addEventListener('keydown', event => {
+            const settingsModal = document.getElementById('settingsModal');
+            const translationWarning = document.getElementById('translationWarning');
+            if (event.key === 'Tab' && translationWarning.classList.contains('active')) {
+                event.preventDefault();
+                document.getElementById('translationWarningDismiss').focus();
+                return;
+            }
+            if (event.key === 'Tab' && settingsModal.classList.contains('active') && !translationWarning.classList.contains('active')) {
+                const focusable = Array.from(settingsModal.querySelectorAll('button:not([disabled]), input:not([disabled])'));
+                const first = focusable[0];
+                const last = focusable[focusable.length - 1];
+                if (event.shiftKey && document.activeElement === first) {
+                    event.preventDefault();
+                    last.focus();
+                } else if (!event.shiftKey && document.activeElement === last) {
+                    event.preventDefault();
+                    first.focus();
+                }
+            }
             if (event.key === 'Escape') {
-                if (document.getElementById('translationWarning').classList.contains('active')) {
+                if (translationWarning.classList.contains('active')) {
                     hideTranslationWarning();
+                } else if (settingsModal.classList.contains('active')) {
+                    closeSettings();
                 } else if (document.getElementById('repeatOverlay').classList.contains('active')) {
                     cancelRepeatSequence();
                 }
@@ -1668,6 +2098,7 @@
         });
 
         function feedMonster(food) {
+            cancelRepeatSequence();
             clearSantaIdleTimer();
             SoundFX.chomp();
             monsterAvatar.classList.add('chewing');
@@ -1693,24 +2124,24 @@
             const name = childName[language];
             const responses = {
                 en: [
-                    `Ho, ho, ho! Thank you for ${foodName}, ${name}!`,
-                    `That was delicious! Thank you for ${foodName}, ${name}!`,
-                    `I loved that! Thank you for ${foodName}, ${name}!`
+                    `Ho ho ho! Thank you for ${foodName} ${name}!`,
+                    `That was delicious! Thank you for ${foodName} ${name}!`,
+                    `I loved that! Thank you for ${foodName} ${name}!`
                 ],
                 es: [
-                    `¡Jo, jo, jo! ¡Gracias por ${foodName}, ${name}!`,
-                    `¡Qué delicia! ¡Gracias por ${foodName}, ${name}!`,
-                    `¡Me encantó! ¡Gracias por ${foodName}, ${name}!`
+                    `¡Jo jo jo! ¡Gracias por ${foodName} ${name}!`,
+                    `¡Qué delicia! ¡Gracias por ${foodName} ${name}!`,
+                    `¡Me encantó! ¡Gracias por ${foodName} ${name}!`
                 ],
                 fr: [
-                    `Ho, ho, ho ! Merci pour ${foodName}, ${name} !`,
-                    `C’était délicieux ! Merci pour ${foodName}, ${name} !`,
-                    `J’ai adoré ! Merci pour ${foodName}, ${name} !`
+                    `Ho ho ho ! Merci pour ${foodName} ${name} !`,
+                    `C’était délicieux ! Merci pour ${foodName} ${name} !`,
+                    `J’ai adoré ! Merci pour ${foodName} ${name} !`
                 ],
                 el: [
-                    `Χο, χο, χο! Ευχαριστώ για ${foodName}, ${name}!`,
-                    `Τι νοστιμιά! Ευχαριστώ για ${foodName}, ${name}!`,
-                    `Μου άρεσε πολύ! Ευχαριστώ για ${foodName}, ${name}!`
+                    `Χο χο χο! Ευχαριστώ για ${foodName} ${name}!`,
+                    `Τι νοστιμιά! Ευχαριστώ για ${foodName} ${name}!`,
+                    `Μου άρεσε πολύ! Ευχαριστώ για ${foodName} ${name}!`
                 ]
             };
             return responses[language][responseIndex];
