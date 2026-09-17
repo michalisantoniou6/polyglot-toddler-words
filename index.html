@@ -3684,11 +3684,30 @@
         });
         function playJingleBells() {
             const runId = ++jingleRunId;
-            const melody = [2,2,2,null,2,2,2,null,2,4,0,1,2,null,3,3,3,3,3,2,2,2,2,1,1,2,1,4];
-            melody.forEach((note,index) => {
-                if (note === null) return;
-                setTimeout(() => { if (runId === jingleRunId) ringBell(note,.34); }, index * 310);
+            const beatMilliseconds = 420;
+            // Full chorus in C major. Each duration is measured in quarter-note beats.
+            const melody = [
+                [2,1],[2,1],[2,2], [2,1],[2,1],[2,2], [2,1],[4,1],[0,1.5],[1,.5],[2,4],
+                [3,1],[3,1],[3,1.5],[3,.5], [3,1],[2,1],[2,1],[2,.5],[2,.5], [2,1],[1,1],[1,1],[2,1],[1,2],[4,2],
+                [2,1],[2,1],[2,2], [2,1],[2,1],[2,2], [2,1],[4,1],[0,1.5],[1,.5],[2,4],
+                [3,1],[3,1],[3,1.5],[3,.5], [3,1],[2,1],[2,1],[2,.5],[2,.5], [4,1],[4,1],[3,1],[1,1],[0,4]
+            ];
+            let elapsedBeats = 0;
+            const button = document.getElementById('jingleButton');
+            button.setAttribute('aria-busy', 'true');
+
+            melody.forEach(([note, beats]) => {
+                const startsAfter = elapsedBeats * beatMilliseconds;
+                const ringsFor = Math.max(.2, beats * beatMilliseconds * .88 / 1000);
+                setTimeout(() => {
+                    if (runId === jingleRunId) ringBell(note, ringsFor);
+                }, startsAfter);
+                elapsedBeats += beats;
             });
+
+            setTimeout(() => {
+                if (runId === jingleRunId) button.setAttribute('aria-busy', 'false');
+            }, elapsedBeats * beatMilliseconds);
         }
 
         populateSoundCredits();
