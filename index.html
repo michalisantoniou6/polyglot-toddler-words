@@ -86,6 +86,66 @@
             background: #edf2f7;
         }
 
+        .controls-collapse-button {
+            min-height: 38px;
+            border: 0;
+            border-radius: 18px;
+            padding: 6px 16px;
+            background: #edf2f7;
+            color: #4a5568;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 0.86rem;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        .controls-collapse-button:active,
+        .controls-expand-button:active { transform: scale(0.92); }
+
+        .controls-expand-button {
+            position: fixed;
+            top: max(8px, env(safe-area-inset-top));
+            right: max(8px, env(safe-area-inset-right));
+            z-index: 80;
+            min-width: 54px;
+            min-height: 54px;
+            border: 3px solid rgba(255,255,255,0.95);
+            border-radius: 50%;
+            background: #3182ce;
+            color: white;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            font-size: 1.42rem;
+            line-height: 1;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.24);
+            cursor: pointer;
+            transition: transform 0.15s ease;
+        }
+
+        .controls-expand-chevron {
+            font-size: 0.9rem;
+            margin-top: 2px;
+        }
+
+        body.controls-collapsed header { display: none; }
+        body.controls-collapsed .controls-expand-button { display: inline-flex; }
+        body.controls-collapsed .game-view.active {
+            min-height: 100svh;
+            padding-top: max(12px, env(safe-area-inset-top));
+            padding-bottom: max(12px, env(safe-area-inset-bottom));
+        }
+
+        body.controls-collapsed .balloon-sky {
+            flex: 1;
+            height: auto;
+            min-height: calc(100svh - 78px);
+            max-height: none;
+        }
+
         .lang-pill {
             flex: 0 0 auto;
             padding: 6px 12px;
@@ -1043,6 +1103,15 @@
                 min-height: 330px;
                 max-height: 480px;
             }
+
+            body.controls-collapsed .game-view { padding-inline: 8px; }
+
+            body.controls-collapsed .balloon-sky {
+                height: auto;
+                min-height: calc(100svh - 72px);
+                max-height: none;
+                border-radius: 20px;
+            }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -1091,8 +1160,8 @@
     </div>
 
     <!-- Header & Language Mode Selector -->
-    <header>
-        <div class="header-controls">
+    <header id="gameControlsHeader">
+        <div class="header-controls" id="headerControls">
             <div class="lang-bar">
                 <button class="lang-pill active" onclick="setLanguage('el', this)">🇬🇷 ΕΛ</button>
                 <button class="lang-pill" onclick="setLanguage('en', this)">🇬🇧 EN</button>
@@ -1135,7 +1204,16 @@
                 <span>👈</span><span id="gameSwipeHintText">Swipe for more games</span><span>👉</span>
             </div>
         </div>
+        <button class="controls-collapse-button" id="collapseControlsButton" type="button" onclick="setControlsCollapsed(true)" aria-controls="gameControlsHeader" aria-expanded="true">
+            <span aria-hidden="true">⌃</span>
+            <span id="collapseControlsText">Κρύψε τα κουμπιά</span>
+        </button>
     </header>
+
+    <button class="controls-expand-button" id="expandControlsButton" type="button" onclick="setControlsCollapsed(false)" aria-controls="gameControlsHeader" aria-expanded="false" aria-label="Παιχνίδια και γλώσσες">
+        <span id="collapsedGameIcon" aria-hidden="true">🎈</span>
+        <span class="controls-expand-chevron" aria-hidden="true">⌄</span>
+    </button>
 
     <!-- Full-screen listen-and-repeat stage -->
     <div id="repeatOverlay" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="repeatText">
@@ -1261,7 +1339,7 @@
             { emoji: "🐸", sound: "frog", en: "Frog", es: "Rana", fr: "Grenouille", el: "Βάτραχος" },
             { emoji: "🦆", sound: "duck", en: "Duck", es: "Pato", fr: "Canard", el: "Πάπια" },
             { emoji: "🐑", sound: "sheep", en: "Sheep", es: "Oveja", fr: "Mouton", el: "Πρόβατο" },
-            { emoji: "🐷", sound: "pig", en: "Pig", es: "Cerdo", fr: "Cochon", el: "Γουρούνι" },
+            { emoji: "🐷", sound: "pig", en: "Pig", es: "Cochino", fr: "Cochon", el: "Γουρούνι" },
             { emoji: "🐴", sound: "horse", en: "Horse", es: "Caballo", fr: "Cheval", el: "Άλογο" },
             { emoji: "🐘", sound: "elephant", en: "Elephant", es: "Elefante", fr: "Éléphant", el: "Ελέφαντας" },
             { emoji: "🐵", sound: "monkey", en: "Monkey", es: "Mono", fr: "Singe", el: "Πίθηκος" },
@@ -1487,7 +1565,7 @@
                 pageTitle: 'Toddler Fun Arcade', allLanguages: 'All 4', feedSanta: 'Feed Santa',
                 trucks: 'Big Trucks', balloons: 'Balloon Pop', animals: 'Animals',
                 chooseGame: 'Choose a game', previousGame: 'Previous game', nextGame: 'Next game',
-                swipeForGames: 'Swipe for more games',
+                swipeForGames: 'Swipe for more games', hideControls: 'Hide controls', showControls: 'Games and languages',
                 santaPrompt: 'Ari can you feed Santa? 🎅', morePlease: 'More please Ari! 🎅',
                 tickle: 'Ho ho ho! That tickles Ari! 😆', popBalloons: 'Pop the balloons! 🎈',
                 popped: number => `Popped #${number}! ⭐`, santaLabel: 'Santa Claus'
@@ -1496,7 +1574,7 @@
                 pageTitle: 'Juegos infantiles divertidos', allLanguages: 'Los 4', feedSanta: 'Dale de comer a Santa',
                 trucks: 'Camiones grandes', balloons: 'Revienta globos', animals: 'Animales',
                 chooseGame: 'Elige un juego', previousGame: 'Juego anterior', nextGame: 'Siguiente juego',
-                swipeForGames: 'Desliza para ver más juegos',
+                swipeForGames: 'Desliza para ver más juegos', hideControls: 'Ocultar controles', showControls: 'Juegos e idiomas',
                 santaPrompt: 'Ari ¿puedes darle de comer a Santa? 🎅', morePlease: '¡Más por favor Ari! 🎅',
                 tickle: '¡Jo jo jo! ¡Eso me da cosquillas Ari! 😆', popBalloons: '¡Revienta los globos! 🎈',
                 popped: number => `¡Reventaste el globo número ${number}! ⭐`, santaLabel: 'Santa Claus'
@@ -1505,7 +1583,7 @@
                 pageTitle: 'Jeux amusants pour enfants', allLanguages: 'Les 4', feedSanta: 'Nourris le Père Noël',
                 trucks: 'Gros camions', balloons: 'Éclate les ballons', animals: 'Animaux',
                 chooseGame: 'Choisis un jeu', previousGame: 'Jeu précédent', nextGame: 'Jeu suivant',
-                swipeForGames: 'Fais glisser pour voir plus de jeux',
+                swipeForGames: 'Fais glisser pour voir plus de jeux', hideControls: 'Masquer les commandes', showControls: 'Jeux et langues',
                 santaPrompt: 'Ari peux-tu nourrir le Père Noël ? 🎅', morePlease: 'Encore s’il te plaît Ari ! 🎅',
                 tickle: 'Ho ho ho ! Ça me chatouille Ari ! 😆', popBalloons: 'Éclate les ballons ! 🎈',
                 popped: number => `Tu as éclaté le ballon numéro ${number} ! ⭐`, santaLabel: 'Père Noël'
@@ -1514,7 +1592,7 @@
                 pageTitle: 'Χαρούμενα παιδικά παιχνίδια', allLanguages: 'Και οι 4', feedSanta: 'Τάισε τον Άγιο Βασίλη',
                 trucks: 'Μεγάλα οχήματα', balloons: 'Σκάσε τα μπαλόνια', animals: 'Ζώα',
                 chooseGame: 'Διάλεξε παιχνίδι', previousGame: 'Προηγούμενο παιχνίδι', nextGame: 'Επόμενο παιχνίδι',
-                swipeForGames: 'Σύρε για περισσότερα παιχνίδια',
+                swipeForGames: 'Σύρε για περισσότερα παιχνίδια', hideControls: 'Κρύψε τα κουμπιά', showControls: 'Παιχνίδια και γλώσσες',
                 santaPrompt: 'Άρι μπορείς να ταΐσεις τον Άγιο Βασίλη; 🎅', morePlease: 'Κι άλλο παρακαλώ Άρι! 🎅',
                 tickle: 'Χο χο χο! Με γαργαλάς Άρι! 😆', popBalloons: 'Σκάσε τα μπαλόνια! 🎈',
                 popped: number => `Έσκασες το μπαλόνι με τον αριθμό ${number}! ⭐`, santaLabel: 'Άγιος Βασίλης'
@@ -1868,6 +1946,7 @@
         };
         const allLanguageOrder = ['el', 'en', 'es', 'fr'];
         const childNameStorageKey = 'polyglotToddler.childNames.v1';
+        const controlsCollapsedStorageKey = 'polyglotToddler.controlsCollapsed.v1';
         const defaultChildNames = [
             { el: 'Άρι', en: 'Ari', es: 'Ari', fr: 'Ari' },
             { el: 'Αρούλλη', en: 'Aroulli', es: 'Aroulli', fr: 'Aroulli' },
@@ -1991,7 +2070,7 @@
         }
 
         function setSettingsBackgroundInert(isInert) {
-            document.querySelectorAll('header, .game-view, #repeatOverlay, #santaCelebration').forEach(element => {
+            document.querySelectorAll('header, .controls-expand-button, .game-view, #repeatOverlay, #santaCelebration').forEach(element => {
                 element.inert = isInert;
             });
         }
@@ -2155,6 +2234,37 @@
             resetSantaIdleTimer();
         }
 
+        function getStoredControlsCollapsed() {
+            try {
+                return localStorage.getItem(controlsCollapsedStorageKey) === 'true';
+            } catch (error) {
+                return false;
+            }
+        }
+
+        function setControlsCollapsed(isCollapsed, shouldStore = true) {
+            const header = document.getElementById('gameControlsHeader');
+            const collapseButton = document.getElementById('collapseControlsButton');
+            const expandButton = document.getElementById('expandControlsButton');
+            document.body.classList.toggle('controls-collapsed', isCollapsed);
+            header.setAttribute('aria-hidden', String(isCollapsed));
+            collapseButton.setAttribute('aria-expanded', String(!isCollapsed));
+            expandButton.setAttribute('aria-expanded', String(!isCollapsed));
+
+            if (shouldStore) {
+                try {
+                    localStorage.setItem(controlsCollapsedStorageKey, String(isCollapsed));
+                } catch (error) {
+                    // The game still works when private browsing blocks storage.
+                }
+            }
+
+            requestAnimationFrame(() => {
+                revealActiveGame(false);
+                if (shouldStore) (isCollapsed ? expandButton : collapseButton).focus({ preventScroll: true });
+            });
+        }
+
         function updateInterfaceLanguage() {
             const displayLanguage = currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode;
             const text = interfaceText[displayLanguage];
@@ -2169,6 +2279,9 @@
             document.getElementById('previousGameButton').setAttribute('aria-label', text.previousGame);
             document.getElementById('nextGameButton').setAttribute('aria-label', text.nextGame);
             document.getElementById('gameSwipeHintText').textContent = text.swipeForGames;
+            document.getElementById('collapseControlsText').textContent = text.hideControls;
+            document.getElementById('collapseControlsButton').setAttribute('aria-label', text.hideControls);
+            document.getElementById('expandControlsButton').setAttribute('aria-label', text.showControls);
             document.getElementById('monsterSpeech').textContent = personalizeText(text.santaPrompt, displayLanguage);
             document.getElementById('monsterAvatar').setAttribute('aria-label', text.santaLabel);
             document.getElementById('dancingSanta').setAttribute('aria-label', text.santaLabel);
@@ -2444,6 +2557,8 @@
             document.querySelectorAll('.game-nav-dot').forEach((dot, index) => {
                 dot.classList.toggle('active', index === activeIndex);
             });
+            const gameIcons = { monster: '🎅', trucks: '🚜', balloons: '🎈', animals: '🦁' };
+            document.getElementById('collapsedGameIcon').textContent = gameIcons[gameId];
             dismissGameSwipeHint();
             revealActiveGame();
             cancelRepeatSequence();
@@ -2792,6 +2907,7 @@
 
         populateSoundCredits();
         checkBrowserTranslation();
+        setControlsCollapsed(getStoredControlsCollapsed(), false);
         updateInterfaceLanguage();
         startBalloonSpawner();
         requestAnimationFrame(() => revealActiveGame(false));
