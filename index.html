@@ -654,7 +654,8 @@
 
         body.repeat-open,
         body.translation-warning-open,
-        body.settings-open { overflow: hidden; }
+        body.settings-open,
+        body.onboarding-open { overflow: hidden; }
 
         .repeat-close {
             position: fixed;
@@ -1000,6 +1001,112 @@
         .settings-field input:focus {
             border-color: #3182ce;
             outline: 3px solid rgba(49,130,206,0.18);
+        }
+
+        #onboardingModal {
+            position: fixed;
+            inset: 0;
+            z-index: 4700;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: max(14px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(14px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+            background: linear-gradient(155deg, rgba(30,64,175,.92), rgba(109,40,217,.9));
+            backdrop-filter: blur(10px);
+            overflow-y: auto;
+        }
+        #onboardingModal.active { display:flex; }
+        .onboarding-card {
+            position:relative;
+            width:min(95vw,560px);
+            max-height:calc(100dvh - 28px);
+            margin:auto;
+            padding:clamp(22px,6vw,34px);
+            border:4px solid rgba(255,255,255,.78);
+            border-radius:32px;
+            background:white;
+            color:#2d3748;
+            box-shadow:0 26px 70px rgba(0,0,0,.35);
+            overflow-y:auto;
+        }
+        .onboarding-close {
+            position:absolute;
+            top:14px;
+            right:14px;
+            width:44px;
+            height:44px;
+            border:0;
+            border-radius:50%;
+            background:#edf2f7;
+            color:#4a5568;
+            font-size:1.7rem;
+            font-weight:900;
+        }
+        .onboarding-brand { font-size:clamp(2.8rem,12vw,4.2rem); line-height:1; text-align:center; }
+        .onboarding-progress { display:flex; justify-content:center; gap:9px; margin:13px 0 20px; }
+        .onboarding-progress-dot { width:12px; height:12px; border-radius:999px; background:#cbd5e0; transition:width .2s ease,background .2s ease; }
+        .onboarding-progress-dot.active { width:34px; background:#3182ce; }
+        .onboarding-step[hidden] { display:none; }
+        .onboarding-step h2 { margin:0; color:#243b53; font-size:clamp(1.55rem,7vw,2.2rem); line-height:1.1; text-align:center; }
+        .onboarding-lead { margin:10px 0 20px; color:#627d98; font-size:clamp(1rem,4.3vw,1.2rem); line-height:1.35; font-weight:750; text-align:center; }
+        .onboarding-options { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:11px; }
+        .onboarding-language {
+            min-width:0;
+            min-height:98px;
+            padding:12px 8px;
+            border:4px solid #dbe7f1;
+            border-radius:22px;
+            background:#f8fbff;
+            color:#334e68;
+            font:inherit;
+            font-weight:900;
+            text-align:center;
+        }
+        .onboarding-language .flag { display:block; margin-bottom:5px; font-size:2.35rem; line-height:1; }
+        .onboarding-language.selected { border-color:#3182ce; background:#ebf8ff; box-shadow:0 5px 0 rgba(49,130,206,.22); }
+        .onboarding-toggle { position:relative; display:block; }
+        .onboarding-toggle input { position:absolute; opacity:0; pointer-events:none; }
+        .onboarding-toggle input:focus-visible + .onboarding-language { outline:4px solid rgba(49,130,206,.28); outline-offset:2px; }
+        .onboarding-toggle input:checked + .onboarding-language { border-color:#38a169; background:#f0fff4; box-shadow:0 5px 0 rgba(56,161,105,.2); }
+        .onboarding-toggle input:disabled + .onboarding-language::after { content:' ✓'; color:#2f855a; }
+        .onboarding-name-field { margin-top:15px; }
+        .onboarding-name-field[hidden] { display:none; }
+        .onboarding-name-field label { display:block; margin-bottom:7px; color:#486581; font-weight:900; }
+        .onboarding-name-field input {
+            width:100%;
+            min-height:56px;
+            padding:12px 14px;
+            border:3px solid #cbd5e0;
+            border-radius:15px;
+            background:#f8fbff;
+            color:#102a43;
+            font-size:16px;
+            font-weight:750;
+            user-select:text;
+            touch-action:auto;
+            -webkit-user-select:text;
+        }
+        .onboarding-name-field input:focus { border-color:#3182ce; outline:3px solid rgba(49,130,206,.18); }
+        .onboarding-error { min-height:1.3em; margin:10px 0 0; color:#c53030; font-weight:850; text-align:center; }
+        .onboarding-actions { display:grid; grid-template-columns:auto 1fr; gap:10px; margin-top:18px; }
+        .onboarding-actions button { min-height:56px; padding:10px 19px; border:0; border-radius:17px; font:inherit; font-weight:950; }
+        .onboarding-back { background:#edf2f7; color:#486581; }
+        .onboarding-next { background:linear-gradient(135deg,#3182ce,#6b46c1); color:white; box-shadow:0 6px 0 #284f83; }
+        .onboarding-back[hidden] + .onboarding-next { grid-column:1 / -1; width:100%; }
+        .settings-setup {
+            width:100%;
+            min-height:52px;
+            margin-top:14px;
+            padding:10px 14px;
+            border:2px solid #bee3f8;
+            border-radius:14px;
+            background:#ebf8ff;
+            color:#2b6cb0;
+            font:inherit;
+            font-weight:900;
+        }
+        @media (max-width:360px) {
+            .onboarding-options { grid-template-columns:1fr; }
         }
 
         .settings-help {
@@ -1646,21 +1753,76 @@
         </div>
     </div>
 
+    <div id="onboardingModal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="onboardingTitle" translate="no" class="notranslate">
+        <form class="onboarding-card" id="onboardingForm" onsubmit="continueOnboarding(event)">
+            <button class="onboarding-close" id="onboardingClose" type="button" onclick="closeOnboarding()" aria-label="Κλείσιμο" hidden>×</button>
+            <div class="onboarding-brand" aria-hidden="true">🎈🎵</div>
+            <div class="onboarding-progress" id="onboardingProgress" aria-label="Βήμα 1 από 3">
+                <span class="onboarding-progress-dot active"></span>
+                <span class="onboarding-progress-dot"></span>
+                <span class="onboarding-progress-dot"></span>
+            </div>
+
+            <section class="onboarding-step" id="onboardingStep1">
+                <h2 id="onboardingTitle">Ποια είναι η βασική γλώσσα;</h2>
+                <p class="onboarding-lead" id="onboardingPrimaryLead">Το παιχνίδι θα ανοίγει σε αυτή τη γλώσσα</p>
+                <div class="onboarding-options" id="onboardingPrimaryOptions" role="radiogroup" aria-label="Βασική γλώσσα">
+                    <button class="onboarding-language selected" type="button" data-primary-language="el" role="radio" aria-checked="true" onclick="chooseOnboardingPrimary('el')"><span class="flag">🇬🇷</span>Ελληνικά</button>
+                    <button class="onboarding-language" type="button" data-primary-language="en" role="radio" aria-checked="false" onclick="chooseOnboardingPrimary('en')"><span class="flag">🇬🇧</span>English</button>
+                    <button class="onboarding-language" type="button" data-primary-language="es" role="radio" aria-checked="false" onclick="chooseOnboardingPrimary('es')"><span class="flag">🇲🇽</span>Español</button>
+                    <button class="onboarding-language" type="button" data-primary-language="fr" role="radio" aria-checked="false" onclick="chooseOnboardingPrimary('fr')"><span class="flag">🇫🇷</span>Français</button>
+                </div>
+            </section>
+
+            <section class="onboarding-step" id="onboardingStep2" hidden>
+                <h2 id="onboardingLanguagesTitle">Ποιες γλώσσες θέλετε;</h2>
+                <p class="onboarding-lead" id="onboardingLanguagesLead">Μπορείτε να τις αλλάξετε αργότερα</p>
+                <div class="onboarding-options" id="onboardingLanguageOptions">
+                    <label class="onboarding-toggle"><input type="checkbox" value="el" data-enabled-language="el" onchange="changeOnboardingLanguage(this)"><span class="onboarding-language"><span class="flag">🇬🇷</span>Ελληνικά</span></label>
+                    <label class="onboarding-toggle"><input type="checkbox" value="en" data-enabled-language="en" onchange="changeOnboardingLanguage(this)"><span class="onboarding-language"><span class="flag">🇬🇧</span>English</span></label>
+                    <label class="onboarding-toggle"><input type="checkbox" value="es" data-enabled-language="es" onchange="changeOnboardingLanguage(this)"><span class="onboarding-language"><span class="flag">🇲🇽</span>Español</span></label>
+                    <label class="onboarding-toggle"><input type="checkbox" value="fr" data-enabled-language="fr" onchange="changeOnboardingLanguage(this)"><span class="onboarding-language"><span class="flag">🇫🇷</span>Français</span></label>
+                </div>
+            </section>
+
+            <section class="onboarding-step" id="onboardingStep3" hidden>
+                <h2 id="onboardingNamesTitle">Πώς να φωνάζουμε το παιδί;</h2>
+                <p class="onboarding-lead" id="onboardingNamesLead">Μπορείτε να βάλετε όνομα και χαϊδευτικά</p>
+                <div class="onboarding-name-field" id="onboardingGreekField">
+                    <label id="onboardingGreekLabel" for="onboardingGreekNames">🇬🇷 Όνομα στα Ελληνικά</label>
+                    <input id="onboardingGreekNames" type="text" maxlength="240" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Άρι, Αρούλλη, Αριστοφάνη" oninput="clearOnboardingError()">
+                </div>
+                <div class="onboarding-name-field" id="onboardingOtherField">
+                    <label id="onboardingOtherLabel" for="onboardingOtherNames">🌍 Όνομα στις άλλες γλώσσες</label>
+                    <input id="onboardingOtherNames" type="text" maxlength="240" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Ari, Aroulli, Aristofani" oninput="clearOnboardingError()">
+                </div>
+                <p class="settings-help" id="onboardingNamesHelp">Χώρισε τα χαϊδευτικά με κόμμα</p>
+            </section>
+
+            <p class="onboarding-error" id="onboardingError" role="alert" aria-live="polite"></p>
+            <div class="onboarding-actions">
+                <button class="onboarding-back" id="onboardingBack" type="button" onclick="backOnboarding()" hidden>Πίσω</button>
+                <button class="onboarding-next" id="onboardingNext" type="submit">Συνέχεια</button>
+            </div>
+        </form>
+    </div>
+
     <div id="settingsModal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="settingsTitle" translate="no" class="notranslate">
         <form class="settings-card" id="settingsForm" onsubmit="saveSettings(event)">
             <button class="settings-close" id="settingsClose" type="button" onclick="closeSettings()" aria-label="Κλείσιμο">×</button>
             <div class="settings-icon" aria-hidden="true">⚙️</div>
             <h2 id="settingsTitle">Ρυθμίσεις για γονείς</h2>
-            <div class="settings-field">
+            <div class="settings-field" id="settingsGreekField">
                 <label id="settingsGreekNamesLabel" for="settingsGreekNames">🇬🇷 Ονόματα στα Ελληνικά</label>
                 <input id="settingsGreekNames" name="greekNames" type="text" value="Άρι, Αρούλλη, Αριστοφάνη" maxlength="240" autocomplete="off" autocapitalize="words" spellcheck="false" aria-describedby="settingsHelp settingsError" aria-invalid="false" oninput="clearSettingsError()">
             </div>
-            <div class="settings-field">
+            <div class="settings-field" id="settingsOtherField">
                 <label id="settingsOtherNamesLabel" for="settingsOtherNames">🇬🇧 🇲🇽 🇫🇷 Ονόματα στις άλλες γλώσσες</label>
                 <input id="settingsOtherNames" name="otherNames" type="text" value="Ari, Aroulli, Aristofani" maxlength="240" autocomplete="off" autocapitalize="words" spellcheck="false" aria-describedby="settingsHelp settingsError" aria-invalid="false" oninput="clearSettingsError()">
             </div>
             <p class="settings-help" id="settingsHelp">Χώρισέ τα με κόμμα. Κράτησε την ίδια σειρά και στις δύο λίστες.</p>
             <p class="settings-error" id="settingsError" role="alert" aria-live="polite"></p>
+            <button class="settings-setup" id="settingsSetup" type="button" onclick="editOnboarding()">🌍 Γλώσσες και αρχική ρύθμιση</button>
             <div class="settings-actions">
                 <button class="settings-cancel" id="settingsCancel" type="button" onclick="closeSettings()">Ακύρωση</button>
                 <button class="settings-save" id="settingsSave" type="submit">Αποθήκευση</button>
@@ -1688,11 +1850,11 @@
                 <div class="controls-section-label" id="languagePickerLabel">🌍 Γλώσσα</div>
                 <div class="header-controls" id="headerControls">
                     <div class="lang-bar">
-                        <button class="lang-pill active" onclick="setLanguage('el', this)">🇬🇷 ΕΛ</button>
-                        <button class="lang-pill" onclick="setLanguage('en', this)">🇬🇧 EN</button>
-                        <button class="lang-pill" onclick="setLanguage('es', this)">🇲🇽 MX</button>
-                        <button class="lang-pill" onclick="setLanguage('fr', this)">🇫🇷 FR</button>
-                        <button class="lang-pill" onclick="setLanguage('all', this)">🌍 All 4</button>
+                        <button class="lang-pill active" data-language="el" onclick="setLanguage('el', this)">🇬🇷 ΕΛ</button>
+                        <button class="lang-pill" data-language="en" onclick="setLanguage('en', this)">🇬🇧 EN</button>
+                        <button class="lang-pill" data-language="es" onclick="setLanguage('es', this)">🇲🇽 MX</button>
+                        <button class="lang-pill" data-language="fr" onclick="setLanguage('fr', this)">🇫🇷 FR</button>
+                        <button class="lang-pill" id="allLanguagesButton" data-language="all" onclick="setLanguage('all', this)">🌍 Και οι 4</button>
                     </div>
                 </div>
             </section>
@@ -2624,7 +2786,10 @@
             es: { code: 'es-MX', flag: '🇲🇽' },
             fr: { code: 'fr-FR', flag: '🇫🇷' }
         };
-        const allLanguageOrder = ['el', 'en', 'es', 'fr'];
+        const supportedLanguageOrder = ['el', 'en', 'es', 'fr'];
+        let enabledLanguages = [...supportedLanguageOrder];
+        let allLanguageOrder = [...supportedLanguageOrder];
+        const appProfileStorageKey = 'polyglotToddler.profile.v1';
         const childNameStorageKey = 'polyglotToddler.childNames.v1';
         const controlsCollapsedStorageKey = 'polyglotToddler.controlsCollapsed.v2';
         const defaultChildNames = [
@@ -2639,7 +2804,7 @@
                 help: 'Χώρισέ τα με κόμμα. Κράτησε την ίδια σειρά και στις δύο λίστες.',
                 required: 'Γράψε τουλάχιστον ένα όνομα σε κάθε λίστα.',
                 error: 'Οι δύο λίστες πρέπει να έχουν τον ίδιο αριθμό ονομάτων.',
-                close: 'Κλείσιμο', cancel: 'Ακύρωση', save: 'Αποθήκευση', restore: 'Επαναφορά αρχικών',
+                close: 'Κλείσιμο', cancel: 'Ακύρωση', save: 'Αποθήκευση', restore: 'Επαναφορά αρχικών', setup: '🌍 Γλώσσες και αρχική ρύθμιση',
                 soundCredits: '🔊 Πηγές πραγματικών ήχων'
             },
             en: {
@@ -2648,7 +2813,7 @@
                 help: 'Separate nicknames with commas. Keep both lists in the same order.',
                 required: 'Enter at least one name in each list.',
                 error: 'Both lists need the same number of names.',
-                close: 'Close', cancel: 'Cancel', save: 'Save', restore: 'Restore defaults',
+                close: 'Close', cancel: 'Cancel', save: 'Save', restore: 'Restore defaults', setup: '🌍 Languages and setup',
                 soundCredits: '🔊 Real sound credits'
             },
             es: {
@@ -2657,7 +2822,7 @@
                 help: 'Separa los apodos con comas. Mantén el mismo orden en las dos listas.',
                 required: 'Escribe al menos un nombre en cada lista.',
                 error: 'Las dos listas deben tener la misma cantidad de nombres.',
-                close: 'Cerrar', cancel: 'Cancelar', save: 'Guardar', restore: 'Restaurar valores',
+                close: 'Cerrar', cancel: 'Cancelar', save: 'Guardar', restore: 'Restaurar valores', setup: '🌍 Idiomas y configuración',
                 soundCredits: '🔊 Créditos de sonidos reales'
             },
             fr: {
@@ -2666,8 +2831,63 @@
                 help: 'Sépare les surnoms par des virgules. Garde le même ordre dans les deux listes.',
                 required: 'Saisis au moins un prénom dans chaque liste.',
                 error: 'Les deux listes doivent contenir le même nombre de prénoms.',
-                close: 'Fermer', cancel: 'Annuler', save: 'Enregistrer', restore: 'Valeurs par défaut',
+                close: 'Fermer', cancel: 'Annuler', save: 'Enregistrer', restore: 'Valeurs par défaut', setup: '🌍 Langues et configuration',
                 soundCredits: '🔊 Crédits des sons réels'
+            }
+        };
+
+        const onboardingCopy = {
+            el: {
+                step: number => `Βήμα ${number} από 3`,
+                primaryTitle: 'Ποια είναι η κύρια γλώσσα του παιχνιδιού;',
+                primaryLead: 'Θα εμφανίζεται πρώτη και θα χρησιμοποιείται στα μενού.',
+                languagesTitle: 'Ποιες γλώσσες θέλεις να ενεργοποιήσεις;',
+                languagesLead: 'Η κύρια γλώσσα είναι ήδη ενεργή. Διάλεξε όσες ακόμη θέλεις.',
+                namesTitle: 'Πώς θέλεις να φωνάζει το παιχνίδι το παιδί;',
+                namesLead: 'Γράψε τα ονόματα όπως θέλεις να ακούγονται. Αποθηκεύονται μόνο σε αυτή τη συσκευή.',
+                greekLabel: '🇬🇷 Στα Ελληνικά', otherLabel: '🌍 Στις άλλες γλώσσες',
+                namesHelp: 'Χώρισε το όνομα και τα χαϊδευτικά με κόμμα.',
+                back: 'Πίσω', next: 'Συνέχεια', finish: 'Αποθήκευση και παιχνίδι', close: 'Κλείσιμο',
+                required: 'Γράψε τουλάχιστον ένα όνομα.', mismatch: 'Οι δύο λίστες χρειάζονται τον ίδιο αριθμό ονομάτων.'
+            },
+            en: {
+                step: number => `Step ${number} of 3`,
+                primaryTitle: 'What is the game’s primary language?',
+                primaryLead: 'It will appear first and be used for menus.',
+                languagesTitle: 'Which languages do you want to enable?',
+                languagesLead: 'The primary language is already on. Choose any others you want.',
+                namesTitle: 'What should the game call your child?',
+                namesLead: 'Enter names exactly as you want them spoken. Names are saved only on this device.',
+                greekLabel: '🇬🇷 In Greek', otherLabel: '🌍 In the other languages',
+                namesHelp: 'Separate the name and nicknames with commas.',
+                back: 'Back', next: 'Continue', finish: 'Save & play', close: 'Close',
+                required: 'Enter at least one name.', mismatch: 'Both lists need the same number of names.'
+            },
+            es: {
+                step: number => `Paso ${number} de 3`,
+                primaryTitle: '¿Cuál es el idioma principal del juego?',
+                primaryLead: 'Aparecerá primero y se usará en los menús.',
+                languagesTitle: '¿Qué idiomas quieres activar?',
+                languagesLead: 'El idioma principal ya está activado. Elige los demás que quieras.',
+                namesTitle: '¿Cómo quieres que el juego llame a tu hijo o hija?',
+                namesLead: 'Escribe los nombres tal como quieres que se escuchen. Se guardan solo en este dispositivo.',
+                greekLabel: '🇬🇷 En griego', otherLabel: '🌍 En los otros idiomas',
+                namesHelp: 'Separa el nombre y los apodos con comas.',
+                back: 'Atrás', next: 'Continuar', finish: 'Guardar y jugar', close: 'Cerrar',
+                required: 'Escribe por lo menos un nombre.', mismatch: 'Las dos listas necesitan la misma cantidad de nombres.'
+            },
+            fr: {
+                step: number => `Étape ${number} sur 3`,
+                primaryTitle: 'Quelle est la langue principale du jeu ?',
+                primaryLead: 'Elle apparaîtra en premier et sera utilisée dans les menus.',
+                languagesTitle: 'Quelles langues veux-tu activer ?',
+                languagesLead: 'La langue principale est déjà activée. Choisis les autres que tu veux.',
+                namesTitle: 'Comment veux-tu que le jeu appelle ton enfant ?',
+                namesLead: 'Saisis les prénoms comme tu veux les entendre. Ils restent uniquement sur cet appareil.',
+                greekLabel: '🇬🇷 En grec', otherLabel: '🌍 Dans les autres langues',
+                namesHelp: 'Sépare le prénom et les surnoms avec des virgules.',
+                back: 'Retour', next: 'Continuer', finish: 'Enregistrer et jouer', close: 'Fermer',
+                required: 'Saisis au moins un prénom.', mismatch: 'Les deux listes doivent contenir le même nombre de prénoms.'
             }
         };
 
@@ -2676,7 +2896,7 @@
         }
 
         function cleanName(value) {
-            return String(value).trim().replace(/\s+/g, ' ');
+            return String(value).trim().replace(/\s+/g, ' ').slice(0, 40);
         }
 
         function parseNameList(value) {
@@ -2686,26 +2906,119 @@
                 .filter(Boolean);
         }
 
-        function loadChildNames() {
-            try {
-                const saved = JSON.parse(localStorage.getItem(childNameStorageKey));
-                const greekNames = Array.isArray(saved?.greekNames) ? saved.greekNames.map(cleanName).filter(Boolean) : [];
-                const otherNames = Array.isArray(saved?.otherNames) ? saved.otherNames.map(cleanName).filter(Boolean) : [];
-                if (greekNames.length > 0 && greekNames.length === otherNames.length) {
-                    return greekNames.map((greekName, index) => ({
-                        el: greekName,
-                        en: otherNames[index],
-                        es: otherNames[index],
-                        fr: otherNames[index]
-                    }));
-                }
-            } catch (error) {
-                // Local storage can be unavailable in private browsing; defaults remain usable.
-            }
-            return cloneDefaultChildNames();
+        function defaultNameLists() {
+            return {
+                greekNames: defaultChildNames.map(name => name.el),
+                otherNames: defaultChildNames.map(name => name.en)
+            };
         }
 
-        let childNames = loadChildNames();
+        function sanitizeNameArray(values) {
+            return Array.isArray(values) ? values.map(cleanName).filter(Boolean).slice(0, 6) : [];
+        }
+
+        function loadLegacyNameLists() {
+            try {
+                const saved = JSON.parse(localStorage.getItem(childNameStorageKey));
+                const greekNames = sanitizeNameArray(saved?.greekNames);
+                const otherNames = sanitizeNameArray(saved?.otherNames);
+                if (greekNames.length > 0 && greekNames.length === otherNames.length) {
+                    return { greekNames, otherNames };
+                }
+            } catch (error) {
+                // A fresh in-memory profile still works when storage is unavailable.
+            }
+            return null;
+        }
+
+        function normalizeAppProfile(rawProfile) {
+            const primaryLanguage = supportedLanguageOrder.includes(rawProfile?.primaryLanguage)
+                ? rawProfile.primaryLanguage
+                : 'el';
+            const requestedLanguages = Array.isArray(rawProfile?.enabledLanguages)
+                ? rawProfile.enabledLanguages.filter(language => supportedLanguageOrder.includes(language))
+                : [...supportedLanguageOrder];
+            const enabled = [...new Set([primaryLanguage, ...requestedLanguages])];
+            let greekNames = sanitizeNameArray(rawProfile?.greekNames);
+            let otherNames = sanitizeNameArray(rawProfile?.otherNames);
+            const onboardingComplete = rawProfile?.onboardingComplete === true;
+
+            if (onboardingComplete && greekNames.length === 0 && otherNames.length === 0) {
+                ({ greekNames, otherNames } = defaultNameLists());
+            }
+
+            return {
+                schemaVersion: 1,
+                onboardingComplete,
+                primaryLanguage,
+                enabledLanguages: supportedLanguageOrder.filter(language => enabled.includes(language)),
+                greekNames,
+                otherNames
+            };
+        }
+
+        function loadAppProfile() {
+            try {
+                const savedProfile = JSON.parse(localStorage.getItem(appProfileStorageKey));
+                if (savedProfile?.schemaVersion === 1) return normalizeAppProfile(savedProfile);
+
+                const legacyNames = loadLegacyNameLists();
+                const hasUsedGame = legacyNames !== null || localStorage.getItem(controlsCollapsedStorageKey) !== null;
+                const names = legacyNames || (hasUsedGame ? defaultNameLists() : { greekNames: [], otherNames: [] });
+                return normalizeAppProfile({
+                    schemaVersion: 1,
+                    onboardingComplete: false,
+                    primaryLanguage: 'el',
+                    enabledLanguages: [...supportedLanguageOrder],
+                    ...names
+                });
+            } catch (error) {
+                return normalizeAppProfile({
+                    schemaVersion: 1,
+                    onboardingComplete: false,
+                    primaryLanguage: 'el',
+                    enabledLanguages: [...supportedLanguageOrder],
+                    greekNames: [],
+                    otherNames: []
+                });
+            }
+        }
+
+        function childNamesFromProfile(profile) {
+            let greekNames = sanitizeNameArray(profile.greekNames);
+            let otherNames = sanitizeNameArray(profile.otherNames);
+            if (greekNames.length === 0 && otherNames.length === 0) return cloneDefaultChildNames();
+            if (greekNames.length === 0) greekNames = [...otherNames];
+            if (otherNames.length === 0) otherNames = [...greekNames];
+            const count = Math.max(greekNames.length, otherNames.length);
+            return Array.from({ length: count }, (_, index) => ({
+                el: greekNames[index] || greekNames[0],
+                en: otherNames[index] || otherNames[0],
+                es: otherNames[index] || otherNames[0],
+                fr: otherNames[index] || otherNames[0]
+            }));
+        }
+
+        function persistAppProfile() {
+            try {
+                localStorage.setItem(appProfileStorageKey, JSON.stringify(appProfile));
+                localStorage.setItem(childNameStorageKey, JSON.stringify({
+                    greekNames: appProfile.greekNames,
+                    otherNames: appProfile.otherNames
+                }));
+            } catch (error) {
+                // The profile remains active for this visit when storage is unavailable.
+            }
+        }
+
+        let appProfile = loadAppProfile();
+        enabledLanguages = [...appProfile.enabledLanguages];
+        allLanguageOrder = [
+            appProfile.primaryLanguage,
+            ...supportedLanguageOrder.filter(language => language !== appProfile.primaryLanguage && enabledLanguages.includes(language))
+        ];
+        currentLangMode = appProfile.primaryLanguage;
+        let childNames = childNamesFromProfile(appProfile);
         let activeChildName = childNames[0];
         let nextChildNameIndex = 0;
 
@@ -2734,6 +3047,7 @@
             document.getElementById('settingsCancel').textContent = copy.cancel;
             document.getElementById('settingsSave').textContent = copy.save;
             document.getElementById('settingsRestore').textContent = copy.restore;
+            document.getElementById('settingsSetup').textContent = copy.setup;
             document.getElementById('soundCreditsTitle').textContent = copy.soundCredits;
         }
 
@@ -2764,8 +3078,10 @@
             if (document.getElementById('settingsModal').classList.contains('active')) return;
             pauseActivePlay();
             updateSettingsLanguage();
-            document.getElementById('settingsGreekNames').value = childNames.map(name => name.el).join(', ');
-            document.getElementById('settingsOtherNames').value = childNames.map(name => name.en).join(', ');
+            document.getElementById('settingsGreekNames').value = appProfile.greekNames.join(', ');
+            document.getElementById('settingsOtherNames').value = appProfile.otherNames.join(', ');
+            document.getElementById('settingsGreekField').hidden = !enabledLanguages.includes('el');
+            document.getElementById('settingsOtherField').hidden = !enabledLanguages.some(language => language !== 'el');
             clearSettingsError();
             const modal = document.getElementById('settingsModal');
             modal.classList.add('active');
@@ -2790,32 +3106,27 @@
             const greekNames = parseNameList(document.getElementById('settingsGreekNames').value);
             const otherNames = parseNameList(document.getElementById('settingsOtherNames').value);
             const copy = settingsCopy[settingsLanguage()];
-            if (greekNames.length === 0 || otherNames.length === 0) {
+            const needsGreekNames = enabledLanguages.includes('el');
+            const needsOtherNames = enabledLanguages.some(language => language !== 'el');
+            if ((needsGreekNames && greekNames.length === 0) || (needsOtherNames && otherNames.length === 0)) {
                 showSettingsError(copy.required);
                 return;
             }
-            if (greekNames.length !== otherNames.length) {
+            if (needsGreekNames && needsOtherNames && greekNames.length !== otherNames.length) {
                 showSettingsError(copy.error);
                 return;
             }
 
-            childNames = greekNames.map((greekName, index) => ({
-                el: greekName,
-                en: otherNames[index],
-                es: otherNames[index],
-                fr: otherNames[index]
-            }));
+            appProfile = normalizeAppProfile({
+                ...appProfile,
+                greekNames: greekNames.length ? greekNames : appProfile.greekNames,
+                otherNames: otherNames.length ? otherNames : appProfile.otherNames,
+                onboardingComplete: true
+            });
+            childNames = childNamesFromProfile(appProfile);
             activeChildName = childNames[0];
             nextChildNameIndex = 0;
-            try {
-                if (namesAreDefaults(greekNames, otherNames)) {
-                    localStorage.removeItem(childNameStorageKey);
-                } else {
-                    localStorage.setItem(childNameStorageKey, JSON.stringify({ greekNames, otherNames }));
-                }
-            } catch (error) {
-                // The setting still works for this visit when storage is unavailable.
-            }
+            persistAppProfile();
             updateInterfaceLanguage();
             closeSettings();
         }
@@ -2825,6 +3136,196 @@
             document.getElementById('settingsOtherNames').value = defaultChildNames.map(name => name.en).join(', ');
             clearSettingsError();
             document.getElementById('settingsGreekNames').focus({ preventScroll: true });
+        }
+
+        let onboardingStep = 1;
+        let onboardingEditing = false;
+        let onboardingDraft = null;
+
+        function cloneProfile(profile) {
+            return {
+                ...profile,
+                enabledLanguages: [...profile.enabledLanguages],
+                greekNames: [...profile.greekNames],
+                otherNames: [...profile.otherNames]
+            };
+        }
+
+        function setOnboardingBackgroundInert(isInert) {
+            document.querySelectorAll('header, .controls-expand-button, .game-view, #repeatOverlay, #santaCelebration, #settingsModal').forEach(element => {
+                element.inert = isInert;
+            });
+        }
+
+        function clearOnboardingError() {
+            document.getElementById('onboardingError').textContent = '';
+            document.getElementById('onboardingGreekNames').removeAttribute('aria-invalid');
+            document.getElementById('onboardingOtherNames').removeAttribute('aria-invalid');
+        }
+
+        function showOnboardingError(message, input) {
+            document.getElementById('onboardingError').textContent = message;
+            if (input) {
+                input.setAttribute('aria-invalid', 'true');
+                input.focus({ preventScroll: true });
+            }
+        }
+
+        function syncOnboardingNameDraft() {
+            if (!onboardingDraft) return;
+            onboardingDraft.greekNames = parseNameList(document.getElementById('onboardingGreekNames').value);
+            onboardingDraft.otherNames = parseNameList(document.getElementById('onboardingOtherNames').value);
+        }
+
+        function updateOnboardingView(shouldFocus = true) {
+            if (!onboardingDraft) return;
+            const copy = onboardingCopy[onboardingDraft.primaryLanguage];
+            const stepIds = ['onboardingStep1', 'onboardingStep2', 'onboardingStep3'];
+            stepIds.forEach((id, index) => {
+                document.getElementById(id).hidden = index + 1 !== onboardingStep;
+            });
+            document.querySelectorAll('.onboarding-progress-dot').forEach((dot, index) => {
+                dot.classList.toggle('active', index + 1 === onboardingStep);
+            });
+
+            document.getElementById('onboardingProgress').setAttribute('aria-label', copy.step(onboardingStep));
+            document.getElementById('onboardingPrimaryOptions').setAttribute('aria-label', copy.primaryTitle);
+            document.getElementById('onboardingTitle').textContent = copy.primaryTitle;
+            document.getElementById('onboardingPrimaryLead').textContent = copy.primaryLead;
+            document.getElementById('onboardingLanguagesTitle').textContent = copy.languagesTitle;
+            document.getElementById('onboardingLanguagesLead').textContent = copy.languagesLead;
+            document.getElementById('onboardingNamesTitle').textContent = copy.namesTitle;
+            document.getElementById('onboardingNamesLead').textContent = copy.namesLead;
+            document.getElementById('onboardingGreekLabel').textContent = copy.greekLabel;
+            document.getElementById('onboardingOtherLabel').textContent = copy.otherLabel;
+            document.getElementById('onboardingNamesHelp').textContent = copy.namesHelp;
+            document.getElementById('onboardingBack').textContent = copy.back;
+            document.getElementById('onboardingBack').hidden = onboardingStep === 1;
+            document.getElementById('onboardingNext').textContent = onboardingStep === 3 ? copy.finish : copy.next;
+            document.getElementById('onboardingClose').setAttribute('aria-label', copy.close);
+            document.getElementById('onboardingModal').setAttribute('aria-labelledby', stepIds[onboardingStep - 1] === 'onboardingStep1' ? 'onboardingTitle' : (onboardingStep === 2 ? 'onboardingLanguagesTitle' : 'onboardingNamesTitle'));
+
+            document.querySelectorAll('[data-primary-language]').forEach(button => {
+                const selected = button.dataset.primaryLanguage === onboardingDraft.primaryLanguage;
+                button.classList.toggle('selected', selected);
+                button.setAttribute('aria-checked', String(selected));
+            });
+            document.querySelectorAll('[data-enabled-language]').forEach(input => {
+                input.checked = onboardingDraft.enabledLanguages.includes(input.value);
+                input.disabled = input.value === onboardingDraft.primaryLanguage;
+            });
+
+            const hasGreek = onboardingDraft.enabledLanguages.includes('el');
+            const hasOtherLanguage = onboardingDraft.enabledLanguages.some(language => language !== 'el');
+            document.getElementById('onboardingGreekField').hidden = !hasGreek;
+            document.getElementById('onboardingOtherField').hidden = !hasOtherLanguage;
+            clearOnboardingError();
+
+            if (!shouldFocus) return;
+            requestAnimationFrame(() => {
+                if (onboardingStep === 1) {
+                    document.querySelector(`[data-primary-language="${onboardingDraft.primaryLanguage}"]`).focus({ preventScroll: true });
+                } else if (onboardingStep === 2) {
+                    document.querySelector('[data-enabled-language]:not(:disabled)').focus({ preventScroll: true });
+                } else {
+                    const firstVisibleInput = hasGreek ? document.getElementById('onboardingGreekNames') : document.getElementById('onboardingOtherNames');
+                    firstVisibleInput.focus({ preventScroll: true });
+                }
+            });
+        }
+
+        function openOnboarding(isEditing = false) {
+            pauseActivePlay();
+            onboardingEditing = isEditing;
+            onboardingStep = 1;
+            onboardingDraft = cloneProfile(appProfile);
+            document.getElementById('onboardingGreekNames').value = onboardingDraft.greekNames.join(', ');
+            document.getElementById('onboardingOtherNames').value = onboardingDraft.otherNames.join(', ');
+            document.getElementById('onboardingClose').hidden = !isEditing;
+            const modal = document.getElementById('onboardingModal');
+            modal.classList.add('active');
+            modal.setAttribute('aria-hidden', 'false');
+            document.body.classList.add('onboarding-open');
+            setOnboardingBackgroundInert(true);
+            updateOnboardingView();
+        }
+
+        function closeOnboarding(reopenSettings = onboardingEditing) {
+            if (!onboardingEditing && !appProfile.onboardingComplete) return;
+            const modal = document.getElementById('onboardingModal');
+            modal.classList.remove('active');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('onboarding-open');
+            setOnboardingBackgroundInert(false);
+            onboardingDraft = null;
+            if (reopenSettings) {
+                requestAnimationFrame(openSettings);
+            }
+        }
+
+        function editOnboarding() {
+            closeSettings();
+            openOnboarding(true);
+        }
+
+        function chooseOnboardingPrimary(language) {
+            if (!supportedLanguageOrder.includes(language)) return;
+            onboardingDraft.primaryLanguage = language;
+            if (!onboardingDraft.enabledLanguages.includes(language)) onboardingDraft.enabledLanguages.push(language);
+            updateOnboardingView();
+        }
+
+        function changeOnboardingLanguage(input) {
+            if (input.value === onboardingDraft.primaryLanguage) {
+                input.checked = true;
+                return;
+            }
+            if (input.checked) {
+                onboardingDraft.enabledLanguages = [...new Set([...onboardingDraft.enabledLanguages, input.value])];
+            } else {
+                onboardingDraft.enabledLanguages = onboardingDraft.enabledLanguages.filter(language => language !== input.value);
+            }
+            updateOnboardingView(false);
+        }
+
+        function backOnboarding() {
+            if (onboardingStep === 3) syncOnboardingNameDraft();
+            if (onboardingStep > 1) onboardingStep--;
+            updateOnboardingView();
+        }
+
+        function continueOnboarding(event) {
+            event.preventDefault();
+            if (onboardingStep < 3) {
+                onboardingStep++;
+                updateOnboardingView();
+                return;
+            }
+
+            syncOnboardingNameDraft();
+            const copy = onboardingCopy[onboardingDraft.primaryLanguage];
+            const hasGreek = onboardingDraft.enabledLanguages.includes('el');
+            const hasOtherLanguage = onboardingDraft.enabledLanguages.some(language => language !== 'el');
+            const greekInput = document.getElementById('onboardingGreekNames');
+            const otherInput = document.getElementById('onboardingOtherNames');
+
+            if (hasGreek && onboardingDraft.greekNames.length === 0) {
+                showOnboardingError(copy.required, greekInput);
+                return;
+            }
+            if (hasOtherLanguage && onboardingDraft.otherNames.length === 0) {
+                showOnboardingError(copy.required, otherInput);
+                return;
+            }
+            if (hasGreek && hasOtherLanguage && onboardingDraft.greekNames.length !== onboardingDraft.otherNames.length) {
+                showOnboardingError(copy.mismatch, otherInput);
+                return;
+            }
+            applyAppProfile(normalizeAppProfile({ ...onboardingDraft, onboardingComplete: true }));
+            persistAppProfile();
+            onboardingEditing = false;
+            closeOnboarding(false);
+            setControlsCollapsed(true);
         }
 
         const repeatCopy = {
@@ -2888,7 +3389,9 @@
             warning.classList.remove('active');
             warning.setAttribute('aria-hidden', 'true');
             document.body.classList.remove('translation-warning-open');
-            if (document.getElementById('settingsModal').classList.contains('active')) {
+            if (document.getElementById('onboardingModal').classList.contains('active')) {
+                updateOnboardingView();
+            } else if (document.getElementById('settingsModal').classList.contains('active')) {
                 document.getElementById('settingsGreekNames').focus({ preventScroll: true });
             } else {
                 resetSantaIdleTimer();
@@ -2904,13 +3407,48 @@
         translationObserver.observe(document.body, { childList: true });
 
         function setLanguage(mode, button) {
+            if (mode === 'all' && enabledLanguages.length < 2) return;
+            if (mode !== 'all' && !enabledLanguages.includes(mode)) return;
             if (currentLangMode !== mode) singleLanguagePromptNext = true;
             currentLangMode = mode;
             document.querySelectorAll('.lang-pill').forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
+            const selectedButton = button || document.querySelector(`.lang-pill[data-language="${mode}"]`);
+            if (selectedButton) selectedButton.classList.add('active');
             cancelRepeatSequence();
             updateInterfaceLanguage();
             resetSantaIdleTimer();
+        }
+
+        function syncLanguageButtons() {
+            if (currentLangMode !== 'all' && !enabledLanguages.includes(currentLangMode)) {
+                currentLangMode = appProfile.primaryLanguage;
+            }
+            if (currentLangMode === 'all' && enabledLanguages.length < 2) {
+                currentLangMode = appProfile.primaryLanguage;
+            }
+
+            document.querySelectorAll('.lang-pill[data-language]').forEach(button => {
+                const language = button.dataset.language;
+                const isAll = language === 'all';
+                button.hidden = isAll ? enabledLanguages.length < 2 : !enabledLanguages.includes(language);
+                button.classList.toggle('active', language === currentLangMode);
+                button.style.order = isAll ? '99' : String(allLanguageOrder.indexOf(language));
+            });
+        }
+
+        function applyAppProfile(profile) {
+            appProfile = normalizeAppProfile(profile);
+            enabledLanguages = [...appProfile.enabledLanguages];
+            allLanguageOrder = [
+                appProfile.primaryLanguage,
+                ...supportedLanguageOrder.filter(language => language !== appProfile.primaryLanguage && enabledLanguages.includes(language))
+            ];
+            currentLangMode = appProfile.primaryLanguage;
+            childNames = childNamesFromProfile(appProfile);
+            activeChildName = childNames[0];
+            nextChildNameIndex = 0;
+            syncLanguageButtons();
+            updateInterfaceLanguage();
         }
 
         function getStoredControlsCollapsed() {
@@ -2980,11 +3518,12 @@
         }
 
         function updateInterfaceLanguage() {
+            syncLanguageButtons();
             const displayLanguage = currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode;
             const text = interfaceText[displayLanguage];
             document.documentElement.lang = displayLanguage;
             document.title = text.pageTitle;
-            document.querySelector('.lang-pill:last-child').textContent = `🌍 ${text.allLanguages}`;
+            document.getElementById('allLanguagesButton').textContent = `🌍 ${text.allLanguages.replace('4', String(enabledLanguages.length))}`;
             document.getElementById('navMonster').textContent = text.feedSanta;
             document.getElementById('navTrucks').textContent = text.trucks;
             document.getElementById('navBalloons').textContent = text.balloons;
@@ -3307,14 +3846,28 @@
         window.addEventListener('resize', updateGameNavControls);
         document.addEventListener('keydown', event => {
             const settingsModal = document.getElementById('settingsModal');
+            const onboardingModal = document.getElementById('onboardingModal');
             const translationWarning = document.getElementById('translationWarning');
             if (event.key === 'Tab' && translationWarning.classList.contains('active')) {
                 event.preventDefault();
                 document.getElementById('translationWarningDismiss').focus();
                 return;
             }
+            if (event.key === 'Tab' && onboardingModal.classList.contains('active') && !translationWarning.classList.contains('active')) {
+                const focusable = Array.from(onboardingModal.querySelectorAll('button:not([disabled]), input:not([disabled])')).filter(element => element.offsetParent !== null);
+                const first = focusable[0];
+                const last = focusable[focusable.length - 1];
+                if (event.shiftKey && document.activeElement === first) {
+                    event.preventDefault();
+                    last.focus();
+                } else if (!event.shiftKey && document.activeElement === last) {
+                    event.preventDefault();
+                    first.focus();
+                }
+                return;
+            }
             if (event.key === 'Tab' && settingsModal.classList.contains('active') && !translationWarning.classList.contains('active')) {
-                const focusable = Array.from(settingsModal.querySelectorAll('button:not([disabled]), input:not([disabled])'));
+                const focusable = Array.from(settingsModal.querySelectorAll('button:not([disabled]), input:not([disabled])')).filter(element => element.offsetParent !== null);
                 const first = focusable[0];
                 const last = focusable[focusable.length - 1];
                 if (event.shiftKey && document.activeElement === first) {
@@ -3328,6 +3881,8 @@
             if (event.key === 'Escape') {
                 if (translationWarning.classList.contains('active')) {
                     hideTranslationWarning();
+                } else if (onboardingModal.classList.contains('active')) {
+                    if (onboardingEditing) closeOnboarding();
                 } else if (settingsModal.classList.contains('active')) {
                     closeSettings();
                 } else if (document.getElementById('repeatOverlay').classList.contains('active')) {
@@ -3614,7 +4169,7 @@
             const beginnerNumbers = numbers.slice(0, 5);
             const numItem = beginnerNumbers[currentNumberIndex];
             b.innerHTML = `<span class="balloon-number">${numItem.num}</span><span class="balloon-dots" aria-hidden="true">${'●'.repeat(numItem.num)}</span>`;
-            b.setAttribute('aria-label', numItem[currentLangMode === 'all' ? 'el' : currentLangMode]);
+            b.setAttribute('aria-label', numItem[currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode]);
             currentNumberIndex = (currentNumberIndex + 1) % beginnerNumbers.length;
 
             const randomColor = balloonColors[Math.floor(Math.random() * balloonColors.length)];
@@ -3898,7 +4453,7 @@
             beatInputIndex = 0;
             document.getElementById('beatStart').disabled = false;
             if (typeof interfaceText !== 'undefined') {
-                const language = currentLangMode === 'all' ? 'el' : currentLangMode;
+                const language = currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode;
                 document.getElementById('beatPrompt').textContent = interfaceText[language].beatPrompt;
                 document.getElementById('beatStart').textContent = interfaceText[language].beatStart;
             }
@@ -3915,7 +4470,7 @@
             beatTimers = [];
             beatAcceptingInput = false;
             beatInputIndex = 0;
-            const language = currentLangMode === 'all' ? 'el' : currentLangMode;
+            const language = currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode;
             document.getElementById('beatPrompt').textContent = interfaceText[language].beatPrompt;
             document.getElementById('beatStart').disabled = true;
             beatSequence.forEach((padIndex, index) => {
@@ -3931,7 +4486,7 @@
         function enterBeat(index) {
             if (!beatAcceptingInput) return;
             playBeatPad(index);
-            const language = currentLangMode === 'all' ? 'el' : currentLangMode;
+            const language = currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode;
             if (index !== beatSequence[beatInputIndex]) {
                 beatAcceptingInput = false;
                 document.getElementById('beatPrompt').textContent = interfaceText[language].beatAgain;
@@ -4046,7 +4601,7 @@
             dancePartyActive = false;
             clearTimeout(danceStepTimer);
             clearInterval(danceBeatTimer);
-            const language = currentLangMode === 'all' ? 'el' : currentLangMode;
+            const language = currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode;
             document.getElementById('danceCharacter').className = 'dance-character';
             document.getElementById('danceCharacter').textContent = '🎅';
             document.getElementById('danceCue').textContent = interfaceText[language].danceReady;
@@ -4085,7 +4640,7 @@
             jingleTimers.forEach(clearTimeout);
             jingleTimers = [];
             document.querySelectorAll('.bell-key').forEach(key => key.classList.remove('playing'));
-            const language = currentLangMode === 'all' ? 'el' : currentLangMode;
+            const language = currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode;
             const button = document.getElementById('jingleButton');
             button.setAttribute('aria-busy', 'false');
             button.textContent = interfaceText[language].jingleStart;
@@ -4105,7 +4660,7 @@
             let elapsedBeats = 0;
             const button = document.getElementById('jingleButton');
             button.setAttribute('aria-busy', 'true');
-            const language = currentLangMode === 'all' ? 'el' : currentLangMode;
+            const language = currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode;
             button.textContent = interfaceText[language].jingleStop;
 
             melody.forEach(([note, beats]) => {
@@ -4128,10 +4683,13 @@
         window.addEventListener('pagehide', pauseActivePlay);
 
         populateSoundCredits();
-        checkBrowserTranslation();
-        setControlsCollapsed(getStoredControlsCollapsed(), false);
         updateInterfaceLanguage();
-        startBalloonSpawner();
+        if (appProfile.onboardingComplete) {
+            setControlsCollapsed(getStoredControlsCollapsed(), false);
+        } else {
+            openOnboarding(false);
+        }
+        checkBrowserTranslation();
         requestAnimationFrame(() => revealActiveGame(false));
         setTimeout(dismissGameSwipeHint, 5500);
     </script>
