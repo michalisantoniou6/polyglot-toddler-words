@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google" content="notranslate">
     <meta name="robots" content="notranslate">
+    <link rel="preload" href="assets/santa-ho-ho-ho.mp3" as="audio" type="audio/mpeg">
     <title>Χαρούμενα παιδικά παιχνίδια</title>
     <style>
         * {
@@ -495,12 +496,12 @@
         }
 
         .food-grid {
-            --food-row-count: 3;
+            --food-row-count: 4;
             display: grid;
             grid-auto-flow: column;
-            grid-template-rows: repeat(var(--food-row-count), minmax(78px, 1fr));
-            grid-auto-columns: clamp(86px, 24vw, 112px);
-            gap: 10px;
+            grid-template-rows: repeat(var(--food-row-count), minmax(70px, 1fr));
+            grid-auto-columns: clamp(78px, 22vw, 104px);
+            gap: 8px;
             width: 100%;
             padding: 4px 4px 12px;
             overflow-x: auto;
@@ -511,12 +512,12 @@
             -webkit-overflow-scrolling: touch;
         }
 
-        @media (max-height: 700px) {
-            .food-grid { --food-row-count: 2; }
+        @media (max-height: 560px) {
+            .food-grid { --food-row-count: 3; }
         }
 
-        @media (min-height: 820px) and (max-width: 699px) {
-            .food-grid { --food-row-count: 4; }
+        @media (max-height: 430px) {
+            .food-grid { --food-row-count: 2; }
         }
 
         .food-grid::-webkit-scrollbar { display: none; }
@@ -525,8 +526,8 @@
             background: white;
             border: 3px solid #e2e8f0;
             border-radius: 20px;
-            min-height: 78px;
-            padding: 8px 6px;
+            min-height: 70px;
+            padding: 6px;
             text-align: center;
             cursor: pointer;
             transition: transform 0.1s ease;
@@ -540,7 +541,7 @@
 
         .food-emoji {
             display: block;
-            font-size: 3.25rem;
+            font-size: 3rem;
             line-height: 1;
             pointer-events: none;
         }
@@ -1380,7 +1381,7 @@
             .game-view { padding: 12px; }
             .card-grid { gap: 10px; }
             .arcade-card { padding-inline: 7px; }
-            .food-item { min-height: 78px; }
+            .food-item { min-height: 70px; }
             .arcade-card { min-height: 132px; }
 
             .balloon-sky {
@@ -2460,7 +2461,7 @@
         // The synthesized effects below remain as a graceful fallback when offline.
         const realSoundProfiles = {
             santaLaugh: [
-                clip('https://cdn.freesound.org/previews/325/325180_1754432-hq.mp3', 'SantaClaus Ho Ho Ho', 'Bollenator', 'CC0', freesoundPage(325180), 0.15, 3.2)
+                clip('assets/santa-ho-ho-ho.mp3', 'SantaClaus Ho Ho Ho', 'Bollenator', 'CC0', freesoundPage(325180), 0.15, 3.2)
             ],
             dog: [
                 clip('https://upload.wikimedia.org/wikipedia/commons/5/58/Barking_of_a_dog_2.ogg', 'Barking of a dog 2', 'Amada44', 'CC BY-SA 3.0', 'https://commons.wikimedia.org/wiki/File:Barking_of_a_dog_2.ogg'),
