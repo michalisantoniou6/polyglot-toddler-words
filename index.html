@@ -5337,6 +5337,9 @@
         let danceRoundLanguage = 'el';
         let danceLanguageIndex = 0;
         let danceMoveCount = 0;
+        const danceMoveDurationMilliseconds = 7500;
+        const danceFreezeDurationMilliseconds = 2500;
+        const danceLeaderDurationMilliseconds = 6500;
 
         function startDanceBeat(milliseconds) {
             clearInterval(danceBeatTimer);
@@ -5352,7 +5355,7 @@
                 character.className = 'dance-character frozen';
                 document.getElementById('danceCue').textContent = leaderMoves[danceRoundLanguage];
                 speakSingle(languageSettings[danceRoundLanguage].code, leaderMoves[danceRoundLanguage]);
-                danceStepTimer = setTimeout(runDanceMove, 5200);
+                danceStepTimer = setTimeout(runDanceMove, danceLeaderDurationMilliseconds);
                 return;
             }
             const move = danceMoves[Math.floor(Math.random()*danceMoves.length)];
@@ -5371,8 +5374,8 @@
                 character.className = 'dance-character frozen';
                 document.getElementById('danceCue').textContent = `${pose.emoji} ${pose[danceRoundLanguage]}`;
                 speakSingle(languageSettings[danceRoundLanguage].code, pose[danceRoundLanguage]);
-                danceStepTimer = setTimeout(runDanceMove, 1800);
-            }, 3600);
+                danceStepTimer = setTimeout(runDanceMove, danceFreezeDurationMilliseconds);
+            }, danceMoveDurationMilliseconds);
         }
         function toggleDanceParty() { dancePartyActive ? stopDanceParty() : startDanceParty(); }
         function startDanceParty() {
