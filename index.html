@@ -2201,6 +2201,9 @@
             border-top:9px solid #48bb78;
         }
         .runner-character {
+            --runner-scale:1;
+            --runner-previous-scale:1;
+            --runner-burst-scale:1.12;
             position:absolute;
             left:17%;
             bottom:20%;
@@ -2214,13 +2217,19 @@
             line-height:1;
             filter:drop-shadow(0 8px 3px rgba(45,55,72,.2));
             transform-origin:50% 100%;
+            transform:scale(var(--runner-scale));
+            will-change:transform;
         }
         .runner-stage.running .runner-character:not(.flying) { animation:runnerSteps .34s ease-in-out infinite alternate; }
         .runner-character.flying { animation:runnerFly .42s ease-in-out infinite alternate; }
-        .runner-character.bumped { animation:runnerBump 1.35s ease-out both; }
-        @keyframes runnerSteps { to { transform:translateY(-5px) rotate(4deg); } }
-        @keyframes runnerFly { to { transform:rotate(-7deg) scale(1.04); } }
-        @keyframes runnerBump { 0%{transform:translate(0,0) rotate(0)} 20%{transform:translate(-22px,-55px) rotate(-20deg)} 100%{transform:translate(-54px,80px) rotate(-95deg);opacity:.35} }
+        .runner-character.growing { animation:runnerPowerUp .88s cubic-bezier(.2,.85,.3,1.2) both !important; }
+        .runner-character.growing::after { content:'✨ ⬆️ ✨';position:absolute;left:50%;top:-34px;transform:translateX(-50%);font-size:1.55rem;white-space:nowrap;animation:runnerSparkle .88s ease-out both; }
+        .runner-character.bumped { animation:runnerBump .72s ease-out both !important; }
+        @keyframes runnerSteps { from{transform:scale(var(--runner-scale))} to{transform:translateY(-5px) rotate(4deg) scale(var(--runner-scale))} }
+        @keyframes runnerFly { from{transform:scale(var(--runner-scale))} to{transform:rotate(-7deg) scale(var(--runner-scale))} }
+        @keyframes runnerPowerUp { 0%{transform:scale(var(--runner-previous-scale))} 45%{transform:translateY(-15px) scale(var(--runner-burst-scale));filter:drop-shadow(0 0 18px #ffd43b)} 72%{transform:translateY(2px) scale(var(--runner-scale))} 100%{transform:scale(var(--runner-scale))} }
+        @keyframes runnerSparkle { 0%{opacity:0;transform:translate(-50%,16px) scale(.5)} 35%{opacity:1} 100%{opacity:0;transform:translate(-50%,-24px) scale(1.25)} }
+        @keyframes runnerBump { 0%{transform:scale(var(--runner-previous-scale))} 25%{transform:translate(-16px,-18px) rotate(-12deg) scale(var(--runner-previous-scale))} 55%{transform:translate(9px,0) rotate(8deg) scale(var(--runner-scale))} 100%{transform:scale(var(--runner-scale))} }
         .runner-object {
             position:absolute;
             right:-100px;
@@ -6186,6 +6195,14 @@
         let runnerRunning = false;
         let runnerCrashed = false;
         let runnerScore = 0;
+        const runnerFoodsPerGrowthStep = 5;
+        const runnerGrowthScalePerStep = 0.15;
+        const runnerMinimumScale = 0.70;
+        const runnerMaximumHeightRatio = 0.70;
+        const runnerBaseCharacterHeight = 96;
+        let runnerGrowthLevel = 0;
+        let runnerCharacterScale = 1;
+        let runnerGrowthAnimationTimer = null;
         let runnerDistance = 0;
         let runnerLastDistanceLabel = -1;
         let runnerAltitude = 0;
@@ -6253,11 +6270,13 @@
         function runnerHitboxesOverlap() {
             const character = runnerCharacter.getBoundingClientRect();
             const object = runnerObject.getBoundingClientRect();
-            const padding = 13;
-            return character.left + padding < object.right - padding &&
-                character.right - padding > object.left + padding &&
-                character.top + padding < object.bottom - padding &&
-                character.bottom - padding > object.top + padding;
+            const characterPaddingX = character.width * .22;
+            const characterPaddingY = character.height * .13;
+            const objectPadding = 13;
+            return character.left + characterPaddingX < object.right - objectPadding &&
+                character.right - characterPaddingX > object.left + objectPadding &&
+                character.top + characterPaddingY < object.bottom - objectPadding &&
+                character.bottom - characterPaddingY > object.top + objectPadding;
         }
 
         function scheduleRunnerObject(delay = null) {
@@ -6270,7 +6289,8 @@
             if (!runnerRunning || runnerCrashed) return;
             const elapsedSeconds = runnerLastFrame ? Math.min(.04, (timestamp - runnerLastFrame) / 1000) : 0;
             runnerLastFrame = timestamp;
-            const altitudeCeiling = runnerStage.clientHeight * .53;
+            const scaledCharacterHeight = runnerBaseCharacterHeight * runnerCharacterScale;
+            const altitudeCeiling = Math.max(0, runnerStage.clientHeight * .80 - scaledCharacterHeight - 12);
             const lift = runnerThrusting ? 760 : -670;
             runnerVerticalVelocity = Math.max(-315, Math.min(285, runnerVerticalVelocity + lift * elapsedSeconds));
             runnerAltitude = Math.max(0, Math.min(altitudeCeiling, runnerAltitude + runnerVerticalVelocity * elapsedSeconds));
@@ -6313,6 +6333,64 @@
             });
         }
 
+        function playRunnerGrowthSound() {
+            const ctx = getAudioContext();
+            [392,523,659,784,1047].forEach((frequency,index) => {
+                const oscillator = ctx.createOscillator();
+                const gain = ctx.createGain();
+                const startsAt = ctx.currentTime + index * .065;
+                oscillator.type = index < 3 ? 'square' : 'triangle';
+                oscillator.frequency.value = frequency;
+                gain.gain.setValueAtTime(.0001, startsAt);
+                gain.gain.exponentialRampToValueAtTime(.12, startsAt + .012);
+                gain.gain.exponentialRampToValueAtTime(.0001, startsAt + .20);
+                oscillator.connect(gain);
+                gain.connect(ctx.destination);
+                oscillator.start(startsAt);
+                oscillator.stop(startsAt + .22);
+            });
+        }
+
+        function runnerScaleForLevel(level) {
+            const requestedScale = Math.max(runnerMinimumScale, 1 + level * runnerGrowthScalePerStep);
+            const maximumScale = Math.max(runnerMinimumScale, runnerStage.clientHeight * runnerMaximumHeightRatio / runnerBaseCharacterHeight);
+            return Math.min(requestedScale, maximumScale);
+        }
+
+        function setRunnerScale(nextScale, animationClass = null) {
+            const previousScale = runnerCharacterScale;
+            runnerCharacterScale = nextScale;
+            const maximumScale = runnerStage.clientHeight * runnerMaximumHeightRatio / runnerBaseCharacterHeight;
+            runnerCharacter.style.setProperty('--runner-previous-scale', previousScale.toFixed(3));
+            runnerCharacter.style.setProperty('--runner-scale', nextScale.toFixed(3));
+            runnerCharacter.style.setProperty('--runner-burst-scale', Math.min(nextScale * 1.12, maximumScale).toFixed(3));
+            clearTimeout(runnerGrowthAnimationTimer);
+            runnerCharacter.classList.remove('growing', 'bumped');
+            if (!animationClass) return;
+            void runnerCharacter.offsetWidth;
+            runnerCharacter.classList.add(animationClass);
+            runnerGrowthAnimationTimer = setTimeout(() => runnerCharacter.classList.remove(animationClass), 900);
+        }
+
+        function growRunner() {
+            const previousLevel = runnerGrowthLevel;
+            const previousScale = runnerCharacterScale;
+            runnerGrowthLevel++;
+            const nextScale = runnerScaleForLevel(runnerGrowthLevel);
+            if (nextScale <= previousScale + .001) {
+                runnerGrowthLevel = previousLevel;
+                return false;
+            }
+            setRunnerScale(nextScale, 'growing');
+            playRunnerGrowthSound();
+            return true;
+        }
+
+        function shrinkRunner() {
+            runnerGrowthLevel = Math.max(-2, runnerGrowthLevel - 1);
+            setRunnerScale(runnerScaleForLevel(runnerGrowthLevel), 'bumped');
+        }
+
         function playRunnerCrashSound() {
             const ctx = getAudioContext();
             const oscillator = ctx.createOscillator();
@@ -6339,7 +6417,7 @@
             celebration.classList.remove('active');
             void celebration.offsetWidth;
             celebration.classList.add('active');
-            playRunnerChime();
+            if (runnerScore % runnerFoodsPerGrowthStep !== 0 || !growRunner()) playRunnerChime();
             const caughtMessage = interfaceText[runnerDisplayLanguage].runnerCaught(activeRunnerFood[runnerDisplayLanguage], runnerScore);
             speakSingle(languageSettings[runnerDisplayLanguage].code, caughtMessage);
             scheduleRunnerObject(980);
@@ -6355,15 +6433,21 @@
             runnerStage.classList.remove('running');
             runnerThrusting = false;
             runnerCharacter.classList.remove('flying');
-            runnerCharacter.classList.add('bumped');
+            shrinkRunner();
             document.getElementById('runnerCrash').classList.add('active');
             playRunnerCrashSound();
             speakSingle(languageSettings[runnerDisplayLanguage].code, interfaceText[runnerDisplayLanguage].runnerOw);
             runnerRestartTimer = setTimeout(() => {
                 if (activeGameId() !== 'runner' || !document.body.classList.contains('controls-collapsed')) return;
-                resetRunnerRound();
-                startRunnerGame();
-            }, 1900);
+                document.getElementById('runnerCrash').classList.remove('active');
+                runnerCharacter.classList.remove('bumped');
+                runnerCrashed = false;
+                runnerRunning = true;
+                runnerLastFrame = 0;
+                runnerStage.classList.add('running');
+                scheduleRunnerObject(720);
+                runnerAnimationFrame = requestAnimationFrame(runnerFrame);
+            }, 1050);
         }
 
         function startRunnerFlight(event = null) {
@@ -6410,6 +6494,8 @@
             clearTimeout(runnerSpawnTimer);
             runnerCrashed = false;
             runnerScore = 0;
+            runnerGrowthLevel = 0;
+            runnerCharacterScale = 1;
             runnerDistance = 0;
             runnerLastDistanceLabel = -1;
             runnerAltitude = 0;
@@ -6423,6 +6509,9 @@
             runnerObject.style.bottom = '20%';
             runnerObject.style.transform = 'translateX(0)';
             runnerCharacter.className = 'runner-character';
+            runnerCharacter.style.setProperty('--runner-scale', '1');
+            runnerCharacter.style.setProperty('--runner-previous-scale', '1');
+            runnerCharacter.style.setProperty('--runner-burst-scale', '1.12');
             runnerCharacter.style.bottom = '20%';
             document.getElementById('runnerCrash').classList.remove('active');
             document.getElementById('runnerCelebration').classList.remove('active');
@@ -6450,6 +6539,7 @@
             clearTimeout(runnerRestartTimer);
             clearTimeout(runnerSpawnTimer);
             clearTimeout(runnerTutorialTimer);
+            clearTimeout(runnerGrowthAnimationTimer);
             runnerThrusting = false;
             runnerObjectActive = false;
             runnerObject.innerHTML = '';
@@ -6473,6 +6563,7 @@
         });
         window.addEventListener('resize', () => {
             if (activeGameId() !== 'runner' || !document.body.classList.contains('controls-collapsed')) return;
+            setRunnerScale(runnerScaleForLevel(runnerGrowthLevel));
             if (runnerIsLandscape()) startRunnerGame();
             else stopRunnerGame();
         });

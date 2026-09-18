@@ -227,7 +227,7 @@ class AppRegressionTests(unittest.TestCase):
         for phrase in ("Play timer", "Tiempo de juego", "Temps de jeu", "Χρόνος παιχνιδιού"):
             self.assertIn(phrase, HTML)
 
-    def test_broccoli_bounce_uses_hold_to_fly_and_restarts_after_a_crash(self) -> None:
+    def test_broccoli_bounce_uses_hold_to_fly_and_recovers_after_a_crash(self) -> None:
         for phrase in (
             "runnerStage.addEventListener('pointerdown', startRunnerFlight)",
             "runnerStage.addEventListener('pointerup', stopRunnerFlight)",
@@ -236,11 +236,25 @@ class AppRegressionTests(unittest.TestCase):
             "runnerThrusting = true",
             "runnerThrusting = false",
             "runnerCharacter.classList.add('flying')",
-            "runnerCharacter.classList.add('bumped')",
-            "resetRunnerRound();\n                startRunnerGame();",
+            "shrinkRunner();",
+            "runnerCrashed = false;",
+            "scheduleRunnerObject(720);",
         ):
             self.assertIn(phrase, HTML)
-        self.assertRegex(HTML, re.compile(r"runnerRestartTimer\s*=\s*setTimeout\(\(\)\s*=>\s*\{.*?\},\s*1900\);", re.S))
+        self.assertRegex(HTML, re.compile(r"runnerRestartTimer\s*=\s*setTimeout\(\(\)\s*=>\s*\{.*?\},\s*1050\);", re.S))
+
+    def test_runner_grows_every_five_foods_caps_at_seventy_percent_and_shrinks_on_rocks(self) -> None:
+        self.assertEqual(5, constant_number("runnerFoodsPerGrowthStep"))
+        self.assertEqual(.70, constant_number("runnerMaximumHeightRatio"))
+        self.assertEqual(.70, constant_number("runnerMinimumScale"))
+        self.assertIn("runnerScore % runnerFoodsPerGrowthStep", HTML)
+        self.assertIn("runnerStage.clientHeight * runnerMaximumHeightRatio / runnerBaseCharacterHeight", HTML)
+        self.assertIn("runnerGrowthLevel++", HTML)
+        self.assertIn("runnerGrowthLevel = Math.max(-2, runnerGrowthLevel - 1)", HTML)
+        self.assertIn("setRunnerScale(runnerScaleForLevel(runnerGrowthLevel), 'bumped')", HTML)
+        self.assertIn("playRunnerGrowthSound();", HTML)
+        self.assertIn(".runner-character.growing", HTML)
+        self.assertIn("content:'✨ ⬆️ ✨'", HTML)
 
     def test_broccoli_bounce_rewards_food_and_treats_rocks_as_obstacles(self) -> None:
         self.assertIn("runnerObject.innerHTML = `<span>${type === 'food' ? activeRunnerFood.emoji : '🪨'}</span>`", HTML)
