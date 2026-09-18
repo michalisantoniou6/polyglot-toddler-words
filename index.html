@@ -3495,6 +3495,20 @@
             el:['Ντο','Ρε','Μι','Φα','Σολ']
         };
 
+        function greekPointScore(score) {
+            const units = ['', 'ένας', 'δύο', 'τρεις', 'τέσσερις', 'πέντε', 'έξι', 'επτά', 'οκτώ', 'εννέα'];
+            const teens = ['δέκα', 'έντεκα', 'δώδεκα', 'δεκατρείς', 'δεκατέσσερις', 'δεκαπέντε', 'δεκαέξι', 'δεκαεπτά', 'δεκαοκτώ', 'δεκαεννέα'];
+            const tens = ['', '', 'είκοσι', 'τριάντα', 'σαράντα', 'πενήντα', 'εξήντα', 'εβδομήντα', 'ογδόντα', 'ενενήντα'];
+            const value = Math.max(0, Math.floor(score));
+            if (value === 1) return 'Ένας πόντος';
+            let numberWord = '';
+            if (value < 10) numberWord = units[value];
+            else if (value < 20) numberWord = teens[value - 10];
+            else if (value < 100) numberWord = `${tens[Math.floor(value / 10)]}${value % 10 ? ` ${units[value % 10]}` : ''}`;
+            if (!numberWord) return `Πόντοι ${value}`;
+            return `${numberWord.charAt(0).toUpperCase()}${numberWord.slice(1)} πόντοι`;
+        }
+
         // Localization guardrail: translate the child-facing intent into natural everyday speech.
         // Do not mirror English word order; use the idiomatic imperative and required articles in each language.
         const interfaceText = {
@@ -3558,7 +3572,7 @@
                 popped: number => `Έσκασες το μπαλόνι με τον αριθμό ${number}! ⭐`, balloonLevelUp: number => `Μπράβο! Τώρα από το 1 ως το ${number}! 🚀`, santaLabel: 'Άγιος Βασίλης',
                 everyday:'Πράγματα κάθε μέρας', letters:'Ο κήπος των γραμμάτων', shapes:'Χρώματα και σχήματα', counting:'Μέτρα και διάλεξε', body:'Το σώμα', runner:'Πιάσε το μπρόκολο', music:'Μουσικό στούντιο', beat:'Αντέγραψε το μοτίβο', dance:'Χόρεψε και πάγωσε', bells:'Τα κουδουνάκια του Άγιου Βασίλη',
                 everydayPrompt:'Εξερεύνησε έξι πράγματα κάθε φορά', everydayExplore:'👀 Εξερεύνησε', everydayFind:'👆 Πάτησε', everydayMore:'Άλλα πράγματα →', findQuestion:item=>`Πάτησε ${item}`, findTry:'Κοίτα ξανά', findFound:()=>`Αυτό είναι!`, findNext:'▶ Επόμενο', findReal:()=>`Μπορείς να βρεις κάτι ίδιο κοντά σου και να το δείξεις σε έναν μεγάλο;`,
-                letterPrompt:'Πάτησε ένα γράμμα', letterPhrase:item=>`${item.name}. ${item.letter} όπως ${item.word}.`, shapePrompt:(color,shape)=>`Πάτησε. Χρώμα ${color}. Σχήμα ${shape}.`, shapeTry:'Κοίτα ξανά', shapeGreat:'Το βρήκες!', countPrompt:'Πόσα είναι;', countTry:'Μέτρα ξανά', countGreat:number=>`${number}! Μπράβο!`, bodyPrompt:'Πάτησε ένα μέρος του σώματος', bodyHint:'Πάτησε το ανθρωπάκι', runnerPrompt:'Κράτα πατημένο για να πετάξεις · Άφησε για να κατέβεις', runnerHint:'Κράτα πατημένο για να πετάξεις', runnerRotate:'Γύρισε το κινητό στο πλάι', runnerTutorial:'Κράτα πατημένο για να πετάξεις · Άφησε για να κατέβεις', runnerCaught:(food,score)=>`${food}! ${score === 1 ? 'Ένας πόντος' : `${score} πόντοι`}!`, runnerOw:'Άουτς!',
+                letterPrompt:'Πάτησε ένα γράμμα', letterPhrase:item=>`${item.name}. ${item.letter} όπως ${item.word}.`, shapePrompt:(color,shape)=>`Πάτησε. Χρώμα ${color}. Σχήμα ${shape}.`, shapeTry:'Κοίτα ξανά', shapeGreat:'Το βρήκες!', countPrompt:'Πόσα είναι;', countTry:'Μέτρα ξανά', countGreat:number=>`${number}! Μπράβο!`, bodyPrompt:'Πάτησε ένα μέρος του σώματος', bodyHint:'Πάτησε το ανθρωπάκι', runnerPrompt:'Κράτα πατημένο για να πετάξεις · Άφησε για να κατέβεις', runnerHint:'Κράτα πατημένο για να πετάξεις', runnerRotate:'Γύρισε το κινητό στο πλάι', runnerTutorial:'Κράτα πατημένο για να πετάξεις · Άφησε για να κατέβεις', runnerCaught:(food,score)=>`${food}! ${greekPointScore(score)}!`, runnerOw:'Άουτς!',
                 musicPrompt:'Φτιάξε τη δική σου μουσική', musicTogether:'Παίξτε με τη σειρά και αντιγράψτε ο ένας τον άλλον', beatPrompt:'Κοίτα το μοτίβο', beatStart:'Πάτησε το αρκουδάκι που χορεύει', beatNext:'▶ Νέο μοτίβο', beatReady:'Έτοιμος να παίξεις; Πάτησε το αρκουδάκι που χορεύει.', beatExplain:'Κοίτα το μοτίβο. Μετά παίξ’ το κι εσύ. Έτοιμος;', beatYourTurn:'Η σειρά σου!', beatGreat:'Το θυμήθηκες!', beatPraise:['Μπράβο!','Πολύ καλά!','Τα κατάφερες!','Το βρήκες!'], beatAgain:'Κοίτα ξανά το ίδιο μοτίβο',
                 danceReady:'Έτοιμος;', danceStart:'▶ Ξεκίνα τον χορό', danceStop:'■ Σταμάτα', danceTogether:'Αδειάστε λίγο χώρο και χορέψτε μαζί', bellsPrompt:'Παίξε μαζί με τον Άγιο Βασίλη', bellsSantaAction:'Άκου τον Άγιο Βασίλη', bellsBellAction:'Χτύπα το μεγάλο κουδούνι', jingleStart:'🎶 Παίξε το Jingle Bells', jingleStop:'■ Σταμάτα το τραγούδι'
             }

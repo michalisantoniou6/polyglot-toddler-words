@@ -296,7 +296,16 @@ class AppRegressionTests(unittest.TestCase):
         self.assertIn("runnerScore++", HTML)
         self.assertNotIn("runnerScore++", HTML[HTML.index("else if (runnerObject.getBoundingClientRect().right"):HTML.index("function playRunnerChime")])
         self.assertIn("score === 1 ? 'One point'", HTML)
-        self.assertIn("score === 1 ? 'Ένας πόντος'", HTML)
+        self.assertIn("runnerCaught:(food,score)=>`${food}! ${greekPointScore(score)}!`", HTML)
+
+    def test_greek_runner_scores_use_masculine_number_forms(self) -> None:
+        self.assertIn("'τρεις'", HTML)
+        self.assertIn("'τέσσερις'", HTML)
+        self.assertIn("'δεκατρείς'", HTML)
+        self.assertIn("'δεκατέσσερις'", HTML)
+        self.assertIn("return 'Ένας πόντος'", HTML)
+        self.assertIn("πέντε', 'έξι', 'επτά'", HTML)
+        self.assertNotIn("`${score} πόντοι`", HTML)
 
     def test_broccoli_bounce_difficulty_unlocks_gradually_by_distance(self) -> None:
         self.assertIn("if (runnerDistance < 60) return 'food'", HTML)
