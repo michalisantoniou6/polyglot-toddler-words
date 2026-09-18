@@ -260,6 +260,21 @@ class AppRegressionTests(unittest.TestCase):
         self.assertIn("runnerDistance += speed * elapsedSeconds / 18", HTML)
         self.assertIn("runnerAltitude === 0 && !runnerThrusting", HTML)
 
+    def test_runner_localization_uses_natural_child_facing_instructions(self) -> None:
+        for phrase in (
+            "Catch the Broccoli",
+            "Atrapa el brócoli",
+            "Attrape le brocoli",
+            "Πιάσε το μπρόκολο",
+            "Mantén presionado para volar",
+            "Maintiens appuyé pour voler",
+            "Κράτα πατημένο για να πετάξεις",
+        ):
+            self.assertIn(phrase, HTML)
+        for awkward_phrase in ("Salta por el brócoli", "Bondis vers le brocoli", "Πήδα στο μπρόκολο"):
+            self.assertNotIn(awkward_phrase, HTML)
+        self.assertIn("translate the child-facing intent into natural everyday speech", HTML)
+
     def test_balloon_difficulty_progresses_to_twenty(self) -> None:
         levels = array_source("balloonLevels")
         maximums = [int(value) for value in re.findall(r"max:\s*(\d+)", levels)]
