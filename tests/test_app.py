@@ -243,22 +243,43 @@ class AppRegressionTests(unittest.TestCase):
         self.assertRegex(HTML, re.compile(r"runnerRestartTimer\s*=\s*setTimeout\(\(\)\s*=>\s*\{.*?\},\s*1900\);", re.S))
 
     def test_broccoli_bounce_rewards_food_and_treats_rocks_as_obstacles(self) -> None:
-        self.assertIn("runnerObject.innerHTML = `<span>${type === 'food' ? '🥦' : '🪨'}</span>`", HTML)
+        self.assertIn("runnerObject.innerHTML = `<span>${type === 'food' ? activeRunnerFood.emoji : '🪨'}</span>`", HTML)
         self.assertIn("runnerScore++;", HTML)
-        self.assertIn("document.getElementById('runnerCelebrationText').textContent = `🥦 +1`", HTML)
+        self.assertIn("document.getElementById('runnerCelebrationText').textContent = `${activeRunnerFood.emoji} ⭐ ${runnerScore}`", HTML)
         self.assertIn("if (runnerObject.dataset.type === 'food') collectRunnerFood();", HTML)
         self.assertIn("else crashRunner();", HTML)
-        self.assertIn("const speed = Math.min(180, 104 + runnerDistance * .36)", HTML)
-        for phrase in ("Broccoli! One point!", "¡Brócoli! ¡Un punto!", "Brocoli ! Un point !", "Μπρόκολο! Ένας πόντος!"):
-            self.assertIn(phrase, HTML)
+        self.assertIn("const speed = Math.min(155, 76 + runnerDistance * .24)", HTML)
+        self.assertIn("runnerCaught(activeRunnerFood[runnerDisplayLanguage], runnerScore)", HTML)
+
+    def test_runner_rotates_through_fruits_and_vegetables_and_tallies_catches(self) -> None:
+        food_source = array_source("runnerFoods")
+        self.assertEqual(8, food_source.count("{emoji:"))
+        for emoji in ("🥦", "🍅", "🥕", "🍎", "🍌", "🍓", "🍊", "🌽"):
+            self.assertIn(emoji, food_source)
+        self.assertIn("runnerFoods[runnerFoodIndex++ % runnerFoods.length]", HTML)
+        self.assertIn("runnerScore++", HTML)
+        self.assertNotIn("runnerScore++", HTML[HTML.index("else if (runnerObject.getBoundingClientRect().right"):HTML.index("function playRunnerChime")])
+        self.assertIn("score === 1 ? 'One point'", HTML)
+        self.assertIn("score === 1 ? 'Ένας πόντος'", HTML)
 
     def test_broccoli_bounce_difficulty_unlocks_gradually_by_distance(self) -> None:
-        self.assertIn("if (runnerDistance < 40) return 'food'", HTML)
-        self.assertIn("runnerDistance < 100 ? .2 : (runnerDistance < 170 ? .32 : .42)", HTML)
-        self.assertIn("const canFly = type === 'rock' && runnerDistance >= 110", HTML)
+        self.assertIn("if (runnerDistance < 60) return 'food'", HTML)
+        self.assertIn("runnerDistance < 130 ? .15 : (runnerDistance < 220 ? .28 : .38)", HTML)
+        self.assertIn("const canFly = type === 'rock' && runnerDistance >= 170", HTML)
         self.assertIn("const lastTwoWereRocks", HTML)
+        self.assertIn("Math.max(760, 1280 - runnerDistance * 2.2)", HTML)
         self.assertIn("runnerDistance += speed * elapsedSeconds / 18", HTML)
         self.assertIn("runnerAltitude === 0 && !runnerThrusting", HTML)
+
+    def test_runner_is_landscape_only_with_an_animated_first_play_demo(self) -> None:
+        self.assertIn("@media (orientation:portrait)", HTML)
+        self.assertIn("#game-runner.active .runner-rotate-overlay { display:flex; }", HTML)
+        self.assertIn("return window.innerWidth > window.innerHeight", HTML)
+        self.assertIn("if (!runnerIsLandscape()) return", HTML)
+        self.assertIn('id="runnerTutorial"', HTML)
+        self.assertIn("@keyframes runnerTutorialFly", HTML)
+        self.assertIn("@keyframes runnerTutorialPress", HTML)
+        self.assertIn("runnerTutorialSeen = true", HTML)
 
     def test_runner_localization_uses_natural_child_facing_instructions(self) -> None:
         for phrase in (
