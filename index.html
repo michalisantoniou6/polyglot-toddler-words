@@ -495,9 +495,10 @@
         }
 
         .food-grid {
+            --food-row-count: 3;
             display: grid;
             grid-auto-flow: column;
-            grid-template-rows: repeat(2, minmax(78px, 1fr));
+            grid-template-rows: repeat(var(--food-row-count), minmax(78px, 1fr));
             grid-auto-columns: clamp(86px, 24vw, 112px);
             gap: 10px;
             width: 100%;
@@ -508,6 +509,14 @@
             scroll-snap-type: x proximity;
             scrollbar-width: none;
             -webkit-overflow-scrolling: touch;
+        }
+
+        @media (max-height: 700px) {
+            .food-grid { --food-row-count: 2; }
+        }
+
+        @media (min-height: 820px) and (max-width: 699px) {
+            .food-grid { --food-row-count: 4; }
         }
 
         .food-grid::-webkit-scrollbar { display: none; }
@@ -650,6 +659,7 @@
         }
 
         .arcade-card {
+            position: relative;
             background: white;
             border-radius: 24px;
             border: 3px solid #e2e8f0;
@@ -1603,6 +1613,8 @@
         }
         .everyday-card,
         .music-pad {
+            position: relative;
+            overflow: hidden;
             min-width: 0;
             min-height: 142px;
             border: 4px solid #e4ebf3;
@@ -1630,10 +1642,59 @@
             line-height:1.05;
             overflow-wrap:anywhere;
         }
+        .language-flag-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            z-index: 2;
+            width: 34px;
+            height: 34px;
+            display: grid;
+            place-items: center;
+            border: 2px solid rgba(255,255,255,.96);
+            border-radius: 999px;
+            background: rgba(255,255,255,.9);
+            box-shadow: 0 3px 9px rgba(45,55,72,.18);
+            font-size: 1.25rem;
+            line-height: 1;
+            pointer-events: none;
+        }
+        .compact-tap-bounce { animation: compactTapBounce .62s ease both; }
+        .compact-tap-wiggle { animation: compactTapWiggle .62s ease both; }
+        .compact-tap-float { animation: compactTapFloat .62s ease both; }
+        .compact-tap-pop { animation: compactTapPop .62s cubic-bezier(.2,.85,.3,1.25) both; }
+        @keyframes compactTapBounce {
+            0%,100% { transform: translateY(0) scale(1); }
+            38% { transform: translateY(-15px) scale(1.1); }
+            68% { transform: translateY(2px) scale(.96,1.06); }
+        }
+        @keyframes compactTapWiggle {
+            0%,100% { transform: rotate(0) scale(1); }
+            22% { transform: rotate(-13deg) scale(1.08); }
+            48% { transform: rotate(13deg) scale(1.04); }
+            74% { transform: rotate(-7deg) scale(1.07); }
+        }
+        @keyframes compactTapFloat {
+            0%,100% { transform: translate(0,0) rotate(0); }
+            35% { transform: translate(12px,-10px) rotate(7deg); }
+            70% { transform: translate(-9px,-3px) rotate(-6deg); }
+        }
+        @keyframes compactTapPop {
+            0% { transform: scale(.55) rotate(-7deg); }
+            48% { transform: scale(1.2) rotate(5deg); }
+            76% { transform: scale(.94) rotate(-2deg); }
+            100% { transform: scale(1) rotate(0); }
+        }
         .music-pad:nth-child(4n+1) { background:#fff3cd; border-color:#ffd166; }
         .music-pad:nth-child(4n+2) { background:#e0f4ff; border-color:#72c7ed; }
         .music-pad:nth-child(4n+3) { background:#ffe5ec; border-color:#ff8fab; }
         .music-pad:nth-child(4n) { background:#e4f7df; border-color:#7ed36c; }
+        .music-pad.inviting { animation: musicPadInvite .78s cubic-bezier(.2,.85,.3,1.2) both; }
+        @keyframes musicPadInvite {
+            0%,100% { transform: scale(1) rotate(0); }
+            38% { transform: scale(1.1) rotate(-2deg); box-shadow: 0 12px 0 rgba(45,55,72,.11); }
+            68% { transform: scale(.98) rotate(1deg); }
+        }
         .game-action-button {
             min-height: 62px;
             padding: 12px 24px;
@@ -1648,6 +1709,32 @@
             touch-action: manipulation;
         }
         .game-action-button:active { transform: translateY(4px); box-shadow:0 3px 0 #284f83; }
+        .beat-start-button {
+            width: clamp(96px, 27vw, 126px);
+            min-height: clamp(96px, 27vw, 126px);
+            padding: 0;
+            display: grid;
+            place-items: center;
+            border: 7px solid rgba(255,255,255,.9);
+            background: linear-gradient(145deg,#48bb78,#2f855a);
+            box-shadow: 0 9px 0 #276749, 0 0 0 10px rgba(72,187,120,.16);
+            font-size: clamp(3.2rem, 14vw, 4.8rem);
+            line-height: 1;
+        }
+        .beat-start-button.ready-to-play { animation: beatStartInvite 1.15s ease-in-out infinite; }
+        .beat-start-button.ready-to-play span { display:block; animation: beatBearDance .58s ease-in-out infinite alternate; }
+        .beat-start-button.playing { display: none; }
+        .beat-start-button:disabled { opacity: .45; animation: none; }
+        #game-beat.beat-awaiting .beat-grid { opacity: .42; transform: scale(.94); }
+        .beat-grid { transition: opacity .28s ease, transform .28s ease; }
+        @keyframes beatStartInvite {
+            0%,100% { transform: scale(1); box-shadow: 0 9px 0 #276749, 0 0 0 8px rgba(72,187,120,.12); }
+            50% { transform: scale(1.1); box-shadow: 0 9px 0 #276749, 0 0 0 18px rgba(72,187,120,.04); }
+        }
+        @keyframes beatBearDance {
+            from { transform: rotate(-12deg) translateY(2px); }
+            to { transform: rotate(12deg) translateY(-5px) scale(1.08); }
+        }
         .beat-grid {
             width: min(100%, 560px);
             display:grid;
@@ -1851,7 +1938,14 @@
             .dance-character.frozen,
             .beat-pad.demo,
             .find-choice.correct,
-            .find-choice.try-again { animation:none; }
+            .find-choice.try-again,
+            .compact-tap-bounce,
+            .compact-tap-wiggle,
+            .compact-tap-float,
+            .compact-tap-pop,
+            .music-pad.inviting,
+            .beat-start-button.ready-to-play,
+            .beat-start-button.ready-to-play span { animation:none; }
         }
     </style>
 </head>
@@ -1881,8 +1975,8 @@
                 <h2 id="onboardingTitle">Ποια είναι η βασική γλώσσα;</h2>
                 <p class="onboarding-lead" id="onboardingPrimaryLead">Το παιχνίδι θα ανοίγει σε αυτή τη γλώσσα</p>
                 <div class="onboarding-options" id="onboardingPrimaryOptions" role="radiogroup" aria-label="Βασική γλώσσα">
-                    <button class="onboarding-language selected" type="button" data-primary-language="el" role="radio" aria-checked="true" onclick="chooseOnboardingPrimary('el')"><span class="flag">🇬🇷</span>Ελληνικά</button>
-                    <button class="onboarding-language" type="button" data-primary-language="en" role="radio" aria-checked="false" onclick="chooseOnboardingPrimary('en')"><span class="flag">🇬🇧</span>English</button>
+                    <button class="onboarding-language" type="button" data-primary-language="el" role="radio" aria-checked="false" onclick="chooseOnboardingPrimary('el')"><span class="flag">🇬🇷</span>Ελληνικά</button>
+                    <button class="onboarding-language selected" type="button" data-primary-language="en" role="radio" aria-checked="true" onclick="chooseOnboardingPrimary('en')"><span class="flag">🇬🇧</span>English</button>
                     <button class="onboarding-language" type="button" data-primary-language="es" role="radio" aria-checked="false" onclick="chooseOnboardingPrimary('es')"><span class="flag">🇲🇽</span>Español</button>
                     <button class="onboarding-language" type="button" data-primary-language="fr" role="radio" aria-checked="false" onclick="chooseOnboardingPrimary('fr')"><span class="flag">🇫🇷</span>Français</button>
                 </div>
@@ -2103,7 +2197,6 @@
                     <div class="find-question" id="findQuestion" aria-live="polite">Βρες το καλαμάκι</div>
                     <div class="find-level" id="findLevel" aria-hidden="true"></div>
                     <div class="find-choice-grid" id="findChoiceGrid"></div>
-                    <button class="game-action-button" id="findNextButton" type="button" onclick="startFindRound()" hidden>▶ Συνέχεια</button>
                 </div>
             </section>
         </main>
@@ -2112,9 +2205,6 @@
     <!-- 6. MUSIC STUDIO -->
     <div id="game-music" class="game-view">
         <main class="learning-game">
-            <h2 class="learning-title" id="musicTitle">Μουσικό στούντιο</h2>
-            <p class="learning-prompt" id="musicPrompt">Φτιάξε τη δική σου μουσική</p>
-            <p class="together-note" id="musicTogetherNote">Παίξτε με τη σειρά και αντιγράψτε ο ένας τον άλλον</p>
             <div class="music-pad-grid" id="musicGrid"></div>
         </main>
     </div>
@@ -2124,7 +2214,7 @@
         <main class="learning-game">
             <h2 class="learning-title" id="beatTitle">Αντέγραψε το μοτίβο</h2>
             <p class="learning-prompt" id="beatPrompt" aria-live="polite">Κοίτα και αντέγραψε το μοτίβο</p>
-            <button class="game-action-button" id="beatStart" type="button" onclick="startBeatRound()">▶ Δείξε το μοτίβο</button>
+            <button class="game-action-button beat-start-button" id="beatStart" type="button" onclick="startBeatRound()" aria-label="Πάτησε το αρκουδάκι που χορεύει"><span aria-hidden="true">🐻</span></button>
             <div class="beat-grid" id="beatGrid"></div>
         </main>
     </div>
@@ -2470,26 +2560,26 @@
         ];
 
         const everydayItems = [
-            { emoji:'🥤', en:'Straw', es:'Popote', fr:'Paille', el:'Καλαμάκι' },
-            { emoji:'🥛', en:'Glass of milk', es:'Vaso de leche', fr:'Verre de lait', el:'Ποτήρι γάλα' },
-            { emoji:'🍽️', en:'Plate', es:'Plato', fr:'Assiette', el:'Πιάτο' },
-            { emoji:'🥣', en:'Bowl', es:'Tazón', fr:'Bol', el:'Μπολ' },
-            { emoji:'🥄', en:'Spoon', es:'Cuchara', fr:'Cuillère', el:'Κουτάλι' },
-            { emoji:'🍴', en:'Fork', es:'Tenedor', fr:'Fourchette', el:'Πιρούνι' },
-            { emoji:'🧻', en:'Napkin', es:'Servilleta', fr:'Serviette', el:'Χαρτοπετσέτα' },
-            { emoji:'🍼', en:'Baby bottle', es:'Biberón', fr:'Biberon', el:'Μπιμπερό' },
-            { emoji:'🍳', en:'Pan', es:'Sartén', fr:'Poêle', el:'Τηγάνι' },
-            { emoji:'🍲', en:'Pot', es:'Olla', fr:'Casserole', el:'Κατσαρόλα' },
-            { emoji:'🧊', en:'Ice cube', es:'Hielo', fr:'Glaçon', el:'Παγάκι' },
-            { emoji:'🪑', en:'Chair', es:'Silla', fr:'Chaise', el:'Καρέκλα' },
-            { emoji:'🪥', en:'Toothbrush', es:'Cepillo de dientes', fr:'Brosse à dents', el:'Οδοντόβουρτσα' },
-            { emoji:'🧼', en:'Soap', es:'Jabón', fr:'Savon', el:'Σαπούνι' },
-            { emoji:'🧦', en:'Sock', es:'Calcetín', fr:'Chaussette', el:'Κάλτσα' },
-            { emoji:'👟', en:'Shoe', es:'Zapato', fr:'Chaussure', el:'Παπούτσι' },
-            { emoji:'🛏️', en:'Bed', es:'Cama', fr:'Lit', el:'Κρεβάτι' },
-            { emoji:'🛁', en:'Bath', es:'Baño', fr:'Bain', el:'Μπάνιο' },
-            { emoji:'🚪', en:'Door', es:'Puerta', fr:'Porte', el:'Πόρτα' },
-            { emoji:'🔑', en:'Keys', es:'Llaves', fr:'Clés', el:'Κλειδιά' }
+            { emoji:'🥤', en:'Straw', es:'Popote', fr:'Paille', el:'Καλαμάκι', esPrompt:'el popote', frPrompt:'la paille', elPrompt:'το καλαμάκι' },
+            { emoji:'🥛', en:'Glass of milk', es:'Vaso de leche', fr:'Verre de lait', el:'Ποτήρι γάλα', esPrompt:'el vaso de leche', frPrompt:'le verre de lait', elPrompt:'το ποτήρι γάλα' },
+            { emoji:'🍽️', en:'Plate', es:'Plato', fr:'Assiette', el:'Πιάτο', esPrompt:'el plato', frPrompt:'l’assiette', elPrompt:'το πιάτο' },
+            { emoji:'🥣', en:'Bowl', es:'Tazón', fr:'Bol', el:'Μπολ', esPrompt:'el tazón', frPrompt:'le bol', elPrompt:'το μπολ' },
+            { emoji:'🥄', en:'Spoon', es:'Cuchara', fr:'Cuillère', el:'Κουτάλι', esPrompt:'la cuchara', frPrompt:'la cuillère', elPrompt:'το κουτάλι' },
+            { emoji:'🍴', en:'Fork', es:'Tenedor', fr:'Fourchette', el:'Πιρούνι', esPrompt:'el tenedor', frPrompt:'la fourchette', elPrompt:'το πιρούνι' },
+            { emoji:'🧻', en:'Napkin', es:'Servilleta', fr:'Serviette', el:'Χαρτοπετσέτα', esPrompt:'la servilleta', frPrompt:'la serviette', elPrompt:'τη χαρτοπετσέτα' },
+            { emoji:'🍼', en:'Baby bottle', es:'Biberón', fr:'Biberon', el:'Μπιμπερό', esPrompt:'el biberón', frPrompt:'le biberon', elPrompt:'το μπιμπερό' },
+            { emoji:'🍳', en:'Pan', es:'Sartén', fr:'Poêle', el:'Τηγάνι', esPrompt:'la sartén', frPrompt:'la poêle', elPrompt:'το τηγάνι' },
+            { emoji:'🍲', en:'Pot', es:'Olla', fr:'Casserole', el:'Κατσαρόλα', esPrompt:'la olla', frPrompt:'la casserole', elPrompt:'την κατσαρόλα' },
+            { emoji:'🧊', en:'Ice cube', es:'Hielo', fr:'Glaçon', el:'Παγάκι', esPrompt:'el hielo', frPrompt:'le glaçon', elPrompt:'το παγάκι' },
+            { emoji:'🪑', en:'Chair', es:'Silla', fr:'Chaise', el:'Καρέκλα', esPrompt:'la silla', frPrompt:'la chaise', elPrompt:'την καρέκλα' },
+            { emoji:'🪥', en:'Toothbrush', es:'Cepillo de dientes', fr:'Brosse à dents', el:'Οδοντόβουρτσα', esPrompt:'el cepillo de dientes', frPrompt:'la brosse à dents', elPrompt:'την οδοντόβουρτσα' },
+            { emoji:'🧼', en:'Soap', es:'Jabón', fr:'Savon', el:'Σαπούνι', esPrompt:'el jabón', frPrompt:'le savon', elPrompt:'το σαπούνι' },
+            { emoji:'🧦', en:'Sock', es:'Calcetín', fr:'Chaussette', el:'Κάλτσα', esPrompt:'el calcetín', frPrompt:'la chaussette', elPrompt:'την κάλτσα' },
+            { emoji:'👟', en:'Shoe', es:'Zapato', fr:'Chaussure', el:'Παπούτσι', esPrompt:'el zapato', frPrompt:'la chaussure', elPrompt:'το παπούτσι' },
+            { emoji:'🛏️', en:'Bed', es:'Cama', fr:'Lit', el:'Κρεβάτι', esPrompt:'la cama', frPrompt:'le lit', elPrompt:'το κρεβάτι' },
+            { emoji:'🛁', en:'Bath', es:'Baño', fr:'Bain', el:'Μπάνιο', esPrompt:'el baño', frPrompt:'le bain', elPrompt:'το μπάνιο' },
+            { emoji:'🚪', en:'Door', es:'Puerta', fr:'Porte', el:'Πόρτα', esPrompt:'la puerta', frPrompt:'la porte', elPrompt:'την πόρτα' },
+            { emoji:'🔑', en:'Keys', es:'Llaves', fr:'Clés', el:'Κλειδιά', esPrompt:'las llaves', frPrompt:'les clés', elPrompt:'τα κλειδιά' }
         ];
 
         const instruments = [
@@ -2521,8 +2611,8 @@
                 tickle: 'Ho ho ho! That tickles Ari! 😆', santaLaugh: 'Ho! Ho! Ho!', dragFood: 'Drag or tap some food', popBalloons: 'Pop the balloons! 🎈',
                 popped: number => `Popped #${number}! ⭐`, balloonLevelUp: number => `Amazing! Now 1 to ${number}! 🚀`, santaLabel: 'Santa Claus',
                 everyday:'Everyday Things', music:'Music Studio', beat:'Copy the Pattern', dance:'Dance & Freeze', bells:"Santa's Bells",
-                everydayPrompt:'Explore six things at a time', everydayExplore:'👀 Explore', everydayFind:'🔎 Find it', everydayMore:'More things →', findQuestion:item=>`Find: ${item}`, findTry:'Look again', findFound:()=>`That’s the one!`, findNext:'▶ Next one', findReal:()=>`Can you find one like this nearby and show a grown-up?`,
-                musicPrompt:'Make your own music', musicTogether:'Take turns and copy each other', beatPrompt:'Watch then copy the pattern', beatStart:'▶ Show the pattern', beatNext:'▶ New pattern', beatYourTurn:'Your turn!', beatGreat:'You remembered it!', beatAgain:'Watch the same pattern again',
+                everydayPrompt:'Explore six things at a time', everydayExplore:'👀 Explore', everydayFind:'👆 Press', everydayMore:'More things →', findQuestion:item=>`Press ${item}`, findTry:'Look again', findFound:()=>`That’s the one!`, findNext:'▶ Next one', findReal:()=>`Can you find one like this nearby and show a grown-up?`,
+                musicPrompt:'Make your own music', musicTogether:'Take turns and copy each other', beatPrompt:'Watch the pattern', beatStart:'Press the dancing bear', beatNext:'▶ New pattern', beatReady:'Are you ready to play? Press the dancing bear.', beatExplain:'Watch the pattern. Then play it back. Ready?', beatYourTurn:'Your turn!', beatGreat:'You remembered it!', beatAgain:'Watch the same pattern again',
                 danceReady:'Ready?', danceStart:'▶ Start dancing', danceStop:'■ Stop', danceTogether:'Make a clear space and dance together', bellsPrompt:'Play along with Santa', bellsSantaAction:'Hear Santa laugh', bellsBellAction:'Ring the big bell', jingleStart:'🎶 Play Jingle Bells', jingleStop:'■ Stop the song'
             },
             es: {
@@ -2535,8 +2625,8 @@
                 tickle: '¡Jo jo jo! ¡Eso me da cosquillas Ari! 😆', santaLaugh: '¡Jo! ¡Jo! ¡Jo!', dragFood: 'Arrastra o toca la comida', popBalloons: '¡Revienta los globos! 🎈',
                 popped: number => `¡Reventaste el globo número ${number}! ⭐`, balloonLevelUp: number => `¡Genial! ¡Ahora del 1 al ${number}! 🚀`, santaLabel: 'Santa Claus',
                 everyday:'Cosas de cada día', music:'Estudio musical', beat:'Copia el patrón', dance:'Baila y congélate', bells:'Campanas de Santa',
-                everydayPrompt:'Explora seis cosas a la vez', everydayExplore:'👀 Explora', everydayFind:'🔎 Encuéntralo', everydayMore:'Más cosas →', findQuestion:item=>`Encuentra: ${item}`, findTry:'Mira otra vez', findFound:()=>`¡Ese es!`, findNext:'▶ Otro', findReal:()=>`¿Puedes encontrar uno igual cerca y mostrárselo a un adulto?`,
-                musicPrompt:'Haz tu propia música', musicTogether:'Tomen turnos e imítense', beatPrompt:'Mira y copia el patrón', beatStart:'▶ Muestra el patrón', beatNext:'▶ Nuevo patrón', beatYourTurn:'¡Tu turno!', beatGreat:'¡Lo recordaste!', beatAgain:'Mira el mismo patrón otra vez',
+                everydayPrompt:'Explora seis cosas a la vez', everydayExplore:'👀 Explora', everydayFind:'👆 Presiona', everydayMore:'Más cosas →', findQuestion:item=>`Presiona ${item}`, findTry:'Mira otra vez', findFound:()=>`¡Ese es!`, findNext:'▶ Otro', findReal:()=>`¿Puedes encontrar uno igual cerca y mostrárselo a un adulto?`,
+                musicPrompt:'Haz tu propia música', musicTogether:'Tomen turnos e imítense', beatPrompt:'Mira el patrón', beatStart:'Presiona el osito que baila', beatNext:'▶ Nuevo patrón', beatReady:'¿Listo para jugar? Presiona el osito que baila.', beatExplain:'Mira el patrón. Después repítelo. ¿Listo?', beatYourTurn:'¡Tu turno!', beatGreat:'¡Lo recordaste!', beatAgain:'Mira el mismo patrón otra vez',
                 danceReady:'¿Listo?', danceStart:'▶ Empieza a bailar', danceStop:'■ Detener', danceTogether:'Dejen espacio y bailen juntos', bellsPrompt:'Toca con Santa', bellsSantaAction:'Escucha a Santa', bellsBellAction:'Toca la campana grande', jingleStart:'🎶 Toca Jingle Bells', jingleStop:'■ Detén la canción'
             },
             fr: {
@@ -2549,8 +2639,8 @@
                 tickle: 'Ho ho ho ! Ça me chatouille Ari ! 😆', santaLaugh: 'Ho ! Ho ! Ho !', dragFood: 'Fais glisser ou touche un aliment', popBalloons: 'Éclate les ballons ! 🎈',
                 popped: number => `Tu as éclaté le ballon numéro ${number} ! ⭐`, balloonLevelUp: number => `Bravo ! Maintenant de 1 à ${number} ! 🚀`, santaLabel: 'Père Noël',
                 everyday:'Objets du quotidien', music:'Studio de musique', beat:'Copie la suite', dance:'Danse et ne bouge plus', bells:'Cloches du Père Noël',
-                everydayPrompt:'Explore six objets à la fois', everydayExplore:'👀 Explore', everydayFind:'🔎 Trouve-le', everydayMore:'Autres objets →', findQuestion:item=>`Trouve : ${item}`, findTry:'Regarde encore', findFound:()=>`C’est celui-là !`, findNext:'▶ Le suivant', findReal:()=>`Peux-tu en trouver un pareil près de toi et le montrer à un adulte ?`,
-                musicPrompt:'Crée ta propre musique', musicTogether:'Jouez chacun votre tour et imitez-vous', beatPrompt:'Regarde puis copie la suite', beatStart:'▶ Montre la suite', beatNext:'▶ Nouvelle suite', beatYourTurn:'À toi !', beatGreat:'Tu t’en es souvenu !', beatAgain:'Regarde encore la même suite',
+                everydayPrompt:'Explore six objets à la fois', everydayExplore:'👀 Explore', everydayFind:'👆 Appuie', everydayMore:'Autres objets →', findQuestion:item=>`Appuie sur ${item}`, findTry:'Regarde encore', findFound:()=>`C’est celui-là !`, findNext:'▶ Le suivant', findReal:()=>`Peux-tu en trouver un pareil près de toi et le montrer à un adulte ?`,
+                musicPrompt:'Crée ta propre musique', musicTogether:'Jouez chacun votre tour et imitez-vous', beatPrompt:'Regarde la suite', beatStart:'Appuie sur l’ours qui danse', beatNext:'▶ Nouvelle suite', beatReady:'Prêt à jouer ? Appuie sur l’ours qui danse.', beatExplain:'Regarde la suite. Puis refais-la. Prêt ?', beatYourTurn:'À toi !', beatGreat:'Tu t’en es souvenu !', beatAgain:'Regarde encore la même suite',
                 danceReady:'Prêt ?', danceStart:'▶ Commence à danser', danceStop:'■ Arrêter', danceTogether:'Faites de la place et dansez ensemble', bellsPrompt:'Joue avec le Père Noël', bellsSantaAction:'Écoute le Père Noël', bellsBellAction:'Fais sonner la grande cloche', jingleStart:'🎶 Joue Jingle Bells', jingleStop:'■ Arrête la chanson'
             },
             el: {
@@ -2563,8 +2653,8 @@
                 tickle: 'Χο χο χο! Με γαργαλάς Άρι! 😆', santaLaugh: 'Χο! Χο! Χο!', dragFood: 'Σύρε ή πάτησε ένα φαγητό', popBalloons: 'Σκάσε τα μπαλόνια! 🎈',
                 popped: number => `Έσκασες το μπαλόνι με τον αριθμό ${number}! ⭐`, balloonLevelUp: number => `Μπράβο! Τώρα από το 1 ως το ${number}! 🚀`, santaLabel: 'Άγιος Βασίλης',
                 everyday:'Πράγματα κάθε μέρας', music:'Μουσικό στούντιο', beat:'Αντέγραψε το μοτίβο', dance:'Χόρεψε και πάγωσε', bells:'Τα κουδουνάκια του Άγιου Βασίλη',
-                everydayPrompt:'Εξερεύνησε έξι πράγματα κάθε φορά', everydayExplore:'👀 Εξερεύνησε', everydayFind:'🔎 Βρες το', everydayMore:'Άλλα πράγματα →', findQuestion:item=>`Βρες: ${item}`, findTry:'Κοίτα ξανά', findFound:()=>`Αυτό είναι!`, findNext:'▶ Επόμενο', findReal:()=>`Μπορείς να βρεις κάτι ίδιο κοντά σου και να το δείξεις σε έναν μεγάλο;`,
-                musicPrompt:'Φτιάξε τη δική σου μουσική', musicTogether:'Παίξτε με τη σειρά και αντιγράψτε ο ένας τον άλλον', beatPrompt:'Κοίτα και αντέγραψε το μοτίβο', beatStart:'▶ Δείξε το μοτίβο', beatNext:'▶ Νέο μοτίβο', beatYourTurn:'Η σειρά σου!', beatGreat:'Το θυμήθηκες!', beatAgain:'Κοίτα ξανά το ίδιο μοτίβο',
+                everydayPrompt:'Εξερεύνησε έξι πράγματα κάθε φορά', everydayExplore:'👀 Εξερεύνησε', everydayFind:'👆 Πάτησε', everydayMore:'Άλλα πράγματα →', findQuestion:item=>`Πάτησε ${item}`, findTry:'Κοίτα ξανά', findFound:()=>`Αυτό είναι!`, findNext:'▶ Επόμενο', findReal:()=>`Μπορείς να βρεις κάτι ίδιο κοντά σου και να το δείξεις σε έναν μεγάλο;`,
+                musicPrompt:'Φτιάξε τη δική σου μουσική', musicTogether:'Παίξτε με τη σειρά και αντιγράψτε ο ένας τον άλλον', beatPrompt:'Κοίτα το μοτίβο', beatStart:'Πάτησε το αρκουδάκι που χορεύει', beatNext:'▶ Νέο μοτίβο', beatReady:'Έτοιμος να παίξεις; Πάτησε το αρκουδάκι που χορεύει.', beatExplain:'Κοίτα το μοτίβο. Μετά παίξ’ το κι εσύ. Έτοιμος;', beatYourTurn:'Η σειρά σου!', beatGreat:'Το θυμήθηκες!', beatAgain:'Κοίτα ξανά το ίδιο μοτίβο',
                 danceReady:'Έτοιμος;', danceStart:'▶ Ξεκίνα τον χορό', danceStop:'■ Σταμάτα', danceTogether:'Αδειάστε λίγο χώρο και χορέψτε μαζί', bellsPrompt:'Παίξε μαζί με τον Άγιο Βασίλη', bellsSantaAction:'Άκου τον Άγιο Βασίλη', bellsBellAction:'Χτύπα το μεγάλο κουδούνι', jingleStart:'🎶 Παίξε το Jingle Bells', jingleStop:'■ Σταμάτα το τραγούδι'
             }
         };
@@ -2907,14 +2997,14 @@
         /* -------------------------------------------------------------
            3. SPEECH SYNTHESIS ENGINE (iOS / Android Multi-voice)
         ------------------------------------------------------------- */
-        let currentLangMode = 'el'; // 'en', 'es', 'fr', 'el', or 'all'
+        let currentLangMode = 'en'; // 'en', 'es', 'fr', 'el', or 'all'
         const languageSettings = {
             el: { code: 'el-GR', flag: '🇬🇷' },
             en: { code: 'en-GB', flag: '🇬🇧' },
             es: { code: 'es-MX', flag: '🇲🇽' },
             fr: { code: 'fr-FR', flag: '🇫🇷' }
         };
-        const supportedLanguageOrder = ['el', 'en', 'es', 'fr'];
+        const supportedLanguageOrder = ['en', 'el', 'es', 'fr'];
         let enabledLanguages = [...supportedLanguageOrder];
         let allLanguageOrder = [...supportedLanguageOrder];
         const appProfileStorageKey = 'polyglotToddler.profile.v1';
@@ -3062,7 +3152,7 @@
         function normalizeAppProfile(rawProfile) {
             const primaryLanguage = supportedLanguageOrder.includes(rawProfile?.primaryLanguage)
                 ? rawProfile.primaryLanguage
-                : 'el';
+                : 'en';
             const requestedLanguages = Array.isArray(rawProfile?.enabledLanguages)
                 ? rawProfile.enabledLanguages.filter(language => supportedLanguageOrder.includes(language))
                 : [...supportedLanguageOrder];
@@ -3096,7 +3186,7 @@
                 return normalizeAppProfile({
                     schemaVersion: 1,
                     onboardingComplete: false,
-                    primaryLanguage: 'el',
+                    primaryLanguage: 'en',
                     enabledLanguages: [...supportedLanguageOrder],
                     ...names
                 });
@@ -3104,7 +3194,7 @@
                 return normalizeAppProfile({
                     schemaVersion: 1,
                     onboardingComplete: false,
-                    primaryLanguage: 'el',
+                    primaryLanguage: 'en',
                     enabledLanguages: [...supportedLanguageOrder],
                     greekNames: [],
                     otherNames: []
@@ -3453,7 +3543,8 @@
             persistAppProfile();
             onboardingEditing = false;
             closeOnboarding(false);
-            setControlsCollapsed(true);
+            setControlsCollapsed(true, true, false);
+            initializeNavigationHistory(true);
         }
 
         const repeatCopy = {
@@ -3492,6 +3583,8 @@
         let singleLanguagePromptNext = true;
         let itemPronunciationTimeout = null;
         let pendingPronunciationCard = null;
+        const compactTapAnimationClasses = ['compact-tap-bounce', 'compact-tap-wiggle', 'compact-tap-float', 'compact-tap-pop'];
+        const compactTapCounts = new WeakMap();
 
         function browserTranslationDetected() {
             const root = document.documentElement;
@@ -3593,6 +3686,49 @@
             return activeGame ? activeGame.id.replace('game-', '') : '';
         }
 
+        function navigationState(isCollapsed = document.body.classList.contains('controls-collapsed')) {
+            return {
+                polyglotPlayroom: true,
+                gameId: activeGameId(),
+                controlsCollapsed: isCollapsed
+            };
+        }
+
+        function pushNavigationState() {
+            if (!appProfile.onboardingComplete) return;
+            const nextState = navigationState();
+            const currentState = history.state;
+            if (currentState?.polyglotPlayroom
+                && currentState.gameId === nextState.gameId
+                && currentState.controlsCollapsed === nextState.controlsCollapsed) return;
+            history.pushState(nextState, '');
+        }
+
+        function initializeNavigationHistory(isCollapsed) {
+            const currentState = navigationState(isCollapsed);
+            if (history.state?.polyglotPlayroom) {
+                history.replaceState(currentState, '');
+                return;
+            }
+            if (isCollapsed) {
+                history.replaceState({ ...currentState, controlsCollapsed: false }, '');
+                history.pushState(currentState, '');
+                return;
+            }
+            history.replaceState(currentState, '');
+        }
+
+        function applyNavigationState(state, shouldStore = true) {
+            if (!state?.polyglotPlayroom || !document.getElementById(`game-${state.gameId}`)) return false;
+            const tab = Array.from(document.querySelectorAll('.nav-tab')).find(candidate =>
+                candidate.getAttribute('onclick')?.includes(`'${state.gameId}'`)
+            );
+            if (!tab) return false;
+            if (activeGameId() !== state.gameId) activateGameView(state.gameId, tab);
+            setControlsCollapsed(Boolean(state.controlsCollapsed), shouldStore, false);
+            return true;
+        }
+
         function pauseActivePlay() {
             cancelRepeatSequence();
             cancelFoodDrag(false);
@@ -3601,6 +3737,7 @@
             stopDanceParty();
             resetBeatGame();
             stopJingleBells();
+            clearMusicInvites();
             clearSantaIdleTimer();
             hideSantaCelebration();
             findRoundId++;
@@ -3611,9 +3748,11 @@
             if (gameId === 'balloons') startBalloonSpawner();
             if (gameId === 'monster') resetSantaIdleTimer();
             if (gameId === 'everyday' && everydayMode === 'find') startFindRound();
+            if (gameId === 'music') inviteMusicPads();
+            if (gameId === 'beat') prepareBeatIntro();
         }
 
-        function setControlsCollapsed(isCollapsed, shouldStore = true) {
+        function setControlsCollapsed(isCollapsed, shouldStore = true, shouldUpdateHistory = true) {
             if (isCollapsed) {
                 resumeActiveGame();
             } else {
@@ -3644,6 +3783,7 @@
                     document.getElementById('controlsPanelTitle').focus({ preventScroll: true });
                 }
             });
+            if (shouldUpdateHistory) pushNavigationState();
         }
 
         function updateInterfaceLanguage() {
@@ -3685,13 +3825,10 @@
             document.getElementById('everydayExploreButton').textContent = text.everydayExplore;
             document.getElementById('everydayFindButton').textContent = text.everydayFind;
             document.getElementById('everydayMoreButton').textContent = text.everydayMore;
-            document.getElementById('findNextButton').textContent = text.findNext;
-            document.getElementById('musicTitle').textContent = text.music;
-            document.getElementById('musicPrompt').textContent = text.musicPrompt;
-            document.getElementById('musicTogetherNote').textContent = text.musicTogether;
             document.getElementById('beatTitle').textContent = text.beat;
-            if (!beatAcceptingInput) document.getElementById('beatPrompt').textContent = text.beatPrompt;
-            document.getElementById('beatStart').textContent = text.beatStart;
+            if (!beatAcceptingInput) document.getElementById('beatPrompt').textContent = text.beatReady;
+            document.getElementById('beatStart').innerHTML = '<span aria-hidden="true">🐻</span>';
+            document.getElementById('beatStart').setAttribute('aria-label', text.beatStart);
             document.getElementById('danceTitle').textContent = text.dance;
             document.getElementById('danceTogetherNote').textContent = text.danceTogether;
             if (!dancePartyActive) document.getElementById('danceCue').textContent = text.danceReady;
@@ -3706,18 +3843,10 @@
             document.querySelectorAll('[data-item-kind]').forEach(card => {
                 const source = card.dataset.itemKind === 'truck' ? trucks : animals;
                 const item = source[Number(card.dataset.itemIndex)];
-                const title = card.querySelector('.card-title');
                 const subtitle = card.querySelector('.card-sub');
-                title.textContent = item[displayLanguage];
-                card.setAttribute('aria-label', item[displayLanguage]);
-
-                if (currentLangMode === 'all') {
-                    subtitle.textContent = item.en;
-                    subtitle.style.display = '';
-                } else {
-                    subtitle.textContent = '';
-                    subtitle.style.display = 'none';
-                }
+                resetCompactCardLanguage(card, item, '.card-title', displayLanguage);
+                subtitle.textContent = '';
+                subtitle.style.display = 'none';
             });
 
             document.querySelectorAll('.food-item').forEach((button, index) => {
@@ -3727,8 +3856,7 @@
             renderEverydayExplore();
             if (everydayMode === 'find') startFindRound();
             document.querySelectorAll('.music-pad').forEach((button, index) => {
-                button.querySelector('.music-label').textContent = instruments[index][displayLanguage];
-                button.setAttribute('aria-label', instruments[index][displayLanguage]);
+                resetCompactCardLanguage(button, instruments[index], '.music-label', displayLanguage);
             });
             document.querySelectorAll('.bell-key').forEach((button,index) => {
                 button.textContent = bellNoteLabels[displayLanguage][index];
@@ -3755,6 +3883,54 @@
             utterance.onend = finish;
             utterance.onerror = finish;
             window.speechSynthesis.speak(utterance);
+        }
+
+        function resetCompactCardLanguage(button, item, labelSelector, language) {
+            const label = button.querySelector(labelSelector);
+            const flag = button.querySelector('.language-flag-badge');
+            if (label) label.textContent = item[language];
+            if (flag) flag.textContent = languageSettings[language].flag;
+            button.dataset.languageCursor = '0';
+            compactTapCounts.delete(button);
+            button.setAttribute('aria-label', item[language]);
+        }
+
+        function compactLanguageForTap(button) {
+            if (currentLangMode !== 'all') return currentLangMode;
+            const cursor = Number.parseInt(button.dataset.languageCursor || '0', 10);
+            const language = allLanguageOrder[cursor % allLanguageOrder.length];
+            button.dataset.languageCursor = String(cursor + 1);
+            return language;
+        }
+
+        function animateCompactCard(button, visualSelector) {
+            const visual = button.querySelector(visualSelector);
+            if (!visual) return;
+            compactTapAnimationClasses.forEach(animationClass => visual.classList.remove(animationClass));
+            void visual.offsetWidth;
+            const animationClass = compactTapAnimationClasses[Math.floor(Math.random() * compactTapAnimationClasses.length)];
+            visual.classList.add(animationClass);
+            visual.addEventListener('animationend', () => visual.classList.remove(animationClass), { once: true });
+        }
+
+        function playCompactItem(button, item, labelSelector, visualSelector, onAfterWord = null) {
+            cancelRepeatSequence();
+            const language = compactLanguageForTap(button);
+            const label = button.querySelector(labelSelector);
+            const flag = button.querySelector('.language-flag-badge');
+            if (label) label.textContent = item[language];
+            if (flag) flag.textContent = languageSettings[language].flag;
+            button.setAttribute('aria-label', item[language]);
+            animateCompactCard(button, visualSelector);
+
+            const tapCount = (compactTapCounts.get(button) || 0) + 1;
+            compactTapCounts.set(button, tapCount);
+            const shouldSpeak = currentLangMode === 'all' || tapCount % 2 === 1;
+            if (!shouldSpeak) {
+                if (onAfterWord) onAfterWord();
+                return;
+            }
+            speakSingle(languageSettings[language].code, item[language], onAfterWord);
         }
 
         function showToast(item, text, language, stepIndex = 0, totalSteps = 1) {
@@ -4026,7 +4202,7 @@
         });
 
         // Tab switcher
-        function switchGame(gameId, tabEl) {
+        function activateGameView(gameId, tabEl) {
             pauseActivePlay();
             document.querySelectorAll('.game-view').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.nav-tab').forEach(t => {
@@ -4034,6 +4210,7 @@
                 t.setAttribute('aria-selected', 'false');
             });
             document.getElementById(`game-${gameId}`).classList.add('active');
+            if (gameId === 'beat') beatIntroWasSpoken = false;
             tabEl.classList.add('active');
             tabEl.setAttribute('aria-selected', 'true');
             const activeIndex = Array.from(document.querySelectorAll('.nav-tab')).indexOf(tabEl);
@@ -4044,8 +4221,17 @@
             document.getElementById('collapsedGameIcon').textContent = gameIcons[gameId];
             dismissGameSwipeHint();
             revealActiveGame();
-            setControlsCollapsed(true);
         }
+
+        function switchGame(gameId, tabEl) {
+            activateGameView(gameId, tabEl);
+            setControlsCollapsed(true, true, false);
+            pushNavigationState();
+        }
+
+        window.addEventListener('popstate', event => {
+            applyNavigationState(event.state);
+        });
 
         // --- Game 1: Feed Santa ---
         const monsterAvatar = document.getElementById('monsterAvatar');
@@ -4432,12 +4618,13 @@
             card.setAttribute('role', 'button');
             card.setAttribute('aria-label', t.en);
             card.innerHTML = `
+                <span class="language-flag-badge" aria-hidden="true">🇬🇷</span>
                 ${t.art || `<div class="card-emoji">${t.emoji}</div>`}
                 <div class="card-title">${t.en}</div>
-                <div class="card-sub">${t.el}</div>
+                <div class="card-sub" hidden></div>
             `;
             card.onclick = () => {
-                schedulePronunciation(card, t, 400, () => playRealSound(t.soundProfile));
+                playCompactItem(card, t, '.card-title', '.card-art, .card-emoji', () => playRealSound(t.soundProfile));
             };
             trucksGrid.appendChild(card);
         });
@@ -4452,12 +4639,13 @@
             card.setAttribute('role', 'button');
             card.setAttribute('aria-label', a.en);
             card.innerHTML = `
+                <span class="language-flag-badge" aria-hidden="true">🇬🇷</span>
                 <div class="card-emoji">${a.emoji}</div>
                 <div class="card-title">${a.en}</div>
-                <div class="card-sub">${a.el}</div>
+                <div class="card-sub" hidden></div>
             `;
             card.onclick = () => {
-                schedulePronunciation(card, a, 450, () => playRealSound(a.sound));
+                playCompactItem(card, a, '.card-title', '.card-emoji', () => playRealSound(a.sound));
             };
             animalsGrid.appendChild(card);
         });
@@ -4644,8 +4832,9 @@
                 button.className = 'everyday-card';
                 button.type = 'button';
                 button.setAttribute('aria-label', item[displayLanguage]);
-                button.innerHTML = `<span class="everyday-emoji" aria-hidden="true">${item.emoji}</span><span class="everyday-label">${item[displayLanguage]}</span>`;
-                button.onclick = () => pronounceItem(item);
+                button.dataset.languageCursor = '0';
+                button.innerHTML = `<span class="language-flag-badge" aria-hidden="true">${languageSettings[displayLanguage].flag}</span><span class="everyday-emoji" aria-hidden="true">${item.emoji}</span><span class="everyday-label">${item[displayLanguage]}</span>`;
+                button.onclick = () => playCompactItem(button, item, '.everyday-label', '.everyday-emoji');
                 everydayGrid.appendChild(button);
             });
         }
@@ -4675,6 +4864,10 @@
             return [...items].sort(() => Math.random() - .5);
         }
 
+        function findPromptName(item, language) {
+            return item[`${language}Prompt`] || item[language];
+        }
+
         function startFindRound() {
             if (everydayMode !== 'find') return;
             const roundId = ++findRoundId;
@@ -4689,8 +4882,8 @@
             const choiceGrid = document.getElementById('findChoiceGrid');
 
             document.getElementById('findFlag').textContent = languageSettings[activeFindLanguage].flag;
-            document.getElementById('findQuestion').textContent = text.findQuestion(activeFindItem[activeFindLanguage]);
-            document.getElementById('findNextButton').hidden = true;
+            const prompt = text.findQuestion(findPromptName(activeFindItem, activeFindLanguage));
+            document.getElementById('findQuestion').textContent = prompt;
             document.getElementById('findLevel').innerHTML = [2,3,4].map(level => `<span class="find-level-dot ${choiceCount === level ? 'active' : ''}"></span>`).join('');
             choiceGrid.innerHTML = '';
             choices.forEach(item => {
@@ -4702,7 +4895,7 @@
                 button.onclick = () => chooseFindItem(button, item, roundId);
                 choiceGrid.appendChild(button);
             });
-            speakSingle(languageSettings[activeFindLanguage].code, text.findQuestion(activeFindItem[activeFindLanguage]));
+            speakSingle(languageSettings[activeFindLanguage].code, prompt);
         }
 
         function chooseFindItem(button, item, roundId) {
@@ -4716,7 +4909,7 @@
                 setTimeout(() => {
                     if (roundId !== findRoundId) return;
                     button.classList.remove('try-again');
-                    question.textContent = text.findQuestion(activeFindItem[activeFindLanguage]);
+                    question.textContent = text.findQuestion(findPromptName(activeFindItem, activeFindLanguage));
                 }, 750);
                 return;
             }
@@ -4724,18 +4917,35 @@
             findSuccesses++;
             button.classList.add('correct');
             document.querySelectorAll('.find-choice').forEach(choice => { choice.disabled = true; });
-            const response = findSuccesses % 3 === 0
-                ? text.findReal(activeFindItem[activeFindLanguage])
-                : text.findFound(activeFindItem[activeFindLanguage]);
+            const response = text.findFound(activeFindItem[activeFindLanguage]);
             question.textContent = response;
-            speakSingle(languageSettings[activeFindLanguage].code, response);
-            document.getElementById('findNextButton').hidden = false;
+            speakSingle(languageSettings[activeFindLanguage].code, response, () => {
+                setTimeout(() => {
+                    if (roundId === findRoundId) startFindRound();
+                }, 550);
+            });
         }
 
         // --- Game 6: Music Studio ---
         const musicGrid = document.getElementById('musicGrid');
-        const instrumentTapCounts = {};
-        let musicLanguageIndex = 0;
+        let musicInviteTimers = [];
+
+        function clearMusicInvites() {
+            musicInviteTimers.forEach(clearTimeout);
+            musicInviteTimers = [];
+            document.querySelectorAll('.music-pad.inviting').forEach(button => button.classList.remove('inviting'));
+        }
+
+        function inviteMusicPads() {
+            clearMusicInvites();
+            Array.from(musicGrid.children).forEach((button, index) => {
+                musicInviteTimers.push(setTimeout(() => {
+                    if (!document.getElementById('game-music').classList.contains('active')) return;
+                    button.classList.add('inviting');
+                    button.addEventListener('animationend', () => button.classList.remove('inviting'), { once: true });
+                }, 120 + index * 115));
+            });
+        }
 
         function tone(frequency, duration = .28, type = 'sine', volume = .22, delay = 0) {
             const ctx = getAudioContext();
@@ -4779,20 +4989,19 @@
             if (kind === 'voice') [392,440,523].forEach((note,i) => tone(note,.28,'sine',.14,i*.22));
         }
 
-        function tapInstrument(item) {
+        function tapInstrument(button, item) {
+            clearMusicInvites();
             playInstrument(item.kind);
-            instrumentTapCounts[item.kind] = (instrumentTapCounts[item.kind] || 0) + 1;
-            if (instrumentTapCounts[item.kind] % 2 === 0) return;
-            const language = currentLangMode === 'all' ? allLanguageOrder[musicLanguageIndex++ % allLanguageOrder.length] : currentLangMode;
-            speakSingle(languageSettings[language].code, item[language]);
+            playCompactItem(button, item, '.music-label', '.music-emoji');
         }
 
         instruments.forEach(item => {
             const button = document.createElement('button');
             button.className = 'music-pad';
             button.type = 'button';
-            button.innerHTML = `<span class="music-emoji" aria-hidden="true">${item.emoji}</span><span class="music-label">${item.el}</span>`;
-            button.onclick = () => tapInstrument(item);
+            button.dataset.languageCursor = '0';
+            button.innerHTML = `<span class="language-flag-badge" aria-hidden="true">🇬🇷</span><span class="music-emoji" aria-hidden="true">${item.emoji}</span><span class="music-label">${item.el}</span>`;
+            button.onclick = () => tapInstrument(button, item);
             musicGrid.appendChild(button);
         });
 
@@ -4806,6 +5015,7 @@
         let beatSuccessesAtLength = 0;
         let beatAcceptingInput = false;
         let beatTimers = [];
+        let beatIntroWasSpoken = false;
 
         function playBeatPad(index, demo = false) {
             const pad = beatGrid.children[index];
@@ -4820,18 +5030,44 @@
             beatTimers = [];
             beatAcceptingInput = false;
             beatInputIndex = 0;
-            document.getElementById('beatStart').disabled = false;
+            const startButton = document.getElementById('beatStart');
+            startButton.disabled = false;
+            startButton.innerHTML = '<span aria-hidden="true">🐻</span>';
+            startButton.classList.remove('playing');
+            startButton.classList.add('ready-to-play');
+            document.getElementById('game-beat').classList.add('beat-awaiting');
             if (typeof interfaceText !== 'undefined') {
                 const language = currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode;
-                document.getElementById('beatPrompt').textContent = interfaceText[language].beatPrompt;
-                document.getElementById('beatStart').textContent = interfaceText[language].beatStart;
+                document.getElementById('beatPrompt').textContent = interfaceText[language].beatReady;
+                startButton.setAttribute('aria-label', interfaceText[language].beatStart);
             }
+        }
+
+        function prepareBeatIntro() {
+            resetBeatGame();
+            if (beatIntroWasSpoken) return;
+            beatIntroWasSpoken = true;
+            const language = currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode;
+            beatTimers.push(setTimeout(() => {
+                if (activeGameId() !== 'beat' || !document.body.classList.contains('controls-collapsed')) return;
+                speakSingle(languageSettings[language].code, interfaceText[language].beatReady);
+            }, 320));
         }
 
         function startBeatRound() {
             resetBeatGame();
+            beatIntroWasSpoken = true;
             beatSequence = Array.from({length:beatLength}, () => Math.floor(Math.random()*4));
-            demonstrateBeatSequence();
+            const language = currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode;
+            const startButton = document.getElementById('beatStart');
+            startButton.disabled = true;
+            startButton.classList.remove('ready-to-play');
+            startButton.classList.add('playing');
+            document.getElementById('game-beat').classList.remove('beat-awaiting');
+            document.getElementById('beatPrompt').textContent = interfaceText[language].beatExplain;
+            speakSingle(languageSettings[language].code, interfaceText[language].beatExplain, () => {
+                beatTimers.push(setTimeout(demonstrateBeatSequence, 250));
+            });
         }
 
         function demonstrateBeatSequence() {
@@ -4841,7 +5077,11 @@
             beatInputIndex = 0;
             const language = currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode;
             document.getElementById('beatPrompt').textContent = interfaceText[language].beatPrompt;
-            document.getElementById('beatStart').disabled = true;
+            const startButton = document.getElementById('beatStart');
+            startButton.disabled = true;
+            startButton.classList.remove('ready-to-play');
+            startButton.classList.add('playing');
+            document.getElementById('game-beat').classList.remove('beat-awaiting');
             beatSequence.forEach((padIndex, index) => {
                 beatTimers.push(setTimeout(() => playBeatPad(padIndex,true), 550 + index * 650));
             });
@@ -4873,9 +5113,10 @@
                     beatLength = Math.min(4, beatLength + 1);
                     beatSuccessesAtLength = 0;
                 }
-                const startButton = document.getElementById('beatStart');
-                startButton.disabled = false;
-                startButton.textContent = interfaceText[language].beatNext;
+                beatTimers.push(setTimeout(() => {
+                    beatSequence = Array.from({length:beatLength}, () => Math.floor(Math.random()*4));
+                    demonstrateBeatSequence();
+                }, 1500));
             }
         }
 
@@ -5100,7 +5341,11 @@
         populateSoundCredits();
         updateInterfaceLanguage();
         if (appProfile.onboardingComplete) {
-            setControlsCollapsed(getStoredControlsCollapsed(), false);
+            const storedCollapsed = getStoredControlsCollapsed();
+            if (!applyNavigationState(history.state, false)) {
+                setControlsCollapsed(storedCollapsed, false, false);
+                initializeNavigationHistory(storedCollapsed);
+            }
         } else {
             openOnboarding(false);
         }
