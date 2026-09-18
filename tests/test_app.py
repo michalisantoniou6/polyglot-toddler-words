@@ -49,6 +49,7 @@ class AppRegressionTests(unittest.TestCase):
             "game-letters",
             "game-shapes",
             "game-counting",
+            "game-body",
             "game-music",
             "game-beat",
             "game-dance",
@@ -61,6 +62,7 @@ class AppRegressionTests(unittest.TestCase):
             ("letters", "navLetters"),
             ("shapes", "navShapes"),
             ("counting", "navCounting"),
+            ("body", "navBody"),
         ):
             self.assertIn(f"switchGame('{game}', this)", HTML)
             self.assertIn(f'id="{nav_id}"', HTML)
@@ -173,6 +175,35 @@ class AppRegressionTests(unittest.TestCase):
         choice_height = re.search(r"\.number-choice\s*\{\s*min-height:\s*(\d+)px;", HTML)
         self.assertIsNotNone(choice_height)
         self.assertGreaterEqual(int(choice_height.group(1)), 44)
+
+    def test_body_explorer_is_multilingual_and_teaches_related_parts(self) -> None:
+        body_source = HTML[HTML.index("const bodyParts = {"):HTML.index("const spainSpanishNames = {")]
+        self.assertEqual(13, len(re.findall(r"^\s{12}\w+:\s+\{", body_source, re.M)))
+        for phrase in (
+            "Hand · Fingers",
+            "Mano · Dedos",
+            "Main · Doigts",
+            "Χέρι · Δάχτυλα",
+            "Foot · Toes",
+            "Pie · Dedos del pie",
+            "Pied · Orteils",
+            "Πατούσα · Δάχτυλα των ποδιών",
+        ):
+            self.assertIn(phrase, body_source)
+        self.assertIn("part.enUS = part.en", HTML)
+        self.assertIn("part.esES = part.es", HTML)
+
+    def test_body_explorer_zoom_feedback_is_touch_friendly_and_resets(self) -> None:
+        minimum_width = re.search(r"\.body-hotspot\s*\{.*?min-width:\s*(\d+)px;", HTML, re.S)
+        minimum_height = re.search(r"\.body-hotspot\s*\{.*?min-height:\s*(\d+)px;", HTML, re.S)
+        self.assertIsNotNone(minimum_width)
+        self.assertIsNotNone(minimum_height)
+        self.assertGreaterEqual(int(minimum_width.group(1)), 44)
+        self.assertGreaterEqual(int(minimum_height.group(1)), 44)
+        self.assertIn("bodyFigure.style.transformOrigin = `${part.x}% ${part.y}%`", HTML)
+        self.assertIn("bodyStage.classList.add('focused')", HTML)
+        self.assertIn("bodyLanguageIndex = (bodyLanguageIndex + 1)", HTML)
+        self.assertRegex(HTML, re.compile(r"bodyFocusTimer\s*=\s*setTimeout\(\(\)\s*=>\s*\{.*?\},\s*2400\);", re.S))
 
     def test_balloon_difficulty_progresses_to_twenty(self) -> None:
         levels = array_source("balloonLevels")
