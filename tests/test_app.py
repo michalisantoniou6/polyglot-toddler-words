@@ -46,12 +46,25 @@ class AppRegressionTests(unittest.TestCase):
             "game-balloons",
             "game-animals",
             "game-everyday",
+            "game-letters",
+            "game-shapes",
+            "game-counting",
             "game-music",
             "game-beat",
             "game-dance",
             "game-bells",
         ):
             self.assertIn(f'id="{game_id}"', HTML)
+
+    def test_learning_lab_games_are_in_the_game_picker(self) -> None:
+        for game, nav_id in (
+            ("letters", "navLetters"),
+            ("shapes", "navShapes"),
+            ("counting", "navCounting"),
+        ):
+            self.assertIn(f"switchGame('{game}', this)", HTML)
+            self.assertIn(f'id="{nav_id}"', HTML)
+            self.assertIn(f"gameId === '{game}'", HTML)
 
     def test_english_and_balloon_pop_are_the_defaults(self) -> None:
         self.assertRegex(HTML, r"let\s+currentLangMode\s*=\s*'en';")
@@ -134,6 +147,32 @@ class AppRegressionTests(unittest.TestCase):
         self.assertGreaterEqual(constant_number("danceLeaderDurationMilliseconds"), 5_000)
         self.assertIn("setTimeout(runDanceMove, danceFreezeDurationMilliseconds)", HTML)
         self.assertIn("}, danceMoveDurationMilliseconds);", HTML)
+
+    def test_letter_garden_is_spoken_multilingual_and_icon_led(self) -> None:
+        letter_source = HTML[HTML.index("const letterSets = {"):HTML.index("const learningColors = [")]
+        self.assertGreaterEqual(letter_source.count("{letter:"), 24)
+        for language in ("en:", "es:", "fr:", "el:"):
+            self.assertIn(language, letter_source)
+        self.assertIn("letterSets.enUS = letterSets.en.map", HTML)
+        self.assertIn("letterSets.esES = letterSets.es.map", HTML)
+        self.assertIn("speakSingle(languageSettings[language].code, phrase", HTML)
+        self.assertIn("letterLanguageIndex = (letterLanguageIndex + 1)", HTML)
+
+    def test_color_and_shape_hunt_is_adaptive_and_auto_advances(self) -> None:
+        self.assertIn("const learningColors = [", HTML)
+        self.assertIn("const learningShapes = [", HTML)
+        self.assertIn("shapeSuccesses < 3 ? 2 : (shapeSuccesses < 7 ? 3 : 4)", HTML)
+        self.assertIn("if (roundId === shapeRoundId) startShapeRound();", HTML)
+        self.assertIn("shapePrompt:(color,shape)", HTML)
+
+    def test_count_and_match_stays_within_one_to_five_and_auto_advances(self) -> None:
+        self.assertIn("const target = 1 + Math.floor(Math.random() * 5)", HTML)
+        self.assertIn("const candidate = 1 + Math.floor(Math.random() * 5)", HTML)
+        self.assertIn("if (roundId === countingRoundId) startCountingRound();", HTML)
+        self.assertIn("numbers[target - 1][language]", HTML)
+        choice_height = re.search(r"\.number-choice\s*\{\s*min-height:\s*(\d+)px;", HTML)
+        self.assertIsNotNone(choice_height)
+        self.assertGreaterEqual(int(choice_height.group(1)), 44)
 
     def test_balloon_difficulty_progresses_to_twenty(self) -> None:
         levels = array_source("balloonLevels")
