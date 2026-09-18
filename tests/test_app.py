@@ -227,11 +227,15 @@ class AppRegressionTests(unittest.TestCase):
         for phrase in ("Play timer", "Tiempo de juego", "Temps de jeu", "Χρόνος παιχνιδιού"):
             self.assertIn(phrase, HTML)
 
-    def test_broccoli_bounce_is_one_touch_and_restarts_after_a_crash(self) -> None:
+    def test_broccoli_bounce_uses_hold_to_fly_and_restarts_after_a_crash(self) -> None:
         for phrase in (
-            "runnerStage.addEventListener('pointerdown', jumpRunner)",
+            "runnerStage.addEventListener('pointerdown', startRunnerFlight)",
+            "runnerStage.addEventListener('pointerup', stopRunnerFlight)",
+            "runnerStage.addEventListener('pointercancel', stopRunnerFlight)",
             "requestAnimationFrame(runnerFrame)",
-            "runnerCharacter.classList.add('jumping')",
+            "runnerThrusting = true",
+            "runnerThrusting = false",
+            "runnerCharacter.classList.add('flying')",
             "runnerCharacter.classList.add('bumped')",
             "resetRunnerRound();\n                startRunnerGame();",
         ):
@@ -239,14 +243,22 @@ class AppRegressionTests(unittest.TestCase):
         self.assertRegex(HTML, re.compile(r"runnerRestartTimer\s*=\s*setTimeout\(\(\)\s*=>\s*\{.*?\},\s*1900\);", re.S))
 
     def test_broccoli_bounce_rewards_food_and_treats_rocks_as_obstacles(self) -> None:
-        self.assertIn("runnerObject.textContent = type === 'food' ? '🥦' : '🪨'", HTML)
+        self.assertIn("runnerObject.innerHTML = `<span>${type === 'food' ? '🥦' : '🪨'}</span>`", HTML)
         self.assertIn("runnerScore++;", HTML)
         self.assertIn("document.getElementById('runnerCelebrationText').textContent = `🥦 +1`", HTML)
         self.assertIn("if (runnerObject.dataset.type === 'food') collectRunnerFood();", HTML)
         self.assertIn("else crashRunner();", HTML)
-        self.assertIn("const speed = Math.min(178, 126 + runnerScore * 4)", HTML)
+        self.assertIn("const speed = Math.min(180, 104 + runnerDistance * .36)", HTML)
         for phrase in ("Broccoli! One point!", "¡Brócoli! ¡Un punto!", "Brocoli ! Un point !", "Μπρόκολο! Ένας πόντος!"):
             self.assertIn(phrase, HTML)
+
+    def test_broccoli_bounce_difficulty_unlocks_gradually_by_distance(self) -> None:
+        self.assertIn("if (runnerDistance < 40) return 'food'", HTML)
+        self.assertIn("runnerDistance < 100 ? .2 : (runnerDistance < 170 ? .32 : .42)", HTML)
+        self.assertIn("const canFly = type === 'rock' && runnerDistance >= 110", HTML)
+        self.assertIn("const lastTwoWereRocks", HTML)
+        self.assertIn("runnerDistance += speed * elapsedSeconds / 18", HTML)
+        self.assertIn("runnerAltitude === 0 && !runnerThrusting", HTML)
 
     def test_balloon_difficulty_progresses_to_twenty(self) -> None:
         levels = array_source("balloonLevels")
