@@ -330,6 +330,10 @@ class AppRegressionTests(unittest.TestCase):
 
     def test_regional_spanish_vocabulary_stays_distinct(self) -> None:
         self.assertRegex(HTML, r'en:\s*"Pig",\s*es:\s*"Cochino"')
+
+    def test_monkey_uses_child_friendly_greek_word(self) -> None:
+        self.assertRegex(HTML, r'en:\s*"Monkey",\s*es:\s*"Mono",\s*fr:\s*"Singe",\s*el:\s*"Μαϊμού"')
+        self.assertNotIn('el: "Πίθηκος"', HTML)
         self.assertIn("Pig:'Cerdo'", HTML)
         self.assertRegex(HTML, r"en:'Straw',\s*es:'Popote'")
         self.assertIn("Straw:'Pajita'", HTML)
