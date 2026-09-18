@@ -8,9 +8,9 @@
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="false"
         android:hardwareAccelerated="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/toddler_arcade_icon"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/ic_launcher"
+        android:roundIcon="@drawable/toddler_arcade_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.PolyglotPlayroom"
         android:usesCleartextTraffic="false">

@@ -23,6 +23,13 @@ class AndroidAppRegressionTests(unittest.TestCase):
         self.assertRegex(BUILD, r'versionCode\s+1\b')
         self.assertRegex(BUILD, r'versionName\s+"1\.0\.0"')
 
+    def test_android_launcher_uses_the_toddler_arcade_mascot(self) -> None:
+        icon = ANDROID / "app/src/main/res/drawable-nodpi/toddler_arcade_icon.png"
+        self.assertIn('android:icon="@drawable/toddler_arcade_icon"', MANIFEST)
+        self.assertIn('android:roundIcon="@drawable/toddler_arcade_icon"', MANIFEST)
+        self.assertTrue(icon.is_file())
+        self.assertTrue(icon.read_bytes().startswith(b"\x89PNG\r\n\x1a\n"))
+
     def test_build_copies_the_same_web_game_into_the_app(self) -> None:
         self.assertIn('tasks.register("syncWebAssets", Sync)', BUILD)
         self.assertIn('include "index.html"', BUILD)
