@@ -2130,6 +2130,7 @@
             font-size:1.15rem;
             font-weight:950;
             text-align:center;
+            white-space:nowrap;
             box-shadow:0 5px 0 rgba(45,55,72,.1);
         }
         .runner-prompt { flex:1;margin:0; }
@@ -2147,7 +2148,7 @@
                 radial-gradient(circle at 72% 13%,#fff 0 4%,transparent 4.5%),
                 linear-gradient(#90cdf4 0 67%,#c6f6d5 67% 100%);
             box-shadow:0 9px 0 rgba(45,55,72,.11);
-            touch-action:manipulation;
+            touch-action:none;
             user-select:none;
         }
         .runner-stage::before,
@@ -2188,11 +2189,11 @@
             filter:drop-shadow(0 8px 3px rgba(45,55,72,.2));
             transform-origin:50% 100%;
         }
-        .runner-stage.running .runner-character:not(.jumping) { animation:runnerSteps .34s ease-in-out infinite alternate; }
-        .runner-character.jumping { animation:runnerJump .78s cubic-bezier(.25,.7,.35,1) both; }
+        .runner-stage.running .runner-character:not(.flying) { animation:runnerSteps .34s ease-in-out infinite alternate; }
+        .runner-character.flying { animation:runnerFly .42s ease-in-out infinite alternate; }
         .runner-character.bumped { animation:runnerBump 1.35s ease-out both; }
         @keyframes runnerSteps { to { transform:translateY(-5px) rotate(4deg); } }
-        @keyframes runnerJump { 0%,100%{transform:translateY(0) rotate(0)} 45%{transform:translateY(-190px) rotate(-10deg)} }
+        @keyframes runnerFly { to { transform:rotate(-7deg) scale(1.04); } }
         @keyframes runnerBump { 0%{transform:translate(0,0) rotate(0)} 20%{transform:translate(-22px,-55px) rotate(-20deg)} 100%{transform:translate(-54px,80px) rotate(-95deg);opacity:.35} }
         .runner-object {
             position:absolute;
@@ -2209,8 +2210,10 @@
             filter:drop-shadow(0 6px 3px rgba(45,55,72,.17));
             will-change:transform;
         }
-        .runner-object.food { bottom:calc(20% + 78px);animation:broccoliFloat .6s ease-in-out infinite alternate; }
+        .runner-object.food { animation:broccoliFloat .6s ease-in-out infinite alternate; }
         @keyframes broccoliFloat { to { margin-bottom:8px; } }
+        .runner-object.air-rock span { display:inline-block;animation:flyingRockSpin .65s linear infinite; }
+        @keyframes flyingRockSpin { to { transform:rotate(360deg); } }
         .runner-object.collected { animation:runnerCollect .48s ease-out both; }
         @keyframes runnerCollect { to { transform:scale(2) rotate(35deg);opacity:0; } }
         .runner-celebration,
@@ -2782,15 +2785,15 @@
     <div id="game-runner" class="game-view">
         <main class="learning-game academic-game runner-game">
             <div class="runner-hud">
-                <div class="academic-prompt runner-prompt" id="runnerPrompt" aria-live="polite"><span class="academic-flag" id="runnerFlag" aria-hidden="true">🇬🇧</span><span id="runnerPromptText">Tap anywhere to jump</span></div>
+                <div class="academic-prompt runner-prompt" id="runnerPrompt" aria-live="polite"><span class="academic-flag" id="runnerFlag" aria-hidden="true">🇬🇧</span><span id="runnerPromptText">Hold to fly · Let go to land</span></div>
                 <div class="runner-score" id="runnerScore" aria-live="polite">⭐ 0</div>
             </div>
-            <div class="runner-stage" id="runnerStage" role="button" tabindex="0" aria-label="Tap anywhere to jump">
-                <div class="runner-character" id="runnerCharacter" aria-hidden="true">🐻</div>
+            <div class="runner-stage" id="runnerStage" role="button" tabindex="0" aria-label="Hold to fly and let go to land">
+                <div class="runner-character" id="runnerCharacter" aria-hidden="true">🧸</div>
                 <div class="runner-object" id="runnerObject" aria-hidden="true"></div>
                 <div class="runner-celebration" id="runnerCelebration" aria-hidden="true"><span id="runnerCelebrationText">🥦 +1</span></div>
                 <div class="runner-crash" id="runnerCrash" aria-hidden="true"><div class="runner-crash-ow" id="runnerCrashText">OW!</div><div class="runner-crash-dust">💥 💫</div></div>
-                <div class="runner-tap-hint" id="runnerTapHint" aria-hidden="true">👆 Tap to jump</div>
+                <div class="runner-tap-hint" id="runnerTapHint" aria-hidden="true">👆 Hold to fly</div>
             </div>
         </main>
     </div>
@@ -3341,7 +3344,7 @@
                 popped: number => `Popped #${number}! ⭐`, balloonLevelUp: number => `Amazing! Now 1 to ${number}! 🚀`, santaLabel: 'Santa Claus',
                 everyday:'Everyday Things', letters:'Letter Garden', shapes:'Colors & Shapes', counting:'Count & Match', body:'Body Explorer', runner:'Broccoli Bounce', music:'Music Studio', beat:'Copy the Pattern', dance:'Dance & Freeze', bells:"Santa's Bells",
                 everydayPrompt:'Explore six things at a time', everydayExplore:'👀 Explore', everydayFind:'👆 Press', everydayMore:'More things →', findQuestion:item=>`Press ${item}`, findTry:'Look again', findFound:()=>`That’s the one!`, findNext:'▶ Next one', findReal:()=>`Can you find one like this nearby and show a grown-up?`,
-                letterPrompt:'Tap a letter', letterPhrase:item=>`${item.name}. ${item.name} is for ${item.word}.`, shapePrompt:(color,shape)=>`Tap. Color ${color}. Shape ${shape}.`, shapeTry:'Look again', shapeGreat:'You found it!', countPrompt:'How many?', countTry:'Count again', countGreat:number=>`${number}! Great counting!`, bodyPrompt:'Tap a body part', bodyHint:'Tap the character', runnerPrompt:'Tap to jump', runnerHint:'Tap to jump', runnerBroccoli:'Broccoli! One point!', runnerOw:'Ow!',
+                letterPrompt:'Tap a letter', letterPhrase:item=>`${item.name}. ${item.name} is for ${item.word}.`, shapePrompt:(color,shape)=>`Tap. Color ${color}. Shape ${shape}.`, shapeTry:'Look again', shapeGreat:'You found it!', countPrompt:'How many?', countTry:'Count again', countGreat:number=>`${number}! Great counting!`, bodyPrompt:'Tap a body part', bodyHint:'Tap the character', runnerPrompt:'Hold to fly · Let go to land', runnerHint:'Hold to fly', runnerBroccoli:'Broccoli! One point!', runnerOw:'Ow!',
                 musicPrompt:'Make your own music', musicTogether:'Take turns and copy each other', beatPrompt:'Watch the pattern', beatStart:'Press the dancing bear', beatNext:'▶ New pattern', beatReady:'Are you ready to play? Press the dancing bear.', beatExplain:'Watch the pattern. Then play it back. Ready?', beatYourTurn:'Your turn!', beatGreat:'You remembered it!', beatPraise:['Great job!','Well done!','You did it!','Amazing!'], beatAgain:'Watch the same pattern again',
                 danceReady:'Ready?', danceStart:'▶ Start dancing', danceStop:'■ Stop', danceTogether:'Make a clear space and dance together', bellsPrompt:'Play along with Santa', bellsSantaAction:'Hear Santa laugh', bellsBellAction:'Ring the big bell', jingleStart:'🎶 Play Jingle Bells', jingleStop:'■ Stop the song'
             },
@@ -3357,7 +3360,7 @@
                 popped: number => `¡Reventaste el globo número ${number}! ⭐`, balloonLevelUp: number => `¡Genial! ¡Ahora del 1 al ${number}! 🚀`, santaLabel: 'Santa Claus',
                 everyday:'Cosas de cada día', letters:'Jardín de letras', shapes:'Colores y formas', counting:'Cuenta y elige', body:'El cuerpo', runner:'Salta por el brócoli', music:'Estudio musical', beat:'Copia el patrón', dance:'Baila y congélate', bells:'Campanas de Santa',
                 everydayPrompt:'Explora seis cosas a la vez', everydayExplore:'👀 Explora', everydayFind:'👆 Presiona', everydayMore:'Más cosas →', findQuestion:item=>`Presiona ${item}`, findTry:'Mira otra vez', findFound:()=>`¡Ese es!`, findNext:'▶ Otro', findReal:()=>`¿Puedes encontrar uno igual cerca y mostrárselo a un adulto?`,
-                letterPrompt:'Presiona una letra', letterPhrase:item=>`${item.name}. ${item.name} de ${item.word}.`, shapePrompt:(color,shape)=>`Presiona. Color ${color}. Forma ${shape}.`, shapeTry:'Mira otra vez', shapeGreat:'¡Lo encontraste!', countPrompt:'¿Cuántos hay?', countTry:'Cuenta otra vez', countGreat:number=>`¡${number}! ¡Muy bien contado!`, bodyPrompt:'Presiona una parte del cuerpo', bodyHint:'Toca al personaje', runnerPrompt:'Toca para saltar', runnerHint:'Toca para saltar', runnerBroccoli:'¡Brócoli! ¡Un punto!', runnerOw:'¡Ay!',
+                letterPrompt:'Presiona una letra', letterPhrase:item=>`${item.name}. ${item.name} de ${item.word}.`, shapePrompt:(color,shape)=>`Presiona. Color ${color}. Forma ${shape}.`, shapeTry:'Mira otra vez', shapeGreat:'¡Lo encontraste!', countPrompt:'¿Cuántos hay?', countTry:'Cuenta otra vez', countGreat:number=>`¡${number}! ¡Muy bien contado!`, bodyPrompt:'Presiona una parte del cuerpo', bodyHint:'Toca al personaje', runnerPrompt:'Mantén para volar · Suelta para bajar', runnerHint:'Mantén para volar', runnerBroccoli:'¡Brócoli! ¡Un punto!', runnerOw:'¡Ay!',
                 musicPrompt:'Haz tu propia música', musicTogether:'Tomen turnos e imítense', beatPrompt:'Mira el patrón', beatStart:'Presiona el osito que baila', beatNext:'▶ Nuevo patrón', beatReady:'¿Listo para jugar? Presiona el osito que baila.', beatExplain:'Mira el patrón. Después repítelo. ¿Listo?', beatYourTurn:'¡Tu turno!', beatGreat:'¡Lo recordaste!', beatPraise:['¡Muy bien!','¡Bravo!','¡Lo hiciste!','¡Excelente!'], beatAgain:'Mira el mismo patrón otra vez',
                 danceReady:'¿Listo?', danceStart:'▶ Empieza a bailar', danceStop:'■ Detener', danceTogether:'Dejen espacio y bailen juntos', bellsPrompt:'Toca con Santa', bellsSantaAction:'Escucha a Santa', bellsBellAction:'Toca la campana grande', jingleStart:'🎶 Toca Jingle Bells', jingleStop:'■ Detén la canción'
             },
@@ -3373,7 +3376,7 @@
                 popped: number => `Tu as éclaté le ballon numéro ${number} ! ⭐`, balloonLevelUp: number => `Bravo ! Maintenant de 1 à ${number} ! 🚀`, santaLabel: 'Père Noël',
                 everyday:'Objets du quotidien', letters:'Jardin des lettres', shapes:'Couleurs et formes', counting:'Compte et choisis', body:'Le corps', runner:'Bondis vers le brocoli', music:'Studio de musique', beat:'Copie la suite', dance:'Danse et ne bouge plus', bells:'Cloches du Père Noël',
                 everydayPrompt:'Explore six objets à la fois', everydayExplore:'👀 Explore', everydayFind:'👆 Appuie', everydayMore:'Autres objets →', findQuestion:item=>`Appuie sur ${item}`, findTry:'Regarde encore', findFound:()=>`C’est celui-là !`, findNext:'▶ Le suivant', findReal:()=>`Peux-tu en trouver un pareil près de toi et le montrer à un adulte ?`,
-                letterPrompt:'Appuie sur une lettre', letterPhrase:item=>`${item.name}. ${item.name} comme ${item.word}.`, shapePrompt:(color,shape)=>`Appuie. Couleur ${color}. Forme ${shape}.`, shapeTry:'Regarde encore', shapeGreat:'Tu l’as trouvé !', countPrompt:'Combien y en a-t-il ?', countTry:'Compte encore', countGreat:number=>`${number} ! Bravo !`, bodyPrompt:'Appuie sur une partie du corps', bodyHint:'Touche le personnage', runnerPrompt:'Appuie pour sauter', runnerHint:'Appuie pour sauter', runnerBroccoli:'Brocoli ! Un point !', runnerOw:'Aïe !',
+                letterPrompt:'Appuie sur une lettre', letterPhrase:item=>`${item.name}. ${item.name} comme ${item.word}.`, shapePrompt:(color,shape)=>`Appuie. Couleur ${color}. Forme ${shape}.`, shapeTry:'Regarde encore', shapeGreat:'Tu l’as trouvé !', countPrompt:'Combien y en a-t-il ?', countTry:'Compte encore', countGreat:number=>`${number} ! Bravo !`, bodyPrompt:'Appuie sur une partie du corps', bodyHint:'Touche le personnage', runnerPrompt:'Maintiens pour voler · Relâche pour descendre', runnerHint:'Maintiens pour voler', runnerBroccoli:'Brocoli ! Un point !', runnerOw:'Aïe !',
                 musicPrompt:'Crée ta propre musique', musicTogether:'Jouez chacun votre tour et imitez-vous', beatPrompt:'Regarde la suite', beatStart:'Appuie sur l’ours qui danse', beatNext:'▶ Nouvelle suite', beatReady:'Prêt à jouer ? Appuie sur l’ours qui danse.', beatExplain:'Regarde la suite. Puis refais-la. Prêt ?', beatYourTurn:'À toi !', beatGreat:'Tu t’en es souvenu !', beatPraise:['Bravo !','Très bien !','Tu as réussi !','Super !'], beatAgain:'Regarde encore la même suite',
                 danceReady:'Prêt ?', danceStart:'▶ Commence à danser', danceStop:'■ Arrêter', danceTogether:'Faites de la place et dansez ensemble', bellsPrompt:'Joue avec le Père Noël', bellsSantaAction:'Écoute le Père Noël', bellsBellAction:'Fais sonner la grande cloche', jingleStart:'🎶 Joue Jingle Bells', jingleStop:'■ Arrête la chanson'
             },
@@ -3389,7 +3392,7 @@
                 popped: number => `Έσκασες το μπαλόνι με τον αριθμό ${number}! ⭐`, balloonLevelUp: number => `Μπράβο! Τώρα από το 1 ως το ${number}! 🚀`, santaLabel: 'Άγιος Βασίλης',
                 everyday:'Πράγματα κάθε μέρας', letters:'Ο κήπος των γραμμάτων', shapes:'Χρώματα και σχήματα', counting:'Μέτρα και διάλεξε', body:'Το σώμα', runner:'Πήδα στο μπρόκολο', music:'Μουσικό στούντιο', beat:'Αντέγραψε το μοτίβο', dance:'Χόρεψε και πάγωσε', bells:'Τα κουδουνάκια του Άγιου Βασίλη',
                 everydayPrompt:'Εξερεύνησε έξι πράγματα κάθε φορά', everydayExplore:'👀 Εξερεύνησε', everydayFind:'👆 Πάτησε', everydayMore:'Άλλα πράγματα →', findQuestion:item=>`Πάτησε ${item}`, findTry:'Κοίτα ξανά', findFound:()=>`Αυτό είναι!`, findNext:'▶ Επόμενο', findReal:()=>`Μπορείς να βρεις κάτι ίδιο κοντά σου και να το δείξεις σε έναν μεγάλο;`,
-                letterPrompt:'Πάτησε ένα γράμμα', letterPhrase:item=>`${item.name}. ${item.letter} όπως ${item.word}.`, shapePrompt:(color,shape)=>`Πάτησε. Χρώμα ${color}. Σχήμα ${shape}.`, shapeTry:'Κοίτα ξανά', shapeGreat:'Το βρήκες!', countPrompt:'Πόσα είναι;', countTry:'Μέτρα ξανά', countGreat:number=>`${number}! Μπράβο!`, bodyPrompt:'Πάτησε ένα μέρος του σώματος', bodyHint:'Πάτησε το ανθρωπάκι', runnerPrompt:'Πάτησε για να πηδήξεις', runnerHint:'Πάτησε για να πηδήξεις', runnerBroccoli:'Μπρόκολο! Ένας πόντος!', runnerOw:'Άουτς!',
+                letterPrompt:'Πάτησε ένα γράμμα', letterPhrase:item=>`${item.name}. ${item.letter} όπως ${item.word}.`, shapePrompt:(color,shape)=>`Πάτησε. Χρώμα ${color}. Σχήμα ${shape}.`, shapeTry:'Κοίτα ξανά', shapeGreat:'Το βρήκες!', countPrompt:'Πόσα είναι;', countTry:'Μέτρα ξανά', countGreat:number=>`${number}! Μπράβο!`, bodyPrompt:'Πάτησε ένα μέρος του σώματος', bodyHint:'Πάτησε το ανθρωπάκι', runnerPrompt:'Κράτα πατημένο για να πετάξεις · Άφησε για να κατέβεις', runnerHint:'Κράτα πατημένο για να πετάξεις', runnerBroccoli:'Μπρόκολο! Ένας πόντος!', runnerOw:'Άουτς!',
                 musicPrompt:'Φτιάξε τη δική σου μουσική', musicTogether:'Παίξτε με τη σειρά και αντιγράψτε ο ένας τον άλλον', beatPrompt:'Κοίτα το μοτίβο', beatStart:'Πάτησε το αρκουδάκι που χορεύει', beatNext:'▶ Νέο μοτίβο', beatReady:'Έτοιμος να παίξεις; Πάτησε το αρκουδάκι που χορεύει.', beatExplain:'Κοίτα το μοτίβο. Μετά παίξ’ το κι εσύ. Έτοιμος;', beatYourTurn:'Η σειρά σου!', beatGreat:'Το θυμήθηκες!', beatPraise:['Μπράβο!','Πολύ καλά!','Τα κατάφερες!','Το βρήκες!'], beatAgain:'Κοίτα ξανά το ίδιο μοτίβο',
                 danceReady:'Έτοιμος;', danceStart:'▶ Ξεκίνα τον χορό', danceStop:'■ Σταμάτα', danceTogether:'Αδειάστε λίγο χώρο και χορέψτε μαζί', bellsPrompt:'Παίξε μαζί με τον Άγιο Βασίλη', bellsSantaAction:'Άκου τον Άγιο Βασίλη', bellsBellAction:'Χτύπα το μεγάλο κουδούνι', jingleStart:'🎶 Παίξε το Jingle Bells', jingleStop:'■ Σταμάτα το τραγούδι'
             }
@@ -6071,13 +6074,17 @@
         let runnerAnimationFrame = null;
         let runnerRestartTimer = null;
         let runnerSpawnTimer = null;
-        let runnerJumpTimer = null;
         let runnerLastFrame = 0;
         let runnerObjectTravel = 0;
         let runnerObjectActive = false;
         let runnerRunning = false;
         let runnerCrashed = false;
         let runnerScore = 0;
+        let runnerDistance = 0;
+        let runnerLastDistanceLabel = -1;
+        let runnerAltitude = 0;
+        let runnerVerticalVelocity = 0;
+        let runnerThrusting = false;
         let runnerLanguageIndex = 0;
         let runnerDisplayLanguage = 'en';
         let runnerRecentTypes = [];
@@ -6093,12 +6100,16 @@
         }
 
         function updateRunnerScore() {
-            document.getElementById('runnerScore').textContent = `⭐ ${runnerScore}`;
+            const distanceLabel = Math.floor(runnerDistance / 5) * 5;
+            runnerLastDistanceLabel = distanceLabel;
+            document.getElementById('runnerScore').textContent = `⭐ ${runnerScore} · ${distanceLabel}m`;
         }
 
         function chooseRunnerObjectType() {
+            if (runnerDistance < 40) return 'food';
             const lastTwoWereRocks = runnerRecentTypes.slice(-2).every(type => type === 'rock') && runnerRecentTypes.length >= 2;
-            const type = lastTwoWereRocks || Math.random() < .68 ? 'food' : 'rock';
+            const rockChance = runnerDistance < 100 ? .2 : (runnerDistance < 170 ? .32 : .42);
+            const type = lastTwoWereRocks || Math.random() >= rockChance ? 'food' : 'rock';
             runnerRecentTypes.push(type);
             runnerRecentTypes = runnerRecentTypes.slice(-2);
             return type;
@@ -6110,9 +6121,16 @@
                 updateRunnerLanguage(learningRoundLanguage(runnerLanguageIndex++));
             }
             const type = chooseRunnerObjectType();
+            const stageHeight = runnerStage.clientHeight;
+            const canFly = type === 'rock' && runnerDistance >= 110;
+            const isFlyingRock = canFly && Math.random() < Math.min(.5, .24 + (runnerDistance - 110) / 300);
+            const objectAltitude = type === 'food'
+                ? Math.min(stageHeight * .48, 82 + Math.random() * (80 + Math.min(90, runnerDistance * .35)))
+                : (isFlyingRock ? Math.min(stageHeight * .48, 135 + Math.random() * 115) : 0);
             runnerObject.dataset.type = type;
-            runnerObject.className = `runner-object ${type}`;
-            runnerObject.textContent = type === 'food' ? '🥦' : '🪨';
+            runnerObject.className = `runner-object ${type}${isFlyingRock ? ' air-rock' : ''}`;
+            runnerObject.innerHTML = `<span>${type === 'food' ? '🥦' : '🪨'}</span>`;
+            runnerObject.style.bottom = `calc(20% + ${objectAltitude}px)`;
             runnerObject.style.transform = 'translateX(0)';
             runnerObjectTravel = 0;
             runnerObjectActive = true;
@@ -6137,8 +6155,18 @@
             if (!runnerRunning || runnerCrashed) return;
             const elapsedSeconds = runnerLastFrame ? Math.min(.04, (timestamp - runnerLastFrame) / 1000) : 0;
             runnerLastFrame = timestamp;
+            const altitudeCeiling = runnerStage.clientHeight * .53;
+            const lift = runnerThrusting ? 760 : -670;
+            runnerVerticalVelocity = Math.max(-315, Math.min(285, runnerVerticalVelocity + lift * elapsedSeconds));
+            runnerAltitude = Math.max(0, Math.min(altitudeCeiling, runnerAltitude + runnerVerticalVelocity * elapsedSeconds));
+            if (runnerAltitude === 0 && !runnerThrusting) runnerVerticalVelocity = 0;
+            if (runnerAltitude === altitudeCeiling && runnerVerticalVelocity > 0) runnerVerticalVelocity = 0;
+            runnerCharacter.style.bottom = `calc(20% + ${runnerAltitude}px)`;
+            runnerCharacter.classList.toggle('flying', runnerAltitude > 2 || runnerThrusting);
             if (runnerObjectActive) {
-                const speed = Math.min(178, 126 + runnerScore * 4);
+                const speed = Math.min(180, 104 + runnerDistance * .36);
+                runnerDistance += speed * elapsedSeconds / 18;
+                if (Math.floor(runnerDistance / 5) * 5 !== runnerLastDistanceLabel) updateRunnerScore();
                 runnerObjectTravel += speed * elapsedSeconds;
                 runnerObject.style.transform = `translateX(${-runnerObjectTravel}px)`;
                 if (runnerHitboxesOverlap()) {
@@ -6209,7 +6237,8 @@
             cancelAnimationFrame(runnerAnimationFrame);
             runnerAnimationFrame = null;
             runnerStage.classList.remove('running');
-            runnerCharacter.classList.remove('jumping');
+            runnerThrusting = false;
+            runnerCharacter.classList.remove('flying');
             runnerCharacter.classList.add('bumped');
             document.getElementById('runnerCrash').classList.add('active');
             playRunnerCrashSound();
@@ -6221,25 +6250,36 @@
             }, 1900);
         }
 
-        function jumpRunner() {
-            if (!runnerRunning || runnerCrashed || runnerCharacter.classList.contains('jumping')) return;
-            clearTimeout(runnerJumpTimer);
-            runnerCharacter.classList.remove('jumping');
-            void runnerCharacter.offsetWidth;
-            runnerCharacter.classList.add('jumping');
-            runnerJumpTimer = setTimeout(() => runnerCharacter.classList.remove('jumping'), 790);
+        function startRunnerFlight(event = null) {
+            if (!runnerRunning || runnerCrashed) return;
+            runnerThrusting = true;
+            runnerCharacter.classList.add('flying');
+            if (event?.pointerId !== undefined) {
+                try { runnerStage.setPointerCapture(event.pointerId); } catch (error) {}
+            }
+        }
+
+        function stopRunnerFlight() {
+            runnerThrusting = false;
         }
 
         function resetRunnerRound() {
             clearTimeout(runnerRestartTimer);
             clearTimeout(runnerSpawnTimer);
-            clearTimeout(runnerJumpTimer);
             runnerCrashed = false;
             runnerScore = 0;
+            runnerDistance = 0;
+            runnerLastDistanceLabel = -1;
+            runnerAltitude = 0;
+            runnerVerticalVelocity = 0;
+            runnerThrusting = false;
+            runnerRecentTypes = [];
             runnerObjectActive = false;
-            runnerObject.textContent = '';
+            runnerObject.innerHTML = '';
+            runnerObject.style.bottom = '20%';
             runnerObject.style.transform = 'translateX(0)';
             runnerCharacter.className = 'runner-character';
+            runnerCharacter.style.bottom = '20%';
             document.getElementById('runnerCrash').classList.remove('active');
             document.getElementById('runnerCelebration').classList.remove('active');
             updateRunnerScore();
@@ -6252,6 +6292,7 @@
             runnerLastFrame = 0;
             runnerStage.classList.add('running');
             updateRunnerLanguage();
+            updateRunnerScore();
             scheduleRunnerObject(780);
             runnerAnimationFrame = requestAnimationFrame(runnerFrame);
         }
@@ -6262,16 +6303,24 @@
             runnerAnimationFrame = null;
             clearTimeout(runnerRestartTimer);
             clearTimeout(runnerSpawnTimer);
-            clearTimeout(runnerJumpTimer);
+            runnerThrusting = false;
+            runnerObjectActive = false;
+            runnerObject.innerHTML = '';
+            runnerCharacter.classList.remove('flying');
             runnerStage.classList.remove('running');
         }
 
-        runnerStage.addEventListener('pointerdown', jumpRunner);
+        runnerStage.addEventListener('pointerdown', startRunnerFlight);
+        runnerStage.addEventListener('pointerup', stopRunnerFlight);
+        runnerStage.addEventListener('pointercancel', stopRunnerFlight);
         runnerStage.addEventListener('keydown', event => {
-            if (event.key === 'Enter' || event.key === ' ') {
+            if ((event.key === 'Enter' || event.key === ' ') && !event.repeat) {
                 event.preventDefault();
-                jumpRunner();
+                startRunnerFlight();
             }
+        });
+        runnerStage.addEventListener('keyup', event => {
+            if (event.key === 'Enter' || event.key === ' ') stopRunnerFlight();
         });
 
         // --- Game 11: Music Studio ---
