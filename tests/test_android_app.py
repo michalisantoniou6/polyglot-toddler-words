@@ -1,0 +1,65 @@
+import re
+import unittest
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+ANDROID = ROOT / "android"
+MANIFEST = (ANDROID / "app/src/main/AndroidManifest.xml").read_text(encoding="utf-8")
+ACTIVITY = (
+    ANDROID
+    / "app/src/main/java/com/michalisantoniou/polyglotplayroom/MainActivity.java"
+).read_text(encoding="utf-8")
+BUILD = (ANDROID / "app/build.gradle").read_text(encoding="utf-8")
+HTML = (ROOT / "index.html").read_text(encoding="utf-8")
+
+
+class AndroidAppRegressionTests(unittest.TestCase):
+    def test_android_package_is_play_store_ready(self) -> None:
+        self.assertIn('applicationId "com.michalisantoniou.polyglotplayroom"', BUILD)
+        self.assertIn("compileSdk 36", BUILD)
+        self.assertIn("targetSdk 36", BUILD)
+        self.assertIn("minSdk 24", BUILD)
+        self.assertRegex(BUILD, r'versionCode\s+1\b')
+        self.assertRegex(BUILD, r'versionName\s+"1\.0\.0"')
+
+    def test_build_copies_the_same_web_game_into_the_app(self) -> None:
+        self.assertIn('tasks.register("syncWebAssets", Sync)', BUILD)
+        self.assertIn('include "index.html"', BUILD)
+        self.assertIn('include "assets/**"', BUILD)
+        self.assertIn('dependsOn("syncWebAssets")', BUILD)
+        self.assertIn("file:///android_asset/www/index.html", ACTIVITY)
+
+    def test_app_is_full_screen_rotatable_and_keeps_game_state(self) -> None:
+        self.assertNotIn("android:screenOrientation", MANIFEST)
+        self.assertIn('android:configChanges="keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"', MANIFEST)
+        self.assertIn("FLAG_KEEP_SCREEN_ON", ACTIVITY)
+        self.assertIn("BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE", ACTIVITY)
+        self.assertIn("webView.saveState(outState)", ACTIVITY)
+        self.assertIn("webView.restoreState(savedInstanceState)", ACTIVITY)
+
+    def test_android_back_gesture_uses_the_games_navigation_history(self) -> None:
+        self.assertIn("registerOnBackInvokedCallback", ACTIVITY)
+        self.assertIn("if (webView.canGoBack())", ACTIVITY)
+        self.assertIn("webView.goBack()", ACTIVITY)
+        self.assertIn("moveTaskToBack(true)", ACTIVITY)
+
+    def test_native_speech_bridge_keeps_multilingual_prompts_working(self) -> None:
+        self.assertIn('addJavascriptInterface(new AndroidSpeechBridge(), "AndroidSpeech")', ACTIVITY)
+        self.assertIn("Locale.forLanguageTag(languageTag)", ACTIVITY)
+        self.assertIn("TextToSpeech.QUEUE_FLUSH", ACTIVITY)
+        self.assertIn("window.finishAndroidSpeech", ACTIVITY)
+        self.assertIn("window.AndroidSpeech?.speak", HTML)
+        self.assertIn("window.AndroidSpeech?.stop", HTML)
+        self.assertIn("const androidSpeechCallbacks = new Map()", HTML)
+
+    def test_app_stays_inside_the_local_child_safe_game(self) -> None:
+        self.assertIn('android:allowBackup="false"', MANIFEST)
+        self.assertIn('android:dataExtractionRules="@xml/data_extraction_rules"', MANIFEST)
+        self.assertIn('android:usesCleartextTraffic="false"', MANIFEST)
+        self.assertIn('return !url.startsWith("file:///android_asset/www/")', ACTIVITY)
+        self.assertIn("setOnLongClickListener(view -> true)", ACTIVITY)
+
+
+if __name__ == "__main__":
+    unittest.main()

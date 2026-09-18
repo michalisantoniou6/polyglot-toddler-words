@@ -2,7 +2,7 @@
 <html lang="el" translate="no" class="notranslate">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="google" content="notranslate">
     <meta name="robots" content="notranslate">
     <link rel="preload" href="assets/santa-ho-ho-ho.mp3?v=2" as="audio" type="audio/mpeg">
@@ -4420,7 +4420,7 @@
         const repeatAnimationClasses = ['repeat-bounce', 'repeat-wiggle', 'repeat-float', 'repeat-pop'];
         let voices = [];
         function loadVoices() {
-            voices = window.speechSynthesis.getVoices();
+            if ('speechSynthesis' in window) voices = window.speechSynthesis.getVoices();
         }
         loadVoices();
         if ('speechSynthesis' in window) {
@@ -4439,6 +4439,13 @@
 
         window._activeUtterance = null;
         let speechGeneration = 0;
+        const androidSpeechCallbacks = new Map();
+        window.finishAndroidSpeech = generation => {
+            const callback = androidSpeechCallbacks.get(Number(generation));
+            if (!callback) return;
+            androidSpeechCallbacks.delete(Number(generation));
+            callback();
+        };
         let speechSequenceTimeout = null;
         let repeatSequenceRunId = 0;
         let repeatFinishCallback = null;
@@ -4869,8 +4876,26 @@
 
         function speakSingle(langCode, text, onDone) {
             const generation = ++speechGeneration;
-            window.speechSynthesis.cancel();
             const speechText = text.replace(/,/g, '');
+            const finish = () => {
+                if (generation !== speechGeneration) return;
+                androidSpeechCallbacks.delete(generation);
+                window._activeUtterance = null;
+                if (onDone) onDone();
+            };
+
+            if (window.AndroidSpeech?.speak) {
+                androidSpeechCallbacks.set(generation, finish);
+                window.AndroidSpeech.speak(speechText, langCode, generation, 0.78);
+                return;
+            }
+
+            if (!('speechSynthesis' in window)) {
+                finish();
+                return;
+            }
+
+            window.speechSynthesis.cancel();
             const utterance = new SpeechSynthesisUtterance(speechText);
             utterance.lang = langCode;
             utterance.rate = 0.78;
@@ -4878,11 +4903,6 @@
             if (voice) utterance.voice = voice;
             window._activeUtterance = utterance;
 
-            const finish = () => {
-                if (generation !== speechGeneration) return;
-                window._activeUtterance = null;
-                if (onDone) onDone();
-            };
             utterance.onend = finish;
             utterance.onerror = finish;
             window.speechSynthesis.speak(utterance);
@@ -4996,7 +5016,9 @@
         function cancelRepeatSequence() {
             repeatSequenceRunId++;
             speechGeneration++;
-            window.speechSynthesis.cancel();
+            androidSpeechCallbacks.clear();
+            if (window.AndroidSpeech?.stop) window.AndroidSpeech.stop();
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
             window._activeUtterance = null;
             repeatAgainAction = null;
             repeatNextAction = null;
