@@ -205,6 +205,26 @@ class AppRegressionTests(unittest.TestCase):
         self.assertIn("bodyLanguageIndex = (bodyLanguageIndex + 1)", HTML)
         self.assertRegex(HTML, re.compile(r"bodyFocusTimer\s*=\s*setTimeout\(\(\)\s*=>\s*\{.*?\},\s*2400\);", re.S))
 
+    def test_surprise_game_button_never_reselects_the_current_game(self) -> None:
+        self.assertIn('id="randomGameButton"', HTML)
+        self.assertIn("const choices = tabs.filter(tab => tab !== currentTab)", HTML)
+        self.assertIn("switchGame(gameId, nextTab)", HTML)
+        self.assertIn("randomGame:'Surprise game'", HTML)
+        random_button = re.search(r"\.random-game-button\s*\{.*?width:\s*(\d+)px;.*?height:\s*(\d+)px;", HTML, re.S)
+        self.assertIsNotNone(random_button)
+        self.assertGreaterEqual(int(random_button.group(1)), 44)
+        self.assertGreaterEqual(int(random_button.group(2)), 44)
+
+    def test_play_timer_has_quick_choices_and_survives_refresh(self) -> None:
+        for minutes in (5, 10, 15, 20):
+            self.assertIn(f"setPlayTimer({minutes})", HTML)
+        self.assertIn("setPlayTimer(0)", HTML)
+        self.assertIn("localStorage.setItem(playTimerStorageKey", HTML)
+        self.assertIn("localStorage.getItem(playTimerStorageKey)", HTML)
+        self.assertIn("pauseActivePlay();\n                showTimeUpOverlay();", HTML)
+        for phrase in ("Play timer", "Tiempo de juego", "Temps de jeu", "Χρόνος παιχνιδιού"):
+            self.assertIn(phrase, HTML)
+
     def test_balloon_difficulty_progresses_to_twenty(self) -> None:
         levels = array_source("balloonLevels")
         maximums = [int(value) for value in re.findall(r"max:\s*(\d+)", levels)]
