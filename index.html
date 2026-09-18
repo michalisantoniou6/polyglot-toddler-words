@@ -14,6 +14,7 @@
     <link rel="icon" href="icons/icon-192.png" sizes="192x192" type="image/png">
     <link rel="apple-touch-icon" href="icons/icon-180.png">
     <link rel="preload" href="assets/santa-ho-ho-ho.mp3?v=2" as="audio" type="audio/mpeg">
+    <link rel="preload" href="assets/santa-sleigh.png" as="image" type="image/png">
     <title>Toddler Arcade</title>
     <style>
         * {
@@ -22,6 +23,18 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             user-select: none;
             touch-action: manipulation;
+        }
+
+        .visually-hidden {
+            position: absolute !important;
+            width: 1px !important;
+            height: 1px !important;
+            padding: 0 !important;
+            margin: -1px !important;
+            overflow: hidden !important;
+            clip: rect(0, 0, 0, 0) !important;
+            white-space: nowrap !important;
+            border: 0 !important;
         }
 
         body {
@@ -1542,11 +1555,23 @@
             font-weight: 900;
         }
 
-        .controls-panel .header-controls,
-        .controls-panel .game-picker {
+        .controls-panel .header-controls {
             width: 100%;
             max-width: none;
             padding: 0;
+        }
+
+        .controls-panel .game-picker {
+            width: 100%;
+            max-width: none;
+            padding: 16px 14px 14px;
+        }
+
+        .controls-panel #gamePickerLabel {
+            margin: 0 0 13px 2px;
+            padding: 2px 6px;
+            font-size: .94rem;
+            line-height: 1.35;
         }
 
         .controls-panel .lang-bar {
@@ -1554,7 +1579,7 @@
             grid-template-columns: repeat(5, minmax(0, 1fr));
             gap: 7px;
             width: 100%;
-            padding: 0;
+            padding: 2px;
             overflow: visible;
             background: transparent;
         }
@@ -1809,11 +1834,11 @@
             width: min(100%, 860px);
             min-height: calc(100svh - 28px);
             margin: 0 auto;
-            padding: 14px 10px 78px;
+            padding: 6px 10px 78px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 16px;
+            gap: 10px;
         }
         .learning-title {
             margin: 4px 0 0;
@@ -2060,53 +2085,35 @@
             75% { transform: translateY(2px) rotate(5deg) scale(.98); }
         }
         .jingle-sleigh-button {
-            position: relative;
-            isolation: isolate;
             width: min(100%, 430px);
-            min-height: 118px;
-            padding: 12px 22px 14px;
-            display: grid;
-            grid-template-columns: minmax(112px, .95fr) minmax(130px, 1.15fr);
-            align-items: center;
-            gap: 10px;
-            overflow: hidden;
-            border: 5px solid #fff4b8;
-            border-radius: 32px;
-            background:
-                radial-gradient(circle at 18% 18%, rgba(255,255,255,.34) 0 4px, transparent 5px),
-                radial-gradient(circle at 82% 25%, rgba(255,255,255,.26) 0 3px, transparent 4px),
-                linear-gradient(145deg,#e53e3e 0%,#c53030 52%,#2f855a 100%);
-            box-shadow: 0 9px 0 #9b2c2c, 0 13px 24px rgba(116,66,16,.2);
-            color: white;
-            text-shadow: 0 2px 0 rgba(116,66,16,.28);
+            min-height: 0;
+            padding: 0;
+            display: block;
+            border: 0;
+            border-radius: 0;
+            background: transparent;
+            box-shadow: none;
+            touch-action: manipulation;
         }
-        .jingle-sleigh-button::before,
-        .jingle-sleigh-button::after {
-            content: '✦';
-            position: absolute;
-            z-index: -1;
-            color: #fff4b8;
-            font-size: 1.35rem;
-            opacity: .9;
-        }
-        .jingle-sleigh-button::before { top: 10px; right: 16px; transform: rotate(14deg); }
-        .jingle-sleigh-button::after { bottom: 9px; left: 15px; transform: rotate(-12deg); }
         .jingle-sleigh-art {
             display: block;
-            font-size: clamp(3.65rem, 18vw, 6.2rem);
-            line-height: .92;
-            letter-spacing: -.28em;
-            transform: translateX(-.12em);
-            filter: drop-shadow(0 6px 2px rgba(94,48,12,.22));
+            width: 100%;
+            height: clamp(112px, 24svh, 190px);
+            object-fit: contain;
+            filter: drop-shadow(0 9px 7px rgba(94,48,12,.22));
             animation: sleighFloat 1.25s ease-in-out infinite alternate;
+            pointer-events: none;
         }
-        .jingle-button-label { display:block; font-size:clamp(1.05rem,4.7vw,1.45rem); line-height:1.08; font-weight:1000; }
         .jingle-sleigh-button.is-playing .jingle-sleigh-art { animation-duration:.5s; }
-        .jingle-sleigh-button:active { transform:translateY(5px) scale(.98); box-shadow:0 4px 0 #9b2c2c; }
+        .jingle-sleigh-button:active { transform:scale(.96); box-shadow:none; }
         @keyframes sleighFloat {
-            from { transform:translateX(-.12em) translateY(3px) rotate(-2deg); }
-            to { transform:translateX(-.12em) translateY(-6px) rotate(3deg); }
+            from { transform:translateY(3px) rotate(-1.5deg); }
+            to { transform:translateY(-6px) rotate(2deg); }
         }
+        #game-bells .learning-game { justify-content:flex-start; padding-top:2px; gap:6px; }
+        #game-bells .santa-band { flex:0 0 auto; }
+        #game-bells .bell-keyboard { flex:1; min-height:42svh; }
+        #game-bells .bell-key { height:100%; min-height:0; }
         .academic-game {
             width:100%;
             min-height:calc(100svh - 24px);
@@ -2115,17 +2122,17 @@
         }
         .academic-prompt {
             width:min(100%,560px);
-            min-height:78px;
+            min-height:58px;
             display:flex;
             align-items:center;
             justify-content:center;
             gap:10px;
-            padding:12px 18px;
+            padding:8px 14px;
             border-radius:24px;
             background:white;
             color:#2b6cb0;
             box-shadow:0 7px 0 rgba(45,55,72,.1);
-            font-size:clamp(1.45rem,7vw,2.35rem);
+            font-size:clamp(1.2rem,5.5vw,1.85rem);
             line-height:1.08;
             font-weight:1000;
             text-align:center;
@@ -2911,8 +2918,8 @@
     <!-- 5. EVERYDAY WORDS -->
     <div id="game-everyday" class="game-view">
         <main class="learning-game">
-            <h2 class="learning-title" id="everydayTitle">Πράγματα κάθε μέρας</h2>
-            <p class="learning-prompt" id="everydayPrompt">Άγγιξε κάτι και πες τη λέξη</p>
+            <h2 class="learning-title visually-hidden" id="everydayTitle">Πράγματα κάθε μέρας</h2>
+            <p class="learning-prompt visually-hidden" id="everydayPrompt">Άγγιξε κάτι και πες τη λέξη</p>
             <div class="activity-mode-switch" role="group" aria-label="Τρόπος παιχνιδιού">
                 <button class="activity-mode-button active" id="everydayExploreButton" type="button" onclick="setEverydayMode('explore')">👀 Εξερεύνησε</button>
                 <button class="activity-mode-button" id="everydayFindButton" type="button" onclick="setEverydayMode('find')">🔎 Βρες το</button>
@@ -3041,8 +3048,8 @@
     <!-- 11. COPY THE BEAT -->
     <div id="game-beat" class="game-view">
         <main class="learning-game">
-            <h2 class="learning-title" id="beatTitle">Αντέγραψε το μοτίβο</h2>
-            <p class="learning-prompt" id="beatPrompt" aria-live="polite">Κοίτα και αντέγραψε το μοτίβο</p>
+            <h2 class="learning-title visually-hidden" id="beatTitle">Αντέγραψε το μοτίβο</h2>
+            <p class="learning-prompt visually-hidden" id="beatPrompt" aria-live="polite">Κοίτα και αντέγραψε το μοτίβο</p>
             <button class="game-action-button beat-start-button" id="beatStart" type="button" onclick="startBeatRound()" aria-label="Πάτησε το αρκουδάκι που χορεύει"><span aria-hidden="true">🐻</span></button>
             <div class="beat-grid" id="beatGrid"></div>
         </main>
@@ -3051,8 +3058,8 @@
     <!-- 12. DANCE AND FREEZE -->
     <div id="game-dance" class="game-view">
         <main class="learning-game">
-            <h2 class="learning-title" id="danceTitle">Χόρεψε και πάγωσε</h2>
-            <p class="together-note" id="danceTogetherNote">Αδειάστε λίγο χώρο και χορέψτε μαζί</p>
+            <h2 class="learning-title visually-hidden" id="danceTitle">Χόρεψε και πάγωσε</h2>
+            <p class="together-note visually-hidden" id="danceTogetherNote">Αδειάστε λίγο χώρο και χορέψτε μαζί</p>
             <div class="dance-stage">
                 <div class="dance-cue" id="danceCue">Έτοιμος;</div>
                 <div class="dance-character" id="danceCharacter" aria-hidden="true">🎅</div>
@@ -3064,15 +3071,15 @@
     <!-- 13. SANTA'S JINGLE BELLS -->
     <div id="game-bells" class="game-view">
         <main class="learning-game">
-            <h2 class="learning-title" id="bellsTitle">Τα κουδουνάκια του Άγιου Βασίλη</h2>
-            <p class="learning-prompt" id="bellsPrompt">Παίξε μαζί με τον Άγιο Βασίλη</p>
+            <h2 class="learning-title visually-hidden" id="bellsTitle">Τα κουδουνάκια του Άγιου Βασίλη</h2>
+            <p class="learning-prompt visually-hidden" id="bellsPrompt">Παίξε μαζί με τον Άγιο Βασίλη</p>
             <div class="santa-band">
                 <button class="santa-band-button" id="bellsSantaButton" type="button" onclick="playBellsSantaLaugh()" aria-label="Άκου τον Άγιο Βασίλη">🎅</button>
                 <button class="santa-band-button" id="bellsBellButton" type="button" onclick="ringBandBell()" aria-label="Χτύπα το κουδούνι">🔔</button>
             </div>
             <button class="game-action-button jingle-sleigh-button" id="jingleButton" type="button" onclick="toggleJingleBells()">
-                <span class="jingle-sleigh-art" aria-hidden="true">🎅🛷</span>
-                <span class="jingle-button-label" id="jingleButtonLabel">🎶 Παίξε το Jingle Bells</span>
+                <img class="jingle-sleigh-art" src="assets/santa-sleigh.png" alt="" draggable="false">
+                <span class="jingle-button-label visually-hidden" id="jingleButtonLabel">🎶 Παίξε το Jingle Bells</span>
             </button>
             <div class="bell-keyboard" id="bellKeyboard"></div>
         </main>
@@ -7189,29 +7196,25 @@
         // --- Game 8: Dance & Freeze ---
         const danceMoves = [
             {emoji:'💃', en:'Dance!', es:'¡Baila!', fr:'Danse !', el:'Χόρεψε!'},
-            {emoji:'👏', en:'Clap!', es:'¡Aplaude!', fr:'Tape des mains !', el:'Παλαμάκια!'},
-            {emoji:'🦶', en:'Stomp!', es:'¡Pisa fuerte!', fr:'Tape des pieds !', el:'Χτύπα τα πόδια!'},
+            {emoji:'👏', en:'Clap!', es:'¡Palmas!', fr:'Tape des mains !', el:'Παλαμάκια!'},
+            {emoji:'🏃', en:'Run around!', es:'¡Corre en círculos!', fr:'Cours en rond !', el:'Τρέξε γύρω γύρω!'},
+            {emoji:'🦘', en:'Jump!', es:'¡Salta!', fr:'Saute !', el:'Πήδα!'},
             {emoji:'🌀', en:'Spin!', es:'¡Gira!', fr:'Tourne !', el:'Στριφογύρισε!'},
-            {emoji:'🙌', en:'Hands up!', es:'¡Manos arriba!', fr:'Les mains en l’air !', el:'Χέρια ψηλά!'},
-            {emoji:'🤸', en:'Wiggle!', es:'¡Muévete!', fr:'Remue-toi !', el:'Κουνήσου!'}
+            {emoji:'🙌', en:'Hands up!', es:'¡Manos arriba!', fr:'Les mains en l’air !', el:'Χέρια ψηλά!'}
         ];
         const dancePaces = [
-            {milliseconds:720, en:'Slowly', es:'Despacio', fr:'Doucement', el:'Αργά'},
-            {milliseconds:360, en:'Fast', es:'Rápido', fr:'Vite', el:'Γρήγορα'}
+            {milliseconds:720},
+            {milliseconds:360}
         ];
-        const freezePoses = [
-            {emoji:'⭐', en:'Freeze like a star!', es:'¡Congélate como una estrella!', fr:'Ne bouge plus comme une étoile !', el:'Πάγωσε σαν αστέρι!'},
-            {emoji:'🌳', en:'Freeze tall like a tree!', es:'¡Congélate alto como un árbol!', fr:'Ne bouge plus comme un grand arbre !', el:'Πάγωσε ψηλός σαν δέντρο!'},
-            {emoji:'🐭', en:'Freeze tiny like a mouse!', es:'¡Congélate pequeño como un ratón!', fr:'Ne bouge plus tout petit comme une souris !', el:'Πάγωσε μικρός σαν ποντικάκι!'}
-        ];
-        [danceMoves, dancePaces, freezePoses].forEach(addRegionalLanguageVariants);
+        const freezeCue = {emoji:'🧊', en:'Freeze!', es:'¡Congélate!', fr:'Stop !', el:'Πάγωσε!'};
+        [danceMoves, [freezeCue]].forEach(addRegionalLanguageVariants);
         const leaderMoves = {
-            en:'Your turn! Show us a move to copy!',
-            enUS:'Your turn! Show us a move to copy!',
-            es:'¡Tu turno! ¡Haz un movimiento para copiarlo!',
-            esES:'¡Tu turno! ¡Haz un movimiento para copiarlo!',
-            fr:'À toi ! Montre-nous un mouvement à copier !',
-            el:'Η σειρά σου! Δείξε μας μια κίνηση να αντιγράψουμε!'
+            en:'Your turn!',
+            enUS:'Your turn!',
+            es:'¡Tu turno!',
+            esES:'¡Tu turno!',
+            fr:'À toi !',
+            el:'Η σειρά σου!'
         };
         let dancePartyActive = false;
         let danceStepTimer = null;
@@ -7220,7 +7223,7 @@
         let danceLanguageIndex = 0;
         let danceMoveCount = 0;
         const danceMoveDurationMilliseconds = 7500;
-        const danceFreezeDurationMilliseconds = 2500;
+        const danceFreezeDurationMilliseconds = 5000;
         const danceLeaderDurationMilliseconds = 6500;
 
         function startDanceBeat(milliseconds) {
@@ -7244,18 +7247,17 @@
             const pace = dancePaces[Math.floor(Math.random()*dancePaces.length)];
             character.textContent = Math.random() > .35 ? '🎅' : move.emoji;
             character.className = 'dance-character moving';
-            const cue = `${move[ danceRoundLanguage ]} ${pace[danceRoundLanguage]}`;
+            const cue = move[danceRoundLanguage];
             document.getElementById('danceCue').textContent = `${move.emoji} ${cue}`;
             speakSingle(languageSettings[danceRoundLanguage].code, cue);
             startDanceBeat(pace.milliseconds);
             danceStepTimer = setTimeout(() => {
                 if (!dancePartyActive) return;
                 clearInterval(danceBeatTimer);
-                const pose = freezePoses[Math.floor(Math.random()*freezePoses.length)];
-                character.textContent = pose.emoji;
+                character.textContent = freezeCue.emoji;
                 character.className = 'dance-character frozen';
-                document.getElementById('danceCue').textContent = `${pose.emoji} ${pose[danceRoundLanguage]}`;
-                speakSingle(languageSettings[danceRoundLanguage].code, pose[danceRoundLanguage]);
+                document.getElementById('danceCue').textContent = `${freezeCue.emoji} ${freezeCue[danceRoundLanguage]}`;
+                speakSingle(languageSettings[danceRoundLanguage].code, freezeCue[danceRoundLanguage]);
                 danceStepTimer = setTimeout(runDanceMove, danceFreezeDurationMilliseconds);
             }, danceMoveDurationMilliseconds);
         }

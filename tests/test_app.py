@@ -176,11 +176,19 @@ class AppRegressionTests(unittest.TestCase):
 
     def test_dance_and_freeze_has_time_for_real_dancing(self) -> None:
         self.assertGreaterEqual(constant_number("danceMoveDurationMilliseconds"), 7_000)
-        self.assertGreaterEqual(constant_number("danceFreezeDurationMilliseconds"), 1_800)
-        self.assertLessEqual(constant_number("danceFreezeDurationMilliseconds"), 3_500)
+        self.assertGreaterEqual(constant_number("danceFreezeDurationMilliseconds"), 4_500)
+        self.assertLessEqual(constant_number("danceFreezeDurationMilliseconds"), 6_000)
         self.assertGreaterEqual(constant_number("danceLeaderDurationMilliseconds"), 5_000)
         self.assertIn("setTimeout(runDanceMove, danceFreezeDurationMilliseconds)", HTML)
         self.assertIn("}, danceMoveDurationMilliseconds);", HTML)
+
+    def test_dance_and_freeze_uses_short_toddler_friendly_cues(self) -> None:
+        dance_source = HTML[HTML.index("const danceMoves = ["):HTML.index("// --- Game 9: Santa's Bells ---")]
+        for greek_cue in ("Χόρεψε!", "Παλαμάκια!", "Τρέξε γύρω γύρω!", "Πήδα!", "Στριφογύρισε!", "Χέρια ψηλά!", "Πάγωσε!", "Η σειρά σου!"):
+            self.assertIn(greek_cue, dance_source)
+        for verbose_cue in ("Freeze like a star", "Freeze tall like a tree", "Freeze tiny like a mouse", "Πάγωσε σαν", "Δείξε μας μια κίνηση", "Slowly", "Fast"):
+            self.assertNotIn(verbose_cue, dance_source)
+        self.assertIn("const cue = move[danceRoundLanguage];", dance_source)
 
     def test_letter_garden_is_spoken_multilingual_and_icon_led(self) -> None:
         letter_source = HTML[HTML.index("const letterSets = {"):HTML.index("const learningColors = [")]
@@ -289,13 +297,28 @@ class AppRegressionTests(unittest.TestCase):
 
     def test_jingle_bells_has_a_santa_sleigh_cta_and_pages_invite_taps(self) -> None:
         self.assertIn('class="game-action-button jingle-sleigh-button"', HTML)
-        self.assertIn('class="jingle-sleigh-art" aria-hidden="true">🎅🛷</span>', HTML)
-        self.assertIn('id="jingleButtonLabel"', HTML)
+        self.assertIn('class="jingle-sleigh-art" src="assets/santa-sleigh.png"', HTML)
+        self.assertIn('class="jingle-button-label visually-hidden" id="jingleButtonLabel"', HTML)
+        sleigh = ROOT / "assets/santa-sleigh.png"
+        self.assertTrue(sleigh.is_file())
+        self.assertTrue(sleigh.read_bytes().startswith(b"\x89PNG\r\n\x1a\n"))
+        self.assertEqual(6, sleigh.read_bytes()[25])
         self.assertIn("function inviteActiveGameClickables()", HTML)
         self.assertIn("button:not(:disabled), [role=\"button\"], [data-tap-invite]", HTML)
         self.assertIn("prefers-reduced-motion: reduce", HTML)
         self.assertIn("randomLanguageGame:'Juego e idioma sorpresa'", HTML)
         self.assertIn("randomLanguageGame:'Παιχνίδι και γλώσσα έκπληξη'", HTML)
+
+    def test_toddler_play_pages_hide_noninteractive_titles(self) -> None:
+        for element_id in ("everydayTitle", "beatTitle", "danceTitle", "bellsTitle"):
+            self.assertRegex(HTML, rf'class="learning-title visually-hidden" id="{element_id}"')
+        for element_id in ("everydayPrompt", "beatPrompt", "danceTogetherNote", "bellsPrompt"):
+            self.assertRegex(HTML, rf'class="[^"]*visually-hidden[^"]*" id="{element_id}"')
+        self.assertIn("#game-bells .bell-keyboard { flex:1; min-height:42svh; }", HTML)
+
+    def test_game_picker_gives_the_teddy_bear_label_breathing_room(self) -> None:
+        self.assertRegex(HTML, re.compile(r"\.controls-panel \.game-picker\s*\{.*?padding:\s*16px 14px 14px;", re.S))
+        self.assertRegex(HTML, re.compile(r"\.controls-panel #gamePickerLabel\s*\{.*?padding:\s*2px 6px;", re.S))
 
     def test_play_timer_has_quick_choices_and_survives_refresh(self) -> None:
         for minutes in (5, 10, 15, 20):

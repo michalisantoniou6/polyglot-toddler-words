@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'toddler-arcade-v6';
+const CACHE_VERSION = 'toddler-arcade-v7';
 const APP_SHELL = [
     './',
     './index.html',
@@ -7,7 +7,8 @@ const APP_SHELL = [
     './icons/icon-192.png',
     './icons/icon-512.png',
     './icons/icon-maskable-512.png',
-    './assets/santa-ho-ho-ho.mp3?v=2'
+    './assets/santa-ho-ho-ho.mp3?v=2',
+    './assets/santa-sleigh.png'
 ];
 
 self.addEventListener('install', event => {

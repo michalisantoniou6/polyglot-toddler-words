@@ -59,6 +59,7 @@ class ProgressiveWebAppTests(unittest.TestCase):
             "./icons/icon-192.png",
             "./icons/icon-512.png",
             "./assets/santa-ho-ho-ho.mp3?v=2",
+            "./assets/santa-sleigh.png",
         ):
             self.assertIn(f"'{path}'", SERVICE_WORKER)
         self.assertIn("cache.addAll(APP_SHELL)", SERVICE_WORKER)
