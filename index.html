@@ -700,6 +700,30 @@
             justify-content: center;
         }
         .card-art svg { width: 100%; height: 100%; overflow: visible; }
+        .vehicle-art {
+            position: relative;
+            width: 108px;
+            height: 82px;
+            border-radius: 22px;
+            background: linear-gradient(155deg, var(--vehicle-sky), #fff 72%);
+            box-shadow: inset 0 -10px 0 var(--vehicle-ground);
+        }
+        .vehicle-art .vehicle-main { font-size: 3.75rem; line-height: 1; transform: translate(-5px, -2px); }
+        .vehicle-art .vehicle-clue {
+            position: absolute;
+            right: -4px;
+            bottom: 2px;
+            width: 38px;
+            height: 38px;
+            display: grid;
+            place-items: center;
+            border: 3px solid #fff;
+            border-radius: 50%;
+            background: var(--vehicle-badge);
+            box-shadow: 0 3px 8px rgba(45,55,72,.2);
+            font-size: 1.45rem;
+            line-height: 1;
+        }
         .card-title {
             width: 100%;
             min-width: 0;
@@ -1977,7 +2001,9 @@
                 <div class="onboarding-options" id="onboardingPrimaryOptions" role="radiogroup" aria-label="Βασική γλώσσα">
                     <button class="onboarding-language" type="button" data-primary-language="el" role="radio" aria-checked="false" onclick="chooseOnboardingPrimary('el')"><span class="flag">🇬🇷</span>Ελληνικά</button>
                     <button class="onboarding-language selected" type="button" data-primary-language="en" role="radio" aria-checked="true" onclick="chooseOnboardingPrimary('en')"><span class="flag">🇬🇧</span>English</button>
-                    <button class="onboarding-language" type="button" data-primary-language="es" role="radio" aria-checked="false" onclick="chooseOnboardingPrimary('es')"><span class="flag">🇲🇽</span>Español</button>
+                    <button class="onboarding-language" type="button" data-primary-language="enUS" role="radio" aria-checked="false" onclick="chooseOnboardingPrimary('enUS')"><span class="flag">🇺🇸</span>English (US)</button>
+                    <button class="onboarding-language" type="button" data-primary-language="es" role="radio" aria-checked="false" onclick="chooseOnboardingPrimary('es')"><span class="flag">🇲🇽</span>Español (México)</button>
+                    <button class="onboarding-language" type="button" data-primary-language="esES" role="radio" aria-checked="false" onclick="chooseOnboardingPrimary('esES')"><span class="flag">🇪🇸</span>Español (España)</button>
                     <button class="onboarding-language" type="button" data-primary-language="fr" role="radio" aria-checked="false" onclick="chooseOnboardingPrimary('fr')"><span class="flag">🇫🇷</span>Français</button>
                 </div>
             </section>
@@ -1988,7 +2014,9 @@
                 <div class="onboarding-options" id="onboardingLanguageOptions">
                     <label class="onboarding-toggle"><input type="checkbox" value="el" data-enabled-language="el" onchange="changeOnboardingLanguage(this)"><span class="onboarding-language"><span class="flag">🇬🇷</span>Ελληνικά</span></label>
                     <label class="onboarding-toggle"><input type="checkbox" value="en" data-enabled-language="en" onchange="changeOnboardingLanguage(this)"><span class="onboarding-language"><span class="flag">🇬🇧</span>English</span></label>
-                    <label class="onboarding-toggle"><input type="checkbox" value="es" data-enabled-language="es" onchange="changeOnboardingLanguage(this)"><span class="onboarding-language"><span class="flag">🇲🇽</span>Español</span></label>
+                    <label class="onboarding-toggle"><input type="checkbox" value="enUS" data-enabled-language="enUS" onchange="changeOnboardingLanguage(this)"><span class="onboarding-language"><span class="flag">🇺🇸</span>English (US)</span></label>
+                    <label class="onboarding-toggle"><input type="checkbox" value="es" data-enabled-language="es" onchange="changeOnboardingLanguage(this)"><span class="onboarding-language"><span class="flag">🇲🇽</span>Español (México)</span></label>
+                    <label class="onboarding-toggle"><input type="checkbox" value="esES" data-enabled-language="esES" onchange="changeOnboardingLanguage(this)"><span class="onboarding-language"><span class="flag">🇪🇸</span>Español (España)</span></label>
                     <label class="onboarding-toggle"><input type="checkbox" value="fr" data-enabled-language="fr" onchange="changeOnboardingLanguage(this)"><span class="onboarding-language"><span class="flag">🇫🇷</span>Français</span></label>
                 </div>
             </section>
@@ -2060,9 +2088,11 @@
                     <div class="lang-bar">
                         <button class="lang-pill active" data-language="el" onclick="setLanguage('el', this)">🇬🇷 ΕΛ</button>
                         <button class="lang-pill" data-language="en" onclick="setLanguage('en', this)">🇬🇧 EN</button>
+                        <button class="lang-pill" data-language="enUS" onclick="setLanguage('enUS', this)">🇺🇸 US</button>
                         <button class="lang-pill" data-language="es" onclick="setLanguage('es', this)">🇲🇽 MX</button>
+                        <button class="lang-pill" data-language="esES" onclick="setLanguage('esES', this)">🇪🇸 ES</button>
                         <button class="lang-pill" data-language="fr" onclick="setLanguage('fr', this)">🇫🇷 FR</button>
-                        <button class="lang-pill" id="allLanguagesButton" data-language="all" onclick="setLanguage('all', this)">🌍 Και οι 4</button>
+                        <button class="lang-pill" id="allLanguagesButton" data-language="all" onclick="setLanguage('all', this)">🌍 Και οι 6</button>
                     </div>
                 </div>
             </section>
@@ -2293,6 +2323,31 @@
                 </svg>
             </div>`;
 
+        function vehicleArt(main, clue, sky, ground, badge) {
+            return `<div class="card-art vehicle-art" aria-hidden="true" style="--vehicle-sky:${sky};--vehicle-ground:${ground};--vehicle-badge:${badge}"><span class="vehicle-main">${main}</span><span class="vehicle-clue">${clue}</span></div>`;
+        }
+
+        function machineArt(inner, sky = '#eef8ff', ground = '#d7c7a4') {
+            return `<div class="card-art" aria-hidden="true"><svg viewBox="0 0 120 90"><rect x="2" y="2" width="116" height="86" rx="22" fill="${sky}"/><path d="M8 76h104" stroke="${ground}" stroke-width="8" stroke-linecap="round"/>${inner}</svg></div>`;
+        }
+
+        const specializedVehicleArt = {
+            Excavator: machineArt('<rect x="23" y="61" width="58" height="15" rx="7" fill="#4a5568"/><circle cx="36" cy="68" r="5" fill="#cbd5e0"/><circle cx="53" cy="68" r="5" fill="#cbd5e0"/><circle cx="70" cy="68" r="5" fill="#cbd5e0"/><path d="M46 57h30V35H57l-11 10z" fill="#f6ad55" stroke="#9c4221" stroke-width="3"/><path d="M71 38l20-17 13 6-20 8-9 26" fill="none" stroke="#d97706" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><path d="M74 60h19l-9 10H72z" fill="#f6ad55" stroke="#9c4221" stroke-width="3"/>'),
+            'Dump truck': machineArt('<circle cx="35" cy="69" r="10" fill="#374151"/><circle cx="90" cy="69" r="10" fill="#374151"/><circle cx="35" cy="69" r="4" fill="#d1d5db"/><circle cx="90" cy="69" r="4" fill="#d1d5db"/><path d="M17 42h31v22H15z" fill="#60a5fa" stroke="#1d4ed8" stroke-width="3"/><path d="M47 29l54 10-8 25H48z" fill="#f59e0b" stroke="#92400e" stroke-width="3"/><circle cx="63" cy="36" r="5" fill="#78716c"/><circle cx="76" cy="38" r="6" fill="#57534e"/><circle cx="89" cy="40" r="5" fill="#78716c"/>'),
+            Backhoe: machineArt('<circle cx="37" cy="68" r="12" fill="#374151"/><circle cx="75" cy="68" r="12" fill="#374151"/><path d="M26 43h58v21H26z" fill="#facc15" stroke="#a16207" stroke-width="3"/><path d="M47 25h24v22H47z" fill="#7dd3fc" stroke="#0369a1" stroke-width="3"/><path d="M83 45l17 8-6 14H80" fill="#facc15" stroke="#a16207" stroke-width="4"/><path d="M26 43L14 30 8 55" fill="none" stroke="#ca8a04" stroke-width="6" stroke-linecap="round"/><path d="M7 54h14l-5 10H5z" fill="#facc15"/>'),
+            'Wheel loader': machineArt('<circle cx="39" cy="67" r="14" fill="#374151"/><circle cx="80" cy="67" r="14" fill="#374151"/><circle cx="39" cy="67" r="6" fill="#d1d5db"/><circle cx="80" cy="67" r="6" fill="#d1d5db"/><path d="M24 42h57v19H24z" fill="#facc15" stroke="#a16207" stroke-width="3"/><path d="M49 24h25v23H49z" fill="#7dd3fc" stroke="#0369a1" stroke-width="3"/><path d="M81 44l20-10M84 55l18-12" stroke="#ca8a04" stroke-width="6"/><path d="M98 31h16v27H98z" fill="#facc15" stroke="#a16207" stroke-width="3"/>'),
+            'Road roller': machineArt('<circle cx="33" cy="67" r="12" fill="#374151"/><circle cx="91" cy="65" r="19" fill="#64748b"/><circle cx="91" cy="65" r="12" fill="#cbd5e1"/><path d="M24 43h61v18H24z" fill="#facc15" stroke="#a16207" stroke-width="3"/><path d="M45 23h25v24H45z" fill="#7dd3fc" stroke="#0369a1" stroke-width="3"/>'),
+            'Cement mixer': machineArt('<circle cx="28" cy="69" r="9" fill="#374151"/><circle cx="90" cy="69" r="9" fill="#374151"/><path d="M12 41h30v24H12z" fill="#60a5fa" stroke="#1d4ed8" stroke-width="3"/><path d="M48 35l40 4 10 18-16 10-37-12z" fill="#f8fafc" stroke="#64748b" stroke-width="3"/><path d="M58 38l8 22M76 38l8 23" stroke="#ef4444" stroke-width="5"/>'),
+            'Garbage truck': machineArt('<circle cx="29" cy="69" r="9" fill="#374151"/><circle cx="91" cy="69" r="9" fill="#374151"/><path d="M12 42h28v23H12z" fill="#60a5fa" stroke="#1d4ed8" stroke-width="3"/><path d="M42 31h61v35H42z" fill="#22c55e" stroke="#166534" stroke-width="3"/><text x="70" y="56" font-size="24" text-anchor="middle">♻</text>'),
+            'Tow truck': machineArt('<circle cx="30" cy="69" r="10" fill="#374151"/><circle cx="86" cy="69" r="10" fill="#374151"/><path d="M13 44h44v21H13z" fill="#f97316" stroke="#9a3412" stroke-width="3"/><path d="M49 62h48" stroke="#f97316" stroke-width="8"/><path d="M61 54l24-28 18 4" fill="none" stroke="#475569" stroke-width="6"/><path d="M102 29v21q0 8-8 8" fill="none" stroke="#475569" stroke-width="3"/>'),
+            Snowplow: machineArt('<circle cx="36" cy="69" r="10" fill="#374151"/><circle cx="75" cy="69" r="10" fill="#374151"/><path d="M18 40h62v25H18z" fill="#60a5fa" stroke="#1d4ed8" stroke-width="3"/><path d="M78 53l29-13 7 25-34 3z" fill="#f97316" stroke="#9a3412" stroke-width="3"/><path d="M20 31h22" stroke="#bfdbfe" stroke-width="5"/><circle cx="103" cy="23" r="3" fill="#fff"/><circle cx="92" cy="17" r="3" fill="#fff"/>'),
+            Forklift: machineArt('<circle cx="32" cy="69" r="10" fill="#374151"/><circle cx="69" cy="69" r="8" fill="#374151"/><path d="M19 41h54v24H19z" fill="#f59e0b" stroke="#92400e" stroke-width="3"/><path d="M43 24h25v22H43z" fill="#7dd3fc" stroke="#0369a1" stroke-width="3"/><path d="M78 19v48M85 19v48M83 62h29" stroke="#475569" stroke-width="5"/><rect x="91" y="40" width="20" height="20" fill="#b45309"/>'),
+            'Skid steer': machineArt('<circle cx="35" cy="68" r="13" fill="#374151"/><circle cx="70" cy="68" r="13" fill="#374151"/><path d="M22 35h54v28H22z" fill="#facc15" stroke="#a16207" stroke-width="3"/><path d="M45 23h26v25H45z" fill="#7dd3fc" stroke="#0369a1" stroke-width="3"/><path d="M75 38l24 13" stroke="#ca8a04" stroke-width="6"/><path d="M94 47h20v20H92z" fill="#facc15" stroke="#a16207" stroke-width="3"/>'),
+            Paver: machineArt('<rect x="17" y="59" width="82" height="16" rx="8" fill="#374151"/><path d="M20 38h68l11 23H17z" fill="#f97316" stroke="#9a3412" stroke-width="3"/><path d="M48 19h38v22H48z" fill="#475569"/><path d="M43 19h49" stroke="#f59e0b" stroke-width="5"/><path d="M10 73h103" stroke="#1f2937" stroke-width="5"/>'),
+            'Drilling rig': machineArt('<rect x="19" y="61" width="72" height="15" rx="7" fill="#374151"/><path d="M27 43h58v20H27z" fill="#f59e0b" stroke="#92400e" stroke-width="3"/><path d="M72 14h12v49H72z" fill="#64748b"/><path d="M78 62v18" stroke="#475569" stroke-width="5"/><path d="M70 73l8 13 8-13" fill="#94a3b8"/>'),
+            'Monster truck': machineArt('<circle cx="30" cy="66" r="17" fill="#1f2937"/><circle cx="91" cy="66" r="17" fill="#1f2937"/><circle cx="30" cy="66" r="7" fill="#cbd5e1"/><circle cx="91" cy="66" r="7" fill="#cbd5e1"/><path d="M18 35h73l15 22H12z" fill="#8b5cf6" stroke="#4c1d95" stroke-width="3"/><path d="M50 36h27v18H50z" fill="#7dd3fc"/><path d="M22 48l12-8-4 11 12-6" stroke="#f97316" stroke-width="4"/>')
+        };
+
         const trucks = [
             { emoji: "🚜", type: "tractor", soundProfile: "tractor", en: "Tractor", es: "Tractor", fr: "Tracteur", el: "Τρακτέρ" },
             { emoji: "🏗️", type: "crane", soundProfile: "construction", en: "Crane", es: "Grúa", fr: "Grue", el: "Γερανός" },
@@ -2319,6 +2374,23 @@
             { emoji: "🚐", type: "truck", soundProfile: "heavyTruck", en: "Delivery van", es: "Camioneta de reparto", fr: "Camionnette de livraison", el: "Βαν διανομών" },
             { emoji: "🚂", type: "engine", soundProfile: "train", en: "Train", es: "Tren", fr: "Train", el: "Τρένο" }
         ];
+        const vehicleScenes = [
+            ['🚜','🌾','#d9f4ff','#a7d88d','#fff2a8'], ['🏗️','🔩','#dbeafe','#cbd5e0','#fee2e2'],
+            ['🚜','🕳️','#e0f2fe','#d6b48a','#fde68a'], ['🚛','🪨','#e8edff','#b7c0cf','#e5e7eb'],
+            ['🚒','🔥','#fff0ed','#ffd0c7','#fee2e2'], ['🚜','⬅️','#e0f7fa','#d4b483','#fed7aa'],
+            ['🚑','➕','#eef6ff','#cbd5e0','#dcfce7'], ['🚀','🌙','#e9e6ff','#b9b4dd','#fef3c7'],
+            ['🚜','↔️','#e8f7ff','#d9bd91','#dbeafe'], ['🚜','🪣','#e6f7ff','#d4b483','#fef3c7'],
+            ['🚜','⭕','#eef2f7','#9ca3af','#dbeafe'], ['🚛','🔄','#edf8ff','#cbd5e0','#dcfce7'],
+            ['🚛','♻️','#ebfff1','#b7d8b0','#dcfce7'], ['🛻','🪝','#fff4e8','#d7c0aa','#fee2e2'],
+            ['🚚','❄️','#e8f8ff','#cfe8f3','#ffffff'], ['🏗️','📦','#fff8e5','#d6c29a','#fed7aa'],
+            ['🚜','◼️','#f3f4f6','#a8a29e','#e5e7eb'], ['🛣️','🚧','#fff5e6','#9ca3af','#ffedd5'],
+            ['⚙️','🕳️','#eeeaff','#b6a28d','#e9d5ff'], ['🛻','🔥','#fff0e8','#b7a39a','#fee2e2'],
+            ['🚓','🚨','#edf6ff','#b9c3d0','#dbeafe'], ['🚌','🏫','#fff8dc','#d9c889','#fef3c7'],
+            ['🚐','📦','#eff8ff','#cbd5e0','#ffedd5'], ['🚂','🛤️','#f3f0ff','#9ca3af','#e9d5ff']
+        ];
+        trucks.forEach((truck, index) => {
+            if (!truck.art) truck.art = specializedVehicleArt[truck.en] || vehicleArt(...vehicleScenes[index]);
+        });
 
         const animals = [
             { emoji: "🐶", sound: "dog", en: "Dog", es: "Perro", fr: "Chien", el: "Σκύλος" },
@@ -2354,6 +2426,9 @@
         // Short real-world recordings. Repeated taps rotate through each profile.
         // The synthesized effects below remain as a graceful fallback when offline.
         const realSoundProfiles = {
+            santaLaugh: [
+                clip('https://cdn.freesound.org/previews/325/325180_1754432-hq.mp3', 'SantaClaus Ho Ho Ho', 'Bollenator', 'CC0', freesoundPage(325180), 0.15, 3.2)
+            ],
             dog: [
                 clip('https://upload.wikimedia.org/wikipedia/commons/5/58/Barking_of_a_dog_2.ogg', 'Barking of a dog 2', 'Amada44', 'CC BY-SA 3.0', 'https://commons.wikimedia.org/wiki/File:Barking_of_a_dog_2.ogg'),
                 clip('https://upload.wikimedia.org/wikipedia/commons/a/a2/Barking_of_a_dog.ogg', 'Barking of a dog', 'Amada44', 'CC BY-SA 3.0', 'https://commons.wikimedia.org/wiki/File:Barking_of_a_dog.ogg'),
@@ -2593,9 +2668,36 @@
             { emoji:'🎤', kind:'voice', en:'Microphone', es:'Micrófono', fr:'Micro', el:'Μικρόφωνο' }
         ];
 
+        const spainSpanishNames = {
+            Corn:'Maíz', Tomato:'Tomate', Potato:'Patata', Peach:'Melocotón', 'Hot dog':'Perrito caliente',
+            Pig:'Cerdo', 'Cement mixer':'Hormigonera', 'Garbage truck':'Camión de la basura',
+            'Tow truck':'Grúa', Snowplow:'Quitanieves', Forklift:'Carretilla elevadora',
+            'Skid steer':'Minicargadora', Paver:'Pavimentadora', 'Drilling rig':'Perforadora',
+            'Police car':'Coche de policía', 'Delivery van':'Furgoneta de reparto',
+            Backhoe:'Retroexcavadora', 'Wheel loader':'Pala cargadora', 'Road roller':'Apisonadora',
+            Straw:'Pajita', Bowl:'Cuenco', 'Ice cube':'Cubito de hielo'
+        };
+        const spainSpanishEverydayPrompts = {
+            Straw:'la pajita', 'Glass of milk':'el vaso de leche', Plate:'el plato', Bowl:'el cuenco',
+            Spoon:'la cuchara', Fork:'el tenedor', Napkin:'la servilleta', 'Baby bottle':'el biberón',
+            Pan:'la sartén', Pot:'la olla', 'Ice cube':'el cubito de hielo', Chair:'la silla',
+            Toothbrush:'el cepillo de dientes', Soap:'el jabón', Sock:'el calcetín', Shoe:'el zapato',
+            Bed:'la cama', Bath:'el baño', Door:'la puerta', Keys:'las llaves'
+        };
+        function addRegionalLanguageVariants(items) {
+            items.forEach(item => {
+                item.enUS = item.en;
+                item.esES = spainSpanishNames[item.en] || item.es;
+                if (item.esPrompt) item.esESPrompt = spainSpanishEverydayPrompts[item.en] || item.esPrompt;
+            });
+        }
+        [foods, trucks, animals, numbers, everydayItems, instruments].forEach(addRegionalLanguageVariants);
+
         const bellNoteLabels = {
             en:['C','D','E','F','G'],
+            enUS:['C','D','E','F','G'],
             es:['Do','Re','Mi','Fa','Sol'],
+            esES:['Do','Re','Mi','Fa','Sol'],
             fr:['Do','Ré','Mi','Fa','Sol'],
             el:['Ντο','Ρε','Μι','Φα','Σολ']
         };
@@ -2612,7 +2714,7 @@
                 popped: number => `Popped #${number}! ⭐`, balloonLevelUp: number => `Amazing! Now 1 to ${number}! 🚀`, santaLabel: 'Santa Claus',
                 everyday:'Everyday Things', music:'Music Studio', beat:'Copy the Pattern', dance:'Dance & Freeze', bells:"Santa's Bells",
                 everydayPrompt:'Explore six things at a time', everydayExplore:'👀 Explore', everydayFind:'👆 Press', everydayMore:'More things →', findQuestion:item=>`Press ${item}`, findTry:'Look again', findFound:()=>`That’s the one!`, findNext:'▶ Next one', findReal:()=>`Can you find one like this nearby and show a grown-up?`,
-                musicPrompt:'Make your own music', musicTogether:'Take turns and copy each other', beatPrompt:'Watch the pattern', beatStart:'Press the dancing bear', beatNext:'▶ New pattern', beatReady:'Are you ready to play? Press the dancing bear.', beatExplain:'Watch the pattern. Then play it back. Ready?', beatYourTurn:'Your turn!', beatGreat:'You remembered it!', beatAgain:'Watch the same pattern again',
+                musicPrompt:'Make your own music', musicTogether:'Take turns and copy each other', beatPrompt:'Watch the pattern', beatStart:'Press the dancing bear', beatNext:'▶ New pattern', beatReady:'Are you ready to play? Press the dancing bear.', beatExplain:'Watch the pattern. Then play it back. Ready?', beatYourTurn:'Your turn!', beatGreat:'You remembered it!', beatPraise:['Great job!','Well done!','You did it!','Amazing!'], beatAgain:'Watch the same pattern again',
                 danceReady:'Ready?', danceStart:'▶ Start dancing', danceStop:'■ Stop', danceTogether:'Make a clear space and dance together', bellsPrompt:'Play along with Santa', bellsSantaAction:'Hear Santa laugh', bellsBellAction:'Ring the big bell', jingleStart:'🎶 Play Jingle Bells', jingleStop:'■ Stop the song'
             },
             es: {
@@ -2626,7 +2728,7 @@
                 popped: number => `¡Reventaste el globo número ${number}! ⭐`, balloonLevelUp: number => `¡Genial! ¡Ahora del 1 al ${number}! 🚀`, santaLabel: 'Santa Claus',
                 everyday:'Cosas de cada día', music:'Estudio musical', beat:'Copia el patrón', dance:'Baila y congélate', bells:'Campanas de Santa',
                 everydayPrompt:'Explora seis cosas a la vez', everydayExplore:'👀 Explora', everydayFind:'👆 Presiona', everydayMore:'Más cosas →', findQuestion:item=>`Presiona ${item}`, findTry:'Mira otra vez', findFound:()=>`¡Ese es!`, findNext:'▶ Otro', findReal:()=>`¿Puedes encontrar uno igual cerca y mostrárselo a un adulto?`,
-                musicPrompt:'Haz tu propia música', musicTogether:'Tomen turnos e imítense', beatPrompt:'Mira el patrón', beatStart:'Presiona el osito que baila', beatNext:'▶ Nuevo patrón', beatReady:'¿Listo para jugar? Presiona el osito que baila.', beatExplain:'Mira el patrón. Después repítelo. ¿Listo?', beatYourTurn:'¡Tu turno!', beatGreat:'¡Lo recordaste!', beatAgain:'Mira el mismo patrón otra vez',
+                musicPrompt:'Haz tu propia música', musicTogether:'Tomen turnos e imítense', beatPrompt:'Mira el patrón', beatStart:'Presiona el osito que baila', beatNext:'▶ Nuevo patrón', beatReady:'¿Listo para jugar? Presiona el osito que baila.', beatExplain:'Mira el patrón. Después repítelo. ¿Listo?', beatYourTurn:'¡Tu turno!', beatGreat:'¡Lo recordaste!', beatPraise:['¡Muy bien!','¡Bravo!','¡Lo hiciste!','¡Excelente!'], beatAgain:'Mira el mismo patrón otra vez',
                 danceReady:'¿Listo?', danceStart:'▶ Empieza a bailar', danceStop:'■ Detener', danceTogether:'Dejen espacio y bailen juntos', bellsPrompt:'Toca con Santa', bellsSantaAction:'Escucha a Santa', bellsBellAction:'Toca la campana grande', jingleStart:'🎶 Toca Jingle Bells', jingleStop:'■ Detén la canción'
             },
             fr: {
@@ -2640,7 +2742,7 @@
                 popped: number => `Tu as éclaté le ballon numéro ${number} ! ⭐`, balloonLevelUp: number => `Bravo ! Maintenant de 1 à ${number} ! 🚀`, santaLabel: 'Père Noël',
                 everyday:'Objets du quotidien', music:'Studio de musique', beat:'Copie la suite', dance:'Danse et ne bouge plus', bells:'Cloches du Père Noël',
                 everydayPrompt:'Explore six objets à la fois', everydayExplore:'👀 Explore', everydayFind:'👆 Appuie', everydayMore:'Autres objets →', findQuestion:item=>`Appuie sur ${item}`, findTry:'Regarde encore', findFound:()=>`C’est celui-là !`, findNext:'▶ Le suivant', findReal:()=>`Peux-tu en trouver un pareil près de toi et le montrer à un adulte ?`,
-                musicPrompt:'Crée ta propre musique', musicTogether:'Jouez chacun votre tour et imitez-vous', beatPrompt:'Regarde la suite', beatStart:'Appuie sur l’ours qui danse', beatNext:'▶ Nouvelle suite', beatReady:'Prêt à jouer ? Appuie sur l’ours qui danse.', beatExplain:'Regarde la suite. Puis refais-la. Prêt ?', beatYourTurn:'À toi !', beatGreat:'Tu t’en es souvenu !', beatAgain:'Regarde encore la même suite',
+                musicPrompt:'Crée ta propre musique', musicTogether:'Jouez chacun votre tour et imitez-vous', beatPrompt:'Regarde la suite', beatStart:'Appuie sur l’ours qui danse', beatNext:'▶ Nouvelle suite', beatReady:'Prêt à jouer ? Appuie sur l’ours qui danse.', beatExplain:'Regarde la suite. Puis refais-la. Prêt ?', beatYourTurn:'À toi !', beatGreat:'Tu t’en es souvenu !', beatPraise:['Bravo !','Très bien !','Tu as réussi !','Super !'], beatAgain:'Regarde encore la même suite',
                 danceReady:'Prêt ?', danceStart:'▶ Commence à danser', danceStop:'■ Arrêter', danceTogether:'Faites de la place et dansez ensemble', bellsPrompt:'Joue avec le Père Noël', bellsSantaAction:'Écoute le Père Noël', bellsBellAction:'Fais sonner la grande cloche', jingleStart:'🎶 Joue Jingle Bells', jingleStop:'■ Arrête la chanson'
             },
             el: {
@@ -2654,10 +2756,13 @@
                 popped: number => `Έσκασες το μπαλόνι με τον αριθμό ${number}! ⭐`, balloonLevelUp: number => `Μπράβο! Τώρα από το 1 ως το ${number}! 🚀`, santaLabel: 'Άγιος Βασίλης',
                 everyday:'Πράγματα κάθε μέρας', music:'Μουσικό στούντιο', beat:'Αντέγραψε το μοτίβο', dance:'Χόρεψε και πάγωσε', bells:'Τα κουδουνάκια του Άγιου Βασίλη',
                 everydayPrompt:'Εξερεύνησε έξι πράγματα κάθε φορά', everydayExplore:'👀 Εξερεύνησε', everydayFind:'👆 Πάτησε', everydayMore:'Άλλα πράγματα →', findQuestion:item=>`Πάτησε ${item}`, findTry:'Κοίτα ξανά', findFound:()=>`Αυτό είναι!`, findNext:'▶ Επόμενο', findReal:()=>`Μπορείς να βρεις κάτι ίδιο κοντά σου και να το δείξεις σε έναν μεγάλο;`,
-                musicPrompt:'Φτιάξε τη δική σου μουσική', musicTogether:'Παίξτε με τη σειρά και αντιγράψτε ο ένας τον άλλον', beatPrompt:'Κοίτα το μοτίβο', beatStart:'Πάτησε το αρκουδάκι που χορεύει', beatNext:'▶ Νέο μοτίβο', beatReady:'Έτοιμος να παίξεις; Πάτησε το αρκουδάκι που χορεύει.', beatExplain:'Κοίτα το μοτίβο. Μετά παίξ’ το κι εσύ. Έτοιμος;', beatYourTurn:'Η σειρά σου!', beatGreat:'Το θυμήθηκες!', beatAgain:'Κοίτα ξανά το ίδιο μοτίβο',
+                musicPrompt:'Φτιάξε τη δική σου μουσική', musicTogether:'Παίξτε με τη σειρά και αντιγράψτε ο ένας τον άλλον', beatPrompt:'Κοίτα το μοτίβο', beatStart:'Πάτησε το αρκουδάκι που χορεύει', beatNext:'▶ Νέο μοτίβο', beatReady:'Έτοιμος να παίξεις; Πάτησε το αρκουδάκι που χορεύει.', beatExplain:'Κοίτα το μοτίβο. Μετά παίξ’ το κι εσύ. Έτοιμος;', beatYourTurn:'Η σειρά σου!', beatGreat:'Το θυμήθηκες!', beatPraise:['Μπράβο!','Πολύ καλά!','Τα κατάφερες!','Το βρήκες!'], beatAgain:'Κοίτα ξανά το ίδιο μοτίβο',
                 danceReady:'Έτοιμος;', danceStart:'▶ Ξεκίνα τον χορό', danceStop:'■ Σταμάτα', danceTogether:'Αδειάστε λίγο χώρο και χορέψτε μαζί', bellsPrompt:'Παίξε μαζί με τον Άγιο Βασίλη', bellsSantaAction:'Άκου τον Άγιο Βασίλη', bellsBellAction:'Χτύπα το μεγάλο κουδούνι', jingleStart:'🎶 Παίξε το Jingle Bells', jingleStop:'■ Σταμάτα το τραγούδι'
             }
         };
+
+        interfaceText.enUS = { ...interfaceText.en };
+        interfaceText.esES = { ...interfaceText.es };
 
         const santaFoodNames = {
             '🍎': { es: 'la manzana', fr: 'la pomme', el: 'το μήλο' },
@@ -2688,6 +2793,12 @@
             '🍋': { es: 'el limón', fr: 'le citron', el: 'το λεμόνι' },
             '🌭': { es: 'el hot dog', fr: 'le hot-dog', el: 'το χοτ ντογκ' }
         };
+        const spainSantaFoodNames = {
+            '🌽':'el maíz', '🍅':'el tomate', '🥔':'la patata', '🍑':'el melocotón', '🌭':'el perrito caliente'
+        };
+        Object.entries(santaFoodNames).forEach(([emoji, names]) => {
+            names.esES = spainSantaFoodNames[emoji] || names.es;
+        });
 
         /* -------------------------------------------------------------
            2. SYNTHESIZED FALLBACK EFFECTS (Web Audio API)
@@ -2997,28 +3108,30 @@
         /* -------------------------------------------------------------
            3. SPEECH SYNTHESIS ENGINE (iOS / Android Multi-voice)
         ------------------------------------------------------------- */
-        let currentLangMode = 'en'; // 'en', 'es', 'fr', 'el', or 'all'
+        let currentLangMode = 'en';
         const languageSettings = {
             el: { code: 'el-GR', flag: '🇬🇷' },
             en: { code: 'en-GB', flag: '🇬🇧' },
+            enUS: { code: 'en-US', flag: '🇺🇸' },
             es: { code: 'es-MX', flag: '🇲🇽' },
+            esES: { code: 'es-ES', flag: '🇪🇸' },
             fr: { code: 'fr-FR', flag: '🇫🇷' }
         };
-        const supportedLanguageOrder = ['en', 'el', 'es', 'fr'];
+        const supportedLanguageOrder = ['en', 'enUS', 'el', 'es', 'esES', 'fr'];
         let enabledLanguages = [...supportedLanguageOrder];
         let allLanguageOrder = [...supportedLanguageOrder];
         const appProfileStorageKey = 'polyglotToddler.profile.v1';
         const childNameStorageKey = 'polyglotToddler.childNames.v1';
         const controlsCollapsedStorageKey = 'polyglotToddler.controlsCollapsed.v2';
         const defaultChildNames = [
-            { el: 'Άρι', en: 'Ari', es: 'Ari', fr: 'Ari' },
-            { el: 'Αρούλλη', en: 'Aroulli', es: 'Aroulli', fr: 'Aroulli' },
-            { el: 'Αριστοφάνη', en: 'Aristofani', es: 'Aristofani', fr: 'Aristofani' }
+            { el: 'Άρι', en: 'Ari', enUS: 'Ari', es: 'Ari', esES: 'Ari', fr: 'Ari' },
+            { el: 'Αρούλλη', en: 'Aroulli', enUS: 'Aroulli', es: 'Aroulli', esES: 'Aroulli', fr: 'Aroulli' },
+            { el: 'Αριστοφάνη', en: 'Aristofani', enUS: 'Aristofani', es: 'Aristofani', esES: 'Aristofani', fr: 'Aristofani' }
         ];
         const settingsCopy = {
             el: {
                 button: 'Ρυθμίσεις για γονείς', title: 'Ρυθμίσεις για γονείς',
-                greekNames: '🇬🇷 Ονόματα στα Ελληνικά', otherNames: '🇬🇧 🇲🇽 🇫🇷 Ονόματα στις άλλες γλώσσες',
+                greekNames: '🇬🇷 Ονόματα στα Ελληνικά', otherNames: '🇬🇧 🇺🇸 🇲🇽 🇪🇸 🇫🇷 Ονόματα στις άλλες γλώσσες',
                 help: 'Χώρισέ τα με κόμμα. Κράτησε την ίδια σειρά και στις δύο λίστες.',
                 required: 'Γράψε τουλάχιστον ένα όνομα σε κάθε λίστα.',
                 error: 'Οι δύο λίστες πρέπει να έχουν τον ίδιο αριθμό ονομάτων.',
@@ -3027,7 +3140,7 @@
             },
             en: {
                 button: 'Parent settings', title: 'Parent settings',
-                greekNames: '🇬🇷 Names in Greek', otherNames: '🇬🇧 🇲🇽 🇫🇷 Names in the other languages',
+                greekNames: '🇬🇷 Names in Greek', otherNames: '🇬🇧 🇺🇸 🇲🇽 🇪🇸 🇫🇷 Names in the other languages',
                 help: 'Separate nicknames with commas. Keep both lists in the same order.',
                 required: 'Enter at least one name in each list.',
                 error: 'Both lists need the same number of names.',
@@ -3036,7 +3149,7 @@
             },
             es: {
                 button: 'Ajustes para adultos', title: 'Ajustes para adultos',
-                greekNames: '🇬🇷 Nombres en griego', otherNames: '🇬🇧 🇲🇽 🇫🇷 Nombres en los otros idiomas',
+                greekNames: '🇬🇷 Nombres en griego', otherNames: '🇬🇧 🇺🇸 🇲🇽 🇪🇸 🇫🇷 Nombres en los otros idiomas',
                 help: 'Separa los apodos con comas. Mantén el mismo orden en las dos listas.',
                 required: 'Escribe al menos un nombre en cada lista.',
                 error: 'Las dos listas deben tener la misma cantidad de nombres.',
@@ -3045,7 +3158,7 @@
             },
             fr: {
                 button: 'Réglages pour adultes', title: 'Réglages pour adultes',
-                greekNames: '🇬🇷 Prénoms en grec', otherNames: '🇬🇧 🇲🇽 🇫🇷 Prénoms dans les autres langues',
+                greekNames: '🇬🇷 Prénoms en grec', otherNames: '🇬🇧 🇺🇸 🇲🇽 🇪🇸 🇫🇷 Prénoms dans les autres langues',
                 help: 'Sépare les surnoms par des virgules. Garde le même ordre dans les deux listes.',
                 required: 'Saisis au moins un prénom dans chaque liste.',
                 error: 'Les deux listes doivent contenir le même nombre de prénoms.',
@@ -3053,6 +3166,9 @@
                 soundCredits: '🔊 Crédits des sons réels'
             }
         };
+
+        settingsCopy.enUS = { ...settingsCopy.en };
+        settingsCopy.esES = { ...settingsCopy.es };
 
         const onboardingCopy = {
             el: {
@@ -3109,6 +3225,9 @@
             }
         };
 
+        onboardingCopy.enUS = { ...onboardingCopy.en };
+        onboardingCopy.esES = { ...onboardingCopy.es };
+
         function cloneDefaultChildNames() {
             return defaultChildNames.map(name => ({ ...name }));
         }
@@ -3153,9 +3272,13 @@
             const primaryLanguage = supportedLanguageOrder.includes(rawProfile?.primaryLanguage)
                 ? rawProfile.primaryLanguage
                 : 'en';
-            const requestedLanguages = Array.isArray(rawProfile?.enabledLanguages)
+            let requestedLanguages = Array.isArray(rawProfile?.enabledLanguages)
                 ? rawProfile.enabledLanguages.filter(language => supportedLanguageOrder.includes(language))
                 : [...supportedLanguageOrder];
+            if ((rawProfile?.schemaVersion || 1) < 2) {
+                if (requestedLanguages.includes('en')) requestedLanguages.push('enUS');
+                if (requestedLanguages.includes('es')) requestedLanguages.push('esES');
+            }
             const enabled = [...new Set([primaryLanguage, ...requestedLanguages])];
             let greekNames = sanitizeNameArray(rawProfile?.greekNames);
             let otherNames = sanitizeNameArray(rawProfile?.otherNames);
@@ -3166,7 +3289,7 @@
             }
 
             return {
-                schemaVersion: 1,
+                schemaVersion: 2,
                 onboardingComplete,
                 primaryLanguage,
                 enabledLanguages: supportedLanguageOrder.filter(language => enabled.includes(language)),
@@ -3212,7 +3335,9 @@
             return Array.from({ length: count }, (_, index) => ({
                 el: greekNames[index] || greekNames[0],
                 en: otherNames[index] || otherNames[0],
+                enUS: otherNames[index] || otherNames[0],
                 es: otherNames[index] || otherNames[0],
+                esES: otherNames[index] || otherNames[0],
                 fr: otherNames[index] || otherNames[0]
             }));
         }
@@ -3239,6 +3364,7 @@
         let childNames = childNamesFromProfile(appProfile);
         let activeChildName = childNames[0];
         let nextChildNameIndex = 0;
+        persistAppProfile();
 
         function nextChildName() {
             activeChildName = childNames[nextChildNameIndex];
@@ -3553,6 +3679,8 @@
             es: { listen:'👂 Escucha…', repeat:name=>`🎤 ¡Tu turno ${name}!`, spokenRepeat:name=>`¡Tu turno ${name}!`, again:'🔁 Otra vez', next:'▶ Sigue', done:'✓ Listo', close:'Cerrar' },
             fr: { listen:'👂 Écoute…', repeat:name=>`🎤 À toi ${name} !`, spokenRepeat:name=>`À toi ${name} !`, again:'🔁 Encore', next:'▶ Suivant', done:'✓ Terminé', close:'Fermer' }
         };
+        repeatCopy.enUS = { ...repeatCopy.en };
+        repeatCopy.esES = { ...repeatCopy.es };
         const repeatAnimationClasses = ['repeat-bounce', 'repeat-wiggle', 'repeat-float', 'repeat-pop'];
         let voices = [];
         function loadVoices() {
@@ -4448,20 +4576,22 @@
         }
 
         function getSantaResponse(food, language, responseIndex, childName) {
-            const foodName = language === 'en'
-                ? `the ${food.en.toLowerCase()}`
+            const languageFamily = language === 'enUS' ? 'en' : (language === 'esES' ? 'es' : language);
+            const localizedFood = food[language];
+            const foodName = languageFamily === 'en'
+                ? `the ${localizedFood.toLowerCase()}`
                 : santaFoodNames[food.emoji][language];
             const name = childName[language];
             const responses = {
                 en: [
-                    `${food.en}! Thank you for ${foodName} ${name}!`,
-                    `${food.en}! That was delicious! Thank you for ${foodName} ${name}!`,
-                    `${food.en}! I loved it! Thank you for ${foodName} ${name}!`
+                    `${localizedFood}! Thank you for ${foodName} ${name}!`,
+                    `${localizedFood}! That was delicious! Thank you for ${foodName} ${name}!`,
+                    `${localizedFood}! I loved it! Thank you for ${foodName} ${name}!`
                 ],
                 es: [
-                    `¡${food.es}! ¡Gracias por ${foodName} ${name}!`,
-                    `¡${food.es}! ¡Qué rico! ¡Gracias por ${foodName} ${name}!`,
-                    `¡${food.es}! ¡Me encantó! ¡Gracias por ${foodName} ${name}!`
+                    `¡${localizedFood}! ¡Gracias por ${foodName} ${name}!`,
+                    `¡${localizedFood}! ¡Qué rico! ¡Gracias por ${foodName} ${name}!`,
+                    `¡${localizedFood}! ¡Me encantó! ¡Gracias por ${foodName} ${name}!`
                 ],
                 fr: [
                     `${food.fr} ! Merci pour ${foodName} ${name} !`,
@@ -4474,7 +4604,7 @@
                     `${food.el}! Μου άρεσε πολύ! Ευχαριστώ για ${foodName} ${name}!`
                 ]
             };
-            return responses[language][responseIndex];
+            return responses[languageFamily][responseIndex];
         }
 
         function showSantaCelebration(message) {
@@ -4502,15 +4632,8 @@
         }
 
         function speakSantaThanks(food, responseIndex, childName, onFinish) {
-            const languages = {
-                en: 'en-GB',
-                es: 'es-MX',
-                fr: 'fr-FR',
-                el: 'el-GR'
-            };
-
             if (currentLangMode !== 'all') {
-                speakSingle(languages[currentLangMode], getSantaResponse(food, currentLangMode, responseIndex, childName), onFinish);
+                speakSingle(languageSettings[currentLangMode].code, getSantaResponse(food, currentLangMode, responseIndex, childName), onFinish);
                 return;
             }
 
@@ -4524,7 +4647,7 @@
                 const language = sequence[index++];
                 const response = getSantaResponse(food, language, responseIndex, childName);
                 document.getElementById('santaCelebrationMessage').textContent = response;
-                speakSingle(languages[language], response, () => {
+                speakSingle(languageSettings[language].code, response, () => {
                     speechSequenceTimeout = setTimeout(speakNextThankYou, 450);
                 });
             }
@@ -4546,7 +4669,7 @@
 
         function promptSantaForMore() {
             if (!document.getElementById('game-monster').classList.contains('active')) return;
-            const languageCodes = { en: 'en-GB', es: 'es-MX', fr: 'fr-FR', el: 'el-GR' };
+            const languageCodes = Object.fromEntries(Object.entries(languageSettings).map(([language, settings]) => [language, settings.code]));
             const childName = nextChildName();
             const displayLanguage = currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode;
             monsterSpeech.textContent = personalizeText(interfaceText[displayLanguage].morePlease, displayLanguage, childName);
@@ -4577,31 +4700,17 @@
         function tickleMonster() {
             clearSantaIdleTimer();
             cancelRepeatSequence();
-            SoundFX.animal('cat');
             const childName = nextChildName();
             const displayLanguage = currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode;
             monsterSpeech.textContent = personalizeText(interfaceText[displayLanguage].tickle, displayLanguage, childName);
-            const languageCodes = { en: 'en-GB', es: 'es-MX', fr: 'fr-FR', el: 'el-GR' };
-
-            if (currentLangMode !== 'all') {
-                speakSingle(languageCodes[displayLanguage], getSpeechText(personalizeText(interfaceText[displayLanguage].tickle, displayLanguage, childName)), resetSantaIdleTimer);
-                return;
-            }
-
-            let index = 0;
-            function speakNextTickle() {
-                if (index >= allLanguageOrder.length) {
-                    resetSantaIdleTimer();
-                    return;
-                }
-                const language = allLanguageOrder[index++];
-                const tickle = personalizeText(interfaceText[language].tickle, language, childName);
-                monsterSpeech.textContent = tickle;
-                speakSingle(languageCodes[language], getSpeechText(tickle), () => {
-                    speechSequenceTimeout = setTimeout(speakNextTickle, 350);
-                });
-            }
-            speakNextTickle();
+            monsterAvatar.classList.remove('asking');
+            void monsterAvatar.offsetWidth;
+            monsterAvatar.classList.add('asking');
+            playRealSound('santaLaugh');
+            setTimeout(() => {
+                monsterAvatar.classList.remove('asking');
+                resetSantaIdleTimer();
+            }, 3400);
         }
 
         function getSpeechText(text) {
@@ -5016,6 +5125,15 @@
         let beatAcceptingInput = false;
         let beatTimers = [];
         let beatIntroWasSpoken = false;
+        const lastBeatPraiseIndex = { en:-1, enUS:-1, es:-1, esES:-1, fr:-1, el:-1 };
+
+        function nextBeatPraise(language) {
+            const praises = interfaceText[language].beatPraise;
+            let index = Math.floor(Math.random() * praises.length);
+            if (index === lastBeatPraiseIndex[language]) index = (index + 1) % praises.length;
+            lastBeatPraiseIndex[language] = index;
+            return praises[index];
+        }
 
         function playBeatPad(index, demo = false) {
             const pad = beatGrid.children[index];
@@ -5065,9 +5183,14 @@
             startButton.classList.add('playing');
             document.getElementById('game-beat').classList.remove('beat-awaiting');
             document.getElementById('beatPrompt').textContent = interfaceText[language].beatExplain;
-            speakSingle(languageSettings[language].code, interfaceText[language].beatExplain, () => {
+            let demonstrationStarted = false;
+            const beginDemonstration = () => {
+                if (demonstrationStarted || activeGameId() !== 'beat') return;
+                demonstrationStarted = true;
                 beatTimers.push(setTimeout(demonstrateBeatSequence, 250));
-            });
+            };
+            beatTimers.push(setTimeout(beginDemonstration, 4200));
+            speakSingle(languageSettings[language].code, interfaceText[language].beatExplain, beginDemonstration);
         }
 
         function demonstrateBeatSequence() {
@@ -5106,8 +5229,9 @@
             beatInputIndex++;
             if (beatInputIndex === beatSequence.length) {
                 beatAcceptingInput = false;
-                document.getElementById('beatPrompt').textContent = interfaceText[language].beatGreat;
-                speakSingle(languageSettings[language].code, interfaceText[language].beatGreat);
+                const praise = nextBeatPraise(language);
+                document.getElementById('beatPrompt').textContent = praise;
+                speakSingle(languageSettings[language].code, praise);
                 beatSuccessesAtLength++;
                 if (beatSuccessesAtLength >= 2) {
                     beatLength = Math.min(4, beatLength + 1);
@@ -5148,9 +5272,12 @@
             {emoji:'🌳', en:'Freeze tall like a tree!', es:'¡Congélate alto como un árbol!', fr:'Ne bouge plus comme un grand arbre !', el:'Πάγωσε ψηλός σαν δέντρο!'},
             {emoji:'🐭', en:'Freeze tiny like a mouse!', es:'¡Congélate pequeño como un ratón!', fr:'Ne bouge plus tout petit comme une souris !', el:'Πάγωσε μικρός σαν ποντικάκι!'}
         ];
+        [danceMoves, dancePaces, freezePoses].forEach(addRegionalLanguageVariants);
         const leaderMoves = {
             en:'Your turn! Show us a move to copy!',
+            enUS:'Your turn! Show us a move to copy!',
             es:'¡Tu turno! ¡Haz un movimiento para copiarlo!',
+            esES:'¡Tu turno! ¡Haz un movimiento para copiarlo!',
             fr:'À toi ! Montre-nous un mouvement à copier !',
             el:'Η σειρά σου! Δείξε μας μια κίνηση να αντιγράψουμε!'
         };
@@ -5272,9 +5399,9 @@
         }
 
         function playBellsSantaLaugh() {
-            const language = currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode;
             animateSantaBandButton(document.getElementById('bellsSantaButton'));
-            speakSingle(languageSettings[language].code, interfaceText[language].santaLaugh);
+            cancelRepeatSequence();
+            playRealSound('santaLaugh');
         }
 
         bellNotes.forEach((note,index) => {
