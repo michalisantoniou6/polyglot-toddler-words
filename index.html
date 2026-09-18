@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="google" content="notranslate">
     <meta name="robots" content="notranslate">
+    <meta name="theme-color" content="#3182ce">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Toddler Arcade">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="icons/icon-192.png" sizes="192x192" type="image/png">
+    <link rel="apple-touch-icon" href="icons/icon-180.png">
     <link rel="preload" href="assets/santa-ho-ho-ho.mp3?v=2" as="audio" type="audio/mpeg">
     <title>Χαρούμενα παιδικά παιχνίδια</title>
     <style>
@@ -7105,6 +7113,17 @@
             if (document.hidden) pauseActivePlay();
         });
         window.addEventListener('pagehide', pauseActivePlay);
+
+        if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+            window.addEventListener('load', async () => {
+                try {
+                    const registration = await navigator.serviceWorker.register('./service-worker.js');
+                    await registration.update();
+                } catch (error) {
+                    // Online play must remain available if private browsing blocks offline storage.
+                }
+            });
+        }
 
         populateSoundCredits();
         updateInterfaceLanguage();

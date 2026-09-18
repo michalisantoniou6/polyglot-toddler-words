@@ -4,6 +4,14 @@ A phone-friendly multilingual collection of games for toddlers. The web game is
 published with GitHub Pages and the Android app packages the same game in a
 full-screen native shell.
 
+## Install from the website
+
+The GitHub Pages build is an installable Progressive Web App. On Android, open
+the website in Chrome and choose **Install app**. On iPhone or iPad, open it in
+Safari and choose **Share → Add to Home Screen**. After the first online visit,
+the complete game and its local audio remain available offline. Opening the app
+while online refreshes the cached game for the next offline session.
+
 ## Tests
 
 ```sh

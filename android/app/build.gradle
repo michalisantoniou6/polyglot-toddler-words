@@ -37,6 +37,9 @@ tasks.register("syncWebAssets", Sync) {
     from(rootProject.projectDir.parentFile) {
         include "index.html"
         include "assets/**"
+        include "manifest.webmanifest"
+        include "service-worker.js"
+        include "icons/**"
     }
     into(layout.projectDirectory.dir("src/main/assets/www"))
 }
