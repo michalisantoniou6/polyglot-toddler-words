@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google" content="notranslate">
     <meta name="robots" content="notranslate">
-    <link rel="preload" href="assets/santa-ho-ho-ho.mp3" as="audio" type="audio/mpeg">
+    <link rel="preload" href="assets/santa-ho-ho-ho.mp3?v=2" as="audio" type="audio/mpeg">
     <title>Χαρούμενα παιδικά παιχνίδια</title>
     <style>
         * {
@@ -2461,7 +2461,7 @@
         // The synthesized effects below remain as a graceful fallback when offline.
         const realSoundProfiles = {
             santaLaugh: [
-                clip('assets/santa-ho-ho-ho.mp3', 'SantaClaus Ho Ho Ho', 'Bollenator', 'CC0', freesoundPage(325180), 0.15, 3.2)
+                clip('assets/santa-ho-ho-ho.mp3?v=2', 'Santa ho ho ho #1', 'canucklovingbrit', 'CC0', freesoundPage(110641), 0, 2.7)
             ],
             dog: [
                 clip('https://upload.wikimedia.org/wikipedia/commons/5/58/Barking_of_a_dog_2.ogg', 'Barking of a dog 2', 'Amada44', 'CC BY-SA 3.0', 'https://commons.wikimedia.org/wiki/File:Barking_of_a_dog_2.ogg'),
@@ -3055,7 +3055,7 @@
 
                 const sound = cachedRealSound(selectedClip.src);
                 activeRealSound = sound;
-                sound.volume = 0.58;
+                sound.volume = profileName === 'santaLaugh' ? 1 : 0.58;
                 let hasStarted = false;
                 let loadTimeout = setTimeout(() => {
                     if (!hasStarted) failAndTryNext();
@@ -3339,7 +3339,14 @@
         function loadAppProfile() {
             try {
                 const savedProfile = JSON.parse(localStorage.getItem(appProfileStorageKey));
-                if (savedProfile?.schemaVersion === 1) return normalizeAppProfile(savedProfile);
+                if ([1, 2].includes(savedProfile?.schemaVersion)) {
+                    const normalizedProfile = normalizeAppProfile(savedProfile);
+                    const hasSavedNames = normalizedProfile.greekNames.length > 0 || normalizedProfile.otherNames.length > 0;
+                    if (savedProfile.schemaVersion === 2 && !normalizedProfile.onboardingComplete && hasSavedNames) {
+                        normalizedProfile.onboardingComplete = true;
+                    }
+                    return normalizedProfile;
+                }
 
                 const legacyNames = loadLegacyNameLists();
                 const hasUsedGame = legacyNames !== null || localStorage.getItem(controlsCollapsedStorageKey) !== null;
