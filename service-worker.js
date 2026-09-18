@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'toddler-arcade-v3';
+const CACHE_VERSION = 'toddler-arcade-v4';
 const APP_SHELL = [
     './',
     './index.html',

@@ -22,10 +22,12 @@ import java.util.Locale;
 
 public final class MainActivity extends Activity implements TextToSpeech.OnInitListener {
     private static final String START_URL = "file:///android_asset/www/index.html";
+    private static final String EXTRA_PRIMARY_LANGUAGE = "primaryLanguage";
 
     private WebView webView;
     private TextToSpeech textToSpeech;
     private boolean textToSpeechReady;
+    private boolean languageOverrideApplied;
 
     @Override
     @SuppressLint("SetJavaScriptEnabled")
@@ -210,11 +212,45 @@ public final class MainActivity extends Activity implements TextToSpeech.OnInitL
         }
     }
 
-    private static final class LocalGameWebViewClient extends WebViewClient {
+    private final class LocalGameWebViewClient extends WebViewClient {
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+            applyPrimaryLanguageOverride(view);
+        }
+
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
             String url = request.getUrl().toString();
             return !url.startsWith("file:///android_asset/www/");
+        }
+
+        private void applyPrimaryLanguageOverride(WebView view) {
+            if (languageOverrideApplied) {
+                return;
+            }
+
+            String language = getIntent().getStringExtra(EXTRA_PRIMARY_LANGUAGE);
+            if (!isSupportedLanguage(language)) {
+                return;
+            }
+
+            languageOverrideApplied = true;
+            view.evaluateJavascript(
+                "window.applyInstalledLanguageOverride && window.applyInstalledLanguageOverride('"
+                    + language
+                    + "')",
+                null
+            );
+        }
+
+        private boolean isSupportedLanguage(String language) {
+            return "el".equals(language)
+                || "en".equals(language)
+                || "enUS".equals(language)
+                || "es".equals(language)
+                || "esES".equals(language)
+                || "fr".equals(language);
         }
     }
 }

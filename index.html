@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="el" translate="no" class="notranslate">
+<html lang="en-US" translate="no" class="notranslate">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -2530,8 +2530,8 @@
                 <p class="onboarding-lead" id="onboardingPrimaryLead">Το παιχνίδι θα ανοίγει σε αυτή τη γλώσσα</p>
                 <div class="onboarding-options" id="onboardingPrimaryOptions" role="radiogroup" aria-label="Βασική γλώσσα">
                     <button class="onboarding-language" type="button" data-primary-language="el" role="radio" aria-checked="false" onclick="chooseOnboardingPrimary('el')"><span class="flag">🇬🇷</span>Ελληνικά</button>
-                    <button class="onboarding-language selected" type="button" data-primary-language="en" role="radio" aria-checked="true" onclick="chooseOnboardingPrimary('en')"><span class="flag">🇬🇧</span>English</button>
-                    <button class="onboarding-language" type="button" data-primary-language="enUS" role="radio" aria-checked="false" onclick="chooseOnboardingPrimary('enUS')"><span class="flag">🇺🇸</span>English (US)</button>
+                    <button class="onboarding-language" type="button" data-primary-language="en" role="radio" aria-checked="false" onclick="chooseOnboardingPrimary('en')"><span class="flag">🇬🇧</span>English</button>
+                    <button class="onboarding-language selected" type="button" data-primary-language="enUS" role="radio" aria-checked="true" onclick="chooseOnboardingPrimary('enUS')"><span class="flag">🇺🇸</span>English (US)</button>
                     <button class="onboarding-language" type="button" data-primary-language="es" role="radio" aria-checked="false" onclick="chooseOnboardingPrimary('es')"><span class="flag">🇲🇽</span>Español (México)</button>
                     <button class="onboarding-language" type="button" data-primary-language="esES" role="radio" aria-checked="false" onclick="chooseOnboardingPrimary('esES')"><span class="flag">🇪🇸</span>Español (España)</button>
                     <button class="onboarding-language" type="button" data-primary-language="fr" role="radio" aria-checked="false" onclick="chooseOnboardingPrimary('fr')"><span class="flag">🇫🇷</span>Français</button>
@@ -2617,9 +2617,9 @@
                 <div class="controls-section-label" id="languagePickerLabel">🌍 Γλώσσα</div>
                 <div class="header-controls" id="headerControls">
                     <div class="lang-bar">
-                        <button class="lang-pill active" data-language="el" onclick="setLanguage('el', this)">🇬🇷 ΕΛ</button>
+                        <button class="lang-pill" data-language="el" onclick="setLanguage('el', this)">🇬🇷 ΕΛ</button>
                         <button class="lang-pill" data-language="en" onclick="setLanguage('en', this)">🇬🇧 EN</button>
-                        <button class="lang-pill" data-language="enUS" onclick="setLanguage('enUS', this)">🇺🇸 US</button>
+                        <button class="lang-pill active" data-language="enUS" onclick="setLanguage('enUS', this)">🇺🇸 US</button>
                         <button class="lang-pill" data-language="es" onclick="setLanguage('es', this)">🇲🇽 MX</button>
                         <button class="lang-pill" data-language="esES" onclick="setLanguage('esES', this)">🇪🇸 ES</button>
                         <button class="lang-pill" data-language="fr" onclick="setLanguage('fr', this)">🇫🇷 FR</button>
@@ -3950,7 +3950,7 @@
         /* -------------------------------------------------------------
            3. SPEECH SYNTHESIS ENGINE (iOS / Android Multi-voice)
         ------------------------------------------------------------- */
-        let currentLangMode = 'en';
+        let currentLangMode = 'enUS';
         const languageSettings = {
             el: { code: 'el-GR', flag: '🇬🇷' },
             en: { code: 'en-GB', flag: '🇬🇧' },
@@ -4117,7 +4117,7 @@
         function normalizeAppProfile(rawProfile) {
             const primaryLanguage = supportedLanguageOrder.includes(rawProfile?.primaryLanguage)
                 ? rawProfile.primaryLanguage
-                : 'en';
+                : 'enUS';
             let requestedLanguages = Array.isArray(rawProfile?.enabledLanguages)
                 ? rawProfile.enabledLanguages.filter(language => supportedLanguageOrder.includes(language))
                 : [...supportedLanguageOrder];
@@ -4162,7 +4162,7 @@
                 return normalizeAppProfile({
                     schemaVersion: 1,
                     onboardingComplete: false,
-                    primaryLanguage: 'en',
+                    primaryLanguage: 'enUS',
                     enabledLanguages: [...supportedLanguageOrder],
                     ...names
                 });
@@ -4170,7 +4170,7 @@
                 return normalizeAppProfile({
                     schemaVersion: 1,
                     onboardingComplete: false,
-                    primaryLanguage: 'en',
+                    primaryLanguage: 'enUS',
                     enabledLanguages: [...supportedLanguageOrder],
                     greekNames: [],
                     otherNames: []
@@ -4665,6 +4665,28 @@
             syncLanguageButtons();
             updateInterfaceLanguage();
         }
+
+        window.applyInstalledLanguageOverride = language => {
+            if (!supportedLanguageOrder.includes(language)) return false;
+
+            applyAppProfile(normalizeAppProfile({
+                ...appProfile,
+                onboardingComplete: true,
+                primaryLanguage: language,
+                enabledLanguages: [...new Set([language, ...appProfile.enabledLanguages])]
+            }));
+            persistAppProfile();
+
+            if (document.getElementById('onboardingModal').classList.contains('active')) {
+                onboardingEditing = true;
+                closeOnboarding(false);
+                onboardingEditing = false;
+            }
+
+            setControlsCollapsed(true, true, false);
+            initializeNavigationHistory(true);
+            return appProfile.primaryLanguage;
+        };
 
         function getStoredControlsCollapsed() {
             try {

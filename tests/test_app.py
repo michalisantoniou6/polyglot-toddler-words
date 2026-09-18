@@ -70,10 +70,23 @@ class AppRegressionTests(unittest.TestCase):
             self.assertIn(f'id="{nav_id}"', HTML)
             self.assertIn(f"gameId === '{game}'", HTML)
 
-    def test_english_and_balloon_pop_are_the_defaults(self) -> None:
-        self.assertRegex(HTML, r"let\s+currentLangMode\s*=\s*'en';")
+    def test_us_english_and_balloon_pop_are_the_defaults(self) -> None:
+        self.assertIn('<html lang="en-US" translate="no"', HTML)
+        self.assertRegex(HTML, r"let\s+currentLangMode\s*=\s*'enUS';")
+        self.assertIn("primaryLanguage: 'enUS'", HTML)
+        self.assertRegex(
+            HTML,
+            r'class="onboarding-language selected"[^>]+data-primary-language="enUS"[^>]+aria-checked="true"',
+        )
+        self.assertRegex(HTML, r'class="lang-pill active"[^>]+data-language="enUS"')
         self.assertRegex(HTML, r'id="game-balloons"\s+class="game-view active"')
         self.assertIn("spawnBalloon(true);", HTML)
+
+    def test_android_can_persist_a_per_device_language_override(self) -> None:
+        self.assertIn("window.applyInstalledLanguageOverride = language =>", HTML)
+        self.assertIn("onboardingComplete: true", HTML)
+        self.assertIn("primaryLanguage: language", HTML)
+        self.assertIn("persistAppProfile();", HTML)
 
     def test_saved_profile_versions_are_loaded_after_refresh(self) -> None:
         self.assertIn("[1, 2].includes(savedProfile?.schemaVersion)", HTML)
