@@ -1,4 +1,4 @@
-# Polyglot Playroom
+# Toddler Arcade
 
 A phone-friendly multilingual collection of games for toddlers. The web game is
 published with GitHub Pages and the Android app packages the same game in a

@@ -20,6 +20,7 @@ def png_dimensions(path: Path) -> tuple[int, int]:
 
 class ProgressiveWebAppTests(unittest.TestCase):
     def test_page_exposes_installable_app_metadata(self) -> None:
+        self.assertIn("<title>Toddler Arcade</title>", HTML)
         self.assertIn('<link rel="manifest" href="manifest.webmanifest">', HTML)
         self.assertIn('<meta name="theme-color" content="#3182ce">', HTML)
         self.assertIn('<meta name="apple-mobile-web-app-capable" content="yes">', HTML)
@@ -33,6 +34,11 @@ class ProgressiveWebAppTests(unittest.TestCase):
         self.assertEqual("standalone", MANIFEST["display"])
         self.assertEqual({"192x192", "512x512"}, {icon["sizes"] for icon in MANIFEST["icons"]})
         self.assertTrue(any(icon.get("purpose") == "maskable" for icon in MANIFEST["icons"]))
+
+    def test_product_name_stays_consistent_across_languages_and_android(self) -> None:
+        self.assertEqual(4, HTML.count("pageTitle: 'Toddler Arcade'"))
+        android_strings = (ROOT / "android/app/src/main/res/values/strings.xml").read_text(encoding="utf-8")
+        self.assertIn('<string name="app_name">Toddler Arcade</string>', android_strings)
 
     def test_icons_have_the_dimensions_declared_by_the_manifest(self) -> None:
         self.assertEqual((180, 180), png_dimensions(ROOT / "icons/icon-180.png"))
