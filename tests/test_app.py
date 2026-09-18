@@ -50,6 +50,7 @@ class AppRegressionTests(unittest.TestCase):
             "game-shapes",
             "game-counting",
             "game-body",
+            "game-runner",
             "game-music",
             "game-beat",
             "game-dance",
@@ -63,6 +64,7 @@ class AppRegressionTests(unittest.TestCase):
             ("shapes", "navShapes"),
             ("counting", "navCounting"),
             ("body", "navBody"),
+            ("runner", "navRunner"),
         ):
             self.assertIn(f"switchGame('{game}', this)", HTML)
             self.assertIn(f'id="{nav_id}"', HTML)
@@ -223,6 +225,27 @@ class AppRegressionTests(unittest.TestCase):
         self.assertIn("localStorage.getItem(playTimerStorageKey)", HTML)
         self.assertIn("pauseActivePlay();\n                showTimeUpOverlay();", HTML)
         for phrase in ("Play timer", "Tiempo de juego", "Temps de jeu", "Χρόνος παιχνιδιού"):
+            self.assertIn(phrase, HTML)
+
+    def test_broccoli_bounce_is_one_touch_and_restarts_after_a_crash(self) -> None:
+        for phrase in (
+            "runnerStage.addEventListener('pointerdown', jumpRunner)",
+            "requestAnimationFrame(runnerFrame)",
+            "runnerCharacter.classList.add('jumping')",
+            "runnerCharacter.classList.add('bumped')",
+            "resetRunnerRound();\n                startRunnerGame();",
+        ):
+            self.assertIn(phrase, HTML)
+        self.assertRegex(HTML, re.compile(r"runnerRestartTimer\s*=\s*setTimeout\(\(\)\s*=>\s*\{.*?\},\s*1900\);", re.S))
+
+    def test_broccoli_bounce_rewards_food_and_treats_rocks_as_obstacles(self) -> None:
+        self.assertIn("runnerObject.textContent = type === 'food' ? '🥦' : '🪨'", HTML)
+        self.assertIn("runnerScore++;", HTML)
+        self.assertIn("document.getElementById('runnerCelebrationText').textContent = `🥦 +1`", HTML)
+        self.assertIn("if (runnerObject.dataset.type === 'food') collectRunnerFood();", HTML)
+        self.assertIn("else crashRunner();", HTML)
+        self.assertIn("const speed = Math.min(178, 126 + runnerScore * 4)", HTML)
+        for phrase in ("Broccoli! One point!", "¡Brócoli! ¡Un punto!", "Brocoli ! Un point !", "Μπρόκολο! Ένας πόντος!"):
             self.assertIn(phrase, HTML)
 
     def test_balloon_difficulty_progresses_to_twenty(self) -> None:
