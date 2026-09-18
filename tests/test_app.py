@@ -73,23 +73,27 @@ class AppRegressionTests(unittest.TestCase):
     def test_us_english_and_balloon_pop_are_the_defaults(self) -> None:
         self.assertIn('<html lang="en-US" translate="no"', HTML)
         self.assertRegex(HTML, r"let\s+currentLangMode\s*=\s*'enUS';")
-        self.assertIn("primaryLanguage: 'enUS'", HTML)
-        self.assertRegex(
-            HTML,
-            r'class="onboarding-language selected"[^>]+data-primary-language="enUS"[^>]+aria-checked="true"',
-        )
+        self.assertIn("return 'enUS';", HTML)
+        self.assertIn("primaryLanguage: preferredFirstRunLanguage()", HTML)
+        self.assertIn('<option value="enUS" selected>', HTML)
         self.assertRegex(HTML, r'class="lang-pill active"[^>]+data-language="enUS"')
         self.assertRegex(HTML, r'id="game-balloons"\s+class="game-view active"')
         self.assertIn("spawnBalloon(true);", HTML)
 
-    def test_android_can_persist_a_per_device_language_override(self) -> None:
-        self.assertIn("window.applyInstalledLanguageOverride = language =>", HTML)
-        self.assertIn("onboardingComplete: true", HTML)
+    def test_first_run_uses_device_locale_without_skipping_onboarding(self) -> None:
+        self.assertIn("function preferredFirstRunLanguage()", HTML)
+        self.assertIn("navigator.languages", HTML)
+        self.assertIn("locale === 'es-mx'", HTML)
+        self.assertIn("locale.startsWith('en-gb')", HTML)
+        self.assertIn("window.applyInstalledOnboardingLanguage = language =>", HTML)
+        self.assertIn("onboardingComplete: false", HTML)
         self.assertIn("primaryLanguage: language", HTML)
         self.assertIn("persistAppProfile();", HTML)
+        self.assertIn("openOnboarding(false);", HTML)
 
     def test_saved_profile_versions_are_loaded_after_refresh(self) -> None:
-        self.assertIn("[1, 2].includes(savedProfile?.schemaVersion)", HTML)
+        self.assertIn("[1, 2, 3].includes(savedProfile?.schemaVersion)", HTML)
+        self.assertIn("schemaVersion: 3", HTML)
         self.assertIn("return normalizedProfile;", HTML)
         self.assertIn("localStorage.setItem(appProfileStorageKey, JSON.stringify(appProfile))", HTML)
         self.assertIn("onboardingComplete: true", HTML)
@@ -106,13 +110,26 @@ class AppRegressionTests(unittest.TestCase):
             "¿Qué idiomas quieres que escuche tu peque?",
             "Quelles langues veux-tu que ton enfant entende ?",
             "languageMain:",
-            "languageOn:",
-            "languageOff:",
+            "addLanguage:",
+            "localeHint:",
             "onboardingLanguageSummary",
         ):
             self.assertIn(phrase, HTML)
         self.assertIn("onboardingCopy.enUS = { ...onboardingCopy.en }", HTML)
         self.assertIn("onboardingCopy.esES = { ...onboardingCopy.es }", HTML)
+
+    def test_onboarding_language_picker_scales_without_long_card_lists(self) -> None:
+        self.assertIn('id="onboardingPrimarySelect"', HTML)
+        self.assertIn('id="onboardingAddLanguageSelect"', HTML)
+        self.assertIn('id="onboardingSelectedLanguages"', HTML)
+        self.assertIn("function renderOnboardingLanguagePicker(copy)", HTML)
+        self.assertIn("function addOnboardingLanguage(language)", HTML)
+        self.assertIn("function removeOnboardingLanguage(language)", HTML)
+        self.assertNotIn('data-primary-language=', HTML)
+        self.assertNotIn('data-enabled-language=', HTML)
+
+    def test_new_profiles_begin_with_only_the_locale_matched_primary_language(self) -> None:
+        self.assertGreaterEqual(HTML.count("enabledLanguages: [preferredFirstRunLanguage()]"), 2)
 
     def test_primary_language_is_first_in_all_languages_mode(self) -> None:
         ordering_pattern = re.compile(
@@ -242,13 +259,41 @@ class AppRegressionTests(unittest.TestCase):
         self.assertGreaterEqual(int(random_button.group(1)), 44)
         self.assertGreaterEqual(int(random_button.group(2)), 44)
 
-    def test_multilingual_surprise_changes_both_game_and_enabled_language(self) -> None:
-        self.assertIn('id="randomLanguageGameButton"', HTML)
-        self.assertIn('onclick="playRandomLanguageGame()"', HTML)
-        self.assertIn("enabledLanguages.filter(language => language !== currentLangMode)", HTML)
-        self.assertIn("if (nextLanguage) setLanguage(nextLanguage)", HTML)
-        self.assertIn("playRandomGameFromButton(document.getElementById('randomLanguageGameButton'))", HTML)
-        self.assertIn("randomLanguageGame:'Surprise game and language'", HTML)
+    def test_one_dice_button_uses_the_adult_selected_language_mode(self) -> None:
+        self.assertIn('id="randomGameButton"', HTML)
+        self.assertIn('onclick="playConfiguredDiceGame()"', HTML)
+        self.assertNotIn('id="randomLanguageGameButton"', HTML)
+        for mode in ("single", "multilingual", "random"):
+            self.assertIn(f'name="diceMode" value="{mode}"', HTML)
+        self.assertIn("function playConfiguredDiceGame()", HTML)
+        self.assertIn("appProfile.diceMode === 'multilingual'", HTML)
+        self.assertIn("setLanguage('all')", HTML)
+        self.assertIn("appProfile.diceMode === 'random'", HTML)
+        self.assertIn("setLanguage(appProfile.primaryLanguage)", HTML)
+        self.assertIn("diceMode: document.querySelector", HTML)
+
+    def test_name_step_is_optional_and_anonymous_copy_stays_natural(self) -> None:
+        self.assertIn('id="onboardingSkipName"', HTML)
+        self.assertIn("function skipOnboardingNames()", HTML)
+        self.assertIn("finishOnboarding(true)", HTML)
+        self.assertIn("const hasAnyNames = onboardingDraft.greekNames.length > 0", HTML)
+        self.assertIn("return [{ el:'', en:'', enUS:'', es:'', esES:'', fr:'' }]", HTML)
+        self.assertIn("name ? `🎤 Your turn ${name}!` : '🎤 Your turn!'", HTML)
+
+    def test_timer_is_only_in_parent_settings(self) -> None:
+        settings = HTML[HTML.index('id="settingsModal"'):HTML.index('<!-- Header & Language Mode Selector -->')]
+        quick_controls = HTML[HTML.index('<div class="quick-play-controls"'):HTML.index('<div class="play-timer-modal"')]
+        self.assertIn('id="playTimerButton"', settings)
+        self.assertNotIn('id="playTimerButton"', quick_controls)
+        self.assertIn("timerOpenedFromSettings", HTML)
+
+    def test_jingle_bells_has_a_santa_sleigh_cta_and_pages_invite_taps(self) -> None:
+        self.assertIn('class="game-action-button jingle-sleigh-button"', HTML)
+        self.assertIn('class="jingle-sleigh-art" aria-hidden="true">🎅🛷</span>', HTML)
+        self.assertIn('id="jingleButtonLabel"', HTML)
+        self.assertIn("function inviteActiveGameClickables()", HTML)
+        self.assertIn("button:not(:disabled), [role=\"button\"], [data-tap-invite]", HTML)
+        self.assertIn("prefers-reduced-motion: reduce", HTML)
         self.assertIn("randomLanguageGame:'Juego e idioma sorpresa'", HTML)
         self.assertIn("randomLanguageGame:'Παιχνίδι και γλώσσα έκπληξη'", HTML)
 

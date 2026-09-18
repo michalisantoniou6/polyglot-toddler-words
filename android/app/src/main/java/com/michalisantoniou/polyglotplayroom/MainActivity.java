@@ -237,7 +237,7 @@ public final class MainActivity extends Activity implements TextToSpeech.OnInitL
 
             languageOverrideApplied = true;
             view.evaluateJavascript(
-                "window.applyInstalledLanguageOverride && window.applyInstalledLanguageOverride('"
+                "window.applyInstalledOnboardingLanguage && window.applyInstalledOnboardingLanguage('"
                     + language
                     + "')",
                 null
