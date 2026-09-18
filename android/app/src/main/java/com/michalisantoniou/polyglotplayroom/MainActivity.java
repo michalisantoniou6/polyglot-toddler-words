@@ -34,7 +34,6 @@ public final class MainActivity extends Activity implements TextToSpeech.OnInitL
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        showImmersivePlayArea();
 
         webView = new WebView(this);
         webView.setBackgroundColor(0xFFF7FBFF);
@@ -56,6 +55,7 @@ public final class MainActivity extends Activity implements TextToSpeech.OnInitL
         WebView.setWebContentsDebuggingEnabled(BuildConfig.DEBUG);
 
         setContentView(webView);
+        webView.post(this::showImmersivePlayArea);
         textToSpeech = new TextToSpeech(getApplicationContext(), this);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

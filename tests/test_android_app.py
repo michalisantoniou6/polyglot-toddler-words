@@ -37,6 +37,8 @@ class AndroidAppRegressionTests(unittest.TestCase):
         self.assertIn("BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE", ACTIVITY)
         self.assertIn("webView.saveState(outState)", ACTIVITY)
         self.assertIn("webView.restoreState(savedInstanceState)", ACTIVITY)
+        on_create = ACTIVITY[ACTIVITY.index("protected void onCreate"):ACTIVITY.index("public void onInit")]
+        self.assertLess(on_create.index("setContentView(webView)"), on_create.index("showImmersivePlayArea"))
 
     def test_android_back_gesture_uses_the_games_navigation_history(self) -> None:
         self.assertIn("registerOnBackInvokedCallback", ACTIVITY)
