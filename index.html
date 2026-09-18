@@ -1628,6 +1628,20 @@
             animation:randomInvite 4.8s ease-in-out infinite;
         }
         .random-game-button:active { transform:scale(.9) rotate(18deg); }
+        .random-language-game-button {
+            width:54px;
+            height:54px;
+            padding:0;
+            border:3px solid white;
+            border-radius:50%;
+            background:linear-gradient(145deg,#38b2ac,#2c7a7b);
+            color:white;
+            font-size:1.55rem;
+            line-height:1;
+            box-shadow:0 6px 16px rgba(44,122,123,.3);
+            touch-action:manipulation;
+        }
+        .random-language-game-button:active { transform:scale(.9) rotate(-18deg); }
         @keyframes randomInvite { 0%,82%,100%{transform:rotate(0) scale(1)} 88%{transform:rotate(-10deg) scale(1.08)} 94%{transform:rotate(10deg) scale(1.08)} }
         .play-timer-button {
             min-width:46px;
@@ -1765,6 +1779,16 @@
             grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 12px;
         }
+        body.controls-collapsed #game-music {
+            height:100svh;
+            overflow-y:auto;
+            overscroll-behavior-y:contain;
+            touch-action:pan-y;
+            -webkit-overflow-scrolling:touch;
+            align-items:flex-start;
+        }
+        #game-music .learning-game { min-height:auto; }
+        #game-music .music-pad-grid { padding-bottom:90px; }
         .everyday-card,
         .music-pad {
             position: relative;
@@ -1997,6 +2021,10 @@
             grid-template-columns:repeat(2,minmax(0,1fr));
             gap:12px;
         }
+        body.controls-collapsed #game-letters { height:100svh;overflow-y:auto;overscroll-behavior-y:contain;touch-action:pan-y;-webkit-overflow-scrolling:touch;align-items:flex-start; }
+        #game-letters .learning-game { min-height:auto; }
+        #game-letters .academic-prompt { position:sticky;top:0;z-index:8; }
+        #game-letters .letter-grid { padding-bottom:90px; }
         .letter-card,
         .academic-choice {
             position:relative;
@@ -2678,6 +2706,7 @@
 
     <div class="quick-play-controls" aria-label="Quick play">
         <button class="random-game-button" id="randomGameButton" type="button" onclick="playRandomGame()" aria-label="Surprise game"><span aria-hidden="true">🎲</span></button>
+        <button class="random-language-game-button" id="randomLanguageGameButton" type="button" onclick="playRandomLanguageGame()" aria-label="Surprise game and language"><span aria-hidden="true">🌍</span></button>
         <button class="play-timer-button" id="playTimerButton" type="button" onclick="openPlayTimer()" aria-label="Set play timer"><span id="playTimerButtonText" aria-hidden="true">⏱️</span></button>
     </div>
 
@@ -3037,29 +3066,29 @@
         });
 
         const animals = [
-            { emoji: "🐶", sound: "dog", en: "Dog", es: "Perro", fr: "Chien", el: "Σκύλος" },
-            { emoji: "🐱", sound: "cat", en: "Cat", es: "Gato", fr: "Chat", el: "Γάτα" },
-            { emoji: "🦁", sound: "lion", en: "Lion", es: "León", fr: "Lion", el: "Λιοντάρι" },
-            { emoji: "🐮", sound: "cow", en: "Cow", es: "Vaca", fr: "Vache", el: "Αγελάδα" },
-            { emoji: "🐸", sound: "frog", en: "Frog", es: "Rana", fr: "Grenouille", el: "Βάτραχος" },
-            { emoji: "🦆", sound: "duck", en: "Duck", es: "Pato", fr: "Canard", el: "Πάπια" },
-            { emoji: "🐑", sound: "sheep", en: "Sheep", es: "Oveja", fr: "Mouton", el: "Πρόβατο" },
-            { emoji: "🐷", sound: "pig", en: "Pig", es: "Cochino", fr: "Cochon", el: "Γουρούνι" },
-            { emoji: "🐴", sound: "horse", en: "Horse", es: "Caballo", fr: "Cheval", el: "Άλογο" },
-            { emoji: "🐘", sound: "elephant", en: "Elephant", es: "Elefante", fr: "Éléphant", el: "Ελέφαντας" },
-            { emoji: "🐵", sound: "monkey", en: "Monkey", es: "Mono", fr: "Singe", el: "Μαϊμού" },
-            { emoji: "🐯", sound: "tiger", en: "Tiger", es: "Tigre", fr: "Tigre", el: "Τίγρη" },
-            { emoji: "🐻", sound: "bear", en: "Bear", es: "Oso", fr: "Ours", el: "Αρκούδα" },
-            { emoji: "🐰", sound: "rabbit", en: "Rabbit", es: "Conejo", fr: "Lapin", el: "Κουνέλι" },
-            { emoji: "🐔", sound: "chicken", en: "Chicken", es: "Gallina", fr: "Poule", el: "Κότα" },
-            { emoji: "🐓", sound: "rooster", en: "Rooster", es: "Gallo", fr: "Coq", el: "Κόκορας" },
-            { emoji: "🐐", sound: "goat", en: "Goat", es: "Cabra", fr: "Chèvre", el: "Κατσίκα" },
-            { emoji: "🫏", sound: "donkey", en: "Donkey", es: "Burro", fr: "Âne", el: "Γάιδαρος" },
+            { emoji: "🐶", sound: "dog", en: "Dog", es: "Perrito", fr: "Chien", el: "Σκυλάκι" },
+            { emoji: "🐱", sound: "cat", en: "Cat", es: "Gatito", fr: "Chat", el: "Γατούλα" },
+            { emoji: "🦁", sound: "lion", en: "Lion", es: "Leoncito", fr: "Lion", el: "Λιονταράκι" },
+            { emoji: "🐮", sound: "cow", en: "Cow", es: "Vaquita", fr: "Vache", el: "Αγελαδίτσα" },
+            { emoji: "🐸", sound: "frog", en: "Frog", es: "Ranita", fr: "Grenouille", el: "Βατραχάκι" },
+            { emoji: "🦆", sound: "duck", en: "Duck", es: "Patito", fr: "Canard", el: "Παπάκι" },
+            { emoji: "🐑", sound: "sheep", en: "Sheep", es: "Ovejita", fr: "Mouton", el: "Προβατάκι" },
+            { emoji: "🐷", sound: "pig", en: "Pig", es: "Cochinito", fr: "Cochon", el: "Γουρουνάκι" },
+            { emoji: "🐴", sound: "horse", en: "Horse", es: "Caballito", fr: "Cheval", el: "Αλογάκι" },
+            { emoji: "🐘", sound: "elephant", en: "Elephant", es: "Elefantito", fr: "Éléphant", el: "Ελεφαντάκι" },
+            { emoji: "🐵", sound: "monkey", en: "Monkey", es: "Monito", fr: "Singe", el: "Μαϊμουδάκι" },
+            { emoji: "🐯", sound: "tiger", en: "Tiger", es: "Tigrito", fr: "Tigre", el: "Τιγράκι" },
+            { emoji: "🐻", sound: "bear", en: "Bear", es: "Osito", fr: "Ours", el: "Αρκουδάκι" },
+            { emoji: "🐰", sound: "rabbit", en: "Rabbit", es: "Conejito", fr: "Lapin", el: "Κουνελάκι" },
+            { emoji: "🐔", sound: "chicken", en: "Chicken", es: "Gallinita", fr: "Poule", el: "Κοτούλα" },
+            { emoji: "🐓", sound: "rooster", en: "Rooster", es: "Gallito", fr: "Coq", el: "Κοκοράκι" },
+            { emoji: "🐐", sound: "goat", en: "Goat", es: "Cabrita", fr: "Chèvre", el: "Κατσικάκι" },
+            { emoji: "🫏", sound: "donkey", en: "Donkey", es: "Burro", fr: "Âne", el: "Γαϊδουράκι" },
             { emoji: "🦉", sound: "owl", en: "Owl", es: "Búho", fr: "Hibou", el: "Κουκουβάγια" },
-            { emoji: "🐧", sound: "penguin", en: "Penguin", es: "Pingüino", fr: "Manchot", el: "Πιγκουίνος" },
+            { emoji: "🐧", sound: "penguin", en: "Penguin", es: "Pingüinito", fr: "Manchot", el: "Πιγκουινάκι" },
             { emoji: "🦒", sound: "giraffe", en: "Giraffe", es: "Jirafa", fr: "Girafe", el: "Καμηλοπάρδαλη" },
-            { emoji: "🦓", sound: "zebra", en: "Zebra", es: "Cebra", fr: "Zèbre", el: "Ζέβρα" },
-            { emoji: "🐊", sound: "crocodile", en: "Crocodile", es: "Cocodrilo", fr: "Crocodile", el: "Κροκόδειλος" },
+            { emoji: "🦓", sound: "zebra", en: "Zebra", es: "Cebrita", fr: "Zèbre", el: "Ζεβράκι" },
+            { emoji: "🐊", sound: "crocodile", en: "Crocodile", es: "Cocodrilito", fr: "Crocodile", el: "Κροκοδειλάκι" },
             { emoji: "🐋", sound: "whale", en: "Whale", es: "Ballena", fr: "Baleine", el: "Φάλαινα" }
         ];
 
@@ -3309,29 +3338,74 @@
             { emoji:'🪇', kind:'maracas', en:'Maracas', es:'Maracas', fr:'Maracas', el:'Μαράκες' },
             { emoji:'🪘', kind:'tambourine', en:'Hand drum', es:'Tambor', fr:'Tambour', el:'Τύμπανο' },
             { emoji:'🎺', kind:'trumpet', en:'Trumpet', es:'Trompeta', fr:'Trompette', el:'Τρομπέτα' },
-            { emoji:'🎤', kind:'voice', en:'Microphone', es:'Micrófono', fr:'Micro', el:'Μικρόφωνο' }
+            { emoji:'🎤', kind:'voice', en:'Microphone', es:'Micrófono', fr:'Micro', el:'Μικρόφωνο' },
+            { emoji:'🎻', kind:'violin', en:'Violin', es:'Violín', fr:'Violon', el:'Βιολί' },
+            { emoji:'🎷', kind:'saxophone', en:'Saxophone', es:'Saxofón', fr:'Saxophone', el:'Σαξόφωνο' },
+            { emoji:'🪈', kind:'flute', en:'Flute', es:'Flauta', fr:'Flûte', el:'Φλάουτο' },
+            { emoji:'🪗', kind:'accordion', en:'Accordion', es:'Acordeón', fr:'Accordéon', el:'Ακορντεόν' },
+            { emoji:'🪕', kind:'banjo', en:'Banjo', es:'Banjo', fr:'Banjo', el:'Μπάντζο' }
         ];
 
         const letterSets = {
             en: [
                 {letter:'A', name:'A', word:'apple', emoji:'🍎'}, {letter:'B', name:'B', word:'ball', emoji:'⚽'},
                 {letter:'C', name:'C', word:'cat', emoji:'🐱'}, {letter:'D', name:'D', word:'dog', emoji:'🐶'},
-                {letter:'M', name:'M', word:'moon', emoji:'🌙'}, {letter:'S', name:'S', word:'sun', emoji:'☀️'}
+                {letter:'E', name:'E', word:'elephant', emoji:'🐘'}, {letter:'F', name:'F', word:'flower', emoji:'🌸'},
+                {letter:'G', name:'G', word:'guitar', emoji:'🎸'}, {letter:'H', name:'H', word:'house', emoji:'🏠'},
+                {letter:'I', name:'I', word:'ice cream', emoji:'🍦'}, {letter:'J', name:'J', word:'juice', emoji:'🧃'},
+                {letter:'K', name:'K', word:'kite', emoji:'🪁'}, {letter:'L', name:'L', word:'lion', emoji:'🦁'},
+                {letter:'M', name:'M', word:'moon', emoji:'🌙'}, {letter:'N', name:'N', word:'nest', emoji:'🪺'},
+                {letter:'O', name:'O', word:'orange', emoji:'🍊'}, {letter:'P', name:'P', word:'penguin', emoji:'🐧'},
+                {letter:'Q', name:'Q', word:'queen', emoji:'👸'}, {letter:'R', name:'R', word:'rainbow', emoji:'🌈'},
+                {letter:'S', name:'S', word:'sun', emoji:'☀️'}, {letter:'T', name:'T', word:'train', emoji:'🚂'},
+                {letter:'U', name:'U', word:'umbrella', emoji:'☂️'}, {letter:'V', name:'V', word:'violin', emoji:'🎻'},
+                {letter:'W', name:'W', word:'whale', emoji:'🐋'}, {letter:'X', name:'X', word:'xylophone', emoji:'🎶'},
+                {letter:'Y', name:'Y', word:'yo-yo', emoji:'🪀'}, {letter:'Z', name:'Z', word:'zebra', emoji:'🦓'}
             ],
             es: [
-                {letter:'A', name:'A', word:'avión', emoji:'✈️'}, {letter:'B', name:'B', word:'barco', emoji:'⛵'},
-                {letter:'C', name:'C', word:'casa', emoji:'🏠'}, {letter:'M', name:'M', word:'mano', emoji:'✋'},
-                {letter:'P', name:'P', word:'pato', emoji:'🦆'}, {letter:'S', name:'S', word:'sol', emoji:'☀️'}
+                {letter:'A', name:'A', word:'avión', emoji:'✈️'}, {letter:'B', name:'Be', word:'balón', emoji:'⚽'},
+                {letter:'C', name:'Ce', word:'casa', emoji:'🏠'}, {letter:'D', name:'De', word:'dinosaurio', emoji:'🦖'},
+                {letter:'E', name:'E', word:'elefante', emoji:'🐘'}, {letter:'F', name:'Efe', word:'flor', emoji:'🌸'},
+                {letter:'G', name:'Ge', word:'gato', emoji:'🐱'}, {letter:'H', name:'Hache', word:'helado', emoji:'🍦'},
+                {letter:'I', name:'I', word:'isla', emoji:'🏝️'}, {letter:'J', name:'Jota', word:'jirafa', emoji:'🦒'},
+                {letter:'K', name:'Ka', word:'kiwi', emoji:'🥝'}, {letter:'L', name:'Ele', word:'luna', emoji:'🌙'},
+                {letter:'M', name:'Eme', word:'mano', emoji:'✋'}, {letter:'N', name:'Ene', word:'nube', emoji:'☁️'},
+                {letter:'Ñ', name:'Eñe', word:'niño', emoji:'🧒'}, {letter:'O', name:'O', word:'oso', emoji:'🐻'},
+                {letter:'P', name:'Pe', word:'pato', emoji:'🦆'}, {letter:'Q', name:'Cu', word:'queso', emoji:'🧀'},
+                {letter:'R', name:'Erre', word:'rana', emoji:'🐸'}, {letter:'S', name:'Ese', word:'sol', emoji:'☀️'},
+                {letter:'T', name:'Te', word:'tomate', emoji:'🍅'}, {letter:'U', name:'U', word:'uvas', emoji:'🍇'},
+                {letter:'V', name:'Uve', word:'vaca', emoji:'🐮'}, {letter:'W', name:'Doble u', word:'wifi', emoji:'📶'},
+                {letter:'X', name:'Equis', word:'xilófono', emoji:'🎶'}, {letter:'Y', name:'Ye', word:'yo-yo', emoji:'🪀'},
+                {letter:'Z', name:'Zeta', word:'zapato', emoji:'👟'}
             ],
             fr: [
                 {letter:'A', name:'A', word:'avion', emoji:'✈️'}, {letter:'B', name:'B', word:'ballon', emoji:'⚽'},
-                {letter:'C', name:'C', word:'chat', emoji:'🐱'}, {letter:'M', name:'M', word:'maison', emoji:'🏠'},
-                {letter:'P', name:'P', word:'pomme', emoji:'🍎'}, {letter:'S', name:'S', word:'soleil', emoji:'☀️'}
+                {letter:'C', name:'C', word:'chat', emoji:'🐱'}, {letter:'D', name:'D', word:'dinosaure', emoji:'🦖'},
+                {letter:'E', name:'E', word:'éléphant', emoji:'🐘'}, {letter:'F', name:'F', word:'fleur', emoji:'🌸'},
+                {letter:'G', name:'G', word:'girafe', emoji:'🦒'}, {letter:'H', name:'H', word:'hibou', emoji:'🦉'},
+                {letter:'I', name:'I', word:'île', emoji:'🏝️'}, {letter:'J', name:'J', word:'jus', emoji:'🧃'},
+                {letter:'K', name:'K', word:'kiwi', emoji:'🥝'}, {letter:'L', name:'L', word:'lune', emoji:'🌙'},
+                {letter:'M', name:'M', word:'maison', emoji:'🏠'}, {letter:'N', name:'N', word:'nuage', emoji:'☁️'},
+                {letter:'O', name:'O', word:'orange', emoji:'🍊'}, {letter:'P', name:'P', word:'pomme', emoji:'🍎'},
+                {letter:'Q', name:'Q', word:'quille', emoji:'🎳'}, {letter:'R', name:'R', word:'robot', emoji:'🤖'},
+                {letter:'S', name:'S', word:'soleil', emoji:'☀️'}, {letter:'T', name:'T', word:'tortue', emoji:'🐢'},
+                {letter:'U', name:'U', word:'uniforme', emoji:'👕'}, {letter:'V', name:'V', word:'vélo', emoji:'🚲'},
+                {letter:'W', name:'W', word:'wagon', emoji:'🚂'}, {letter:'X', name:'X', word:'xylophone', emoji:'🎶'},
+                {letter:'Y', name:'Y', word:'yaourt', emoji:'🥣'}, {letter:'Z', name:'Z', word:'zèbre', emoji:'🦓'}
             ],
             el: [
                 {letter:'Α', name:'Άλφα', word:'αρκούδα', emoji:'🐻'}, {letter:'Β', name:'Βήτα', word:'βιβλίο', emoji:'📕'},
                 {letter:'Γ', name:'Γάμμα', word:'γάτα', emoji:'🐱'}, {letter:'Δ', name:'Δέλτα', word:'δέντρο', emoji:'🌳'},
-                {letter:'Μ', name:'Μι', word:'μήλο', emoji:'🍎'}, {letter:'Π', name:'Πι', word:'παπί', emoji:'🦆'}
+                {letter:'Ε', name:'Έψιλον', word:'ελέφαντας', emoji:'🐘'}, {letter:'Ζ', name:'Ζήτα', word:'ζέβρα', emoji:'🦓'},
+                {letter:'Η', name:'Ήτα', word:'ήλιος', emoji:'☀️'}, {letter:'Θ', name:'Θήτα', word:'θάλασσα', emoji:'🌊'},
+                {letter:'Ι', name:'Γιώτα', word:'ιπποπόταμος', emoji:'🦛'}, {letter:'Κ', name:'Κάππα', word:'καράβι', emoji:'⛵'},
+                {letter:'Λ', name:'Λάμδα', word:'λουλούδι', emoji:'🌸'}, {letter:'Μ', name:'Μι', word:'μήλο', emoji:'🍎'},
+                {letter:'Ν', name:'Νι', word:'νερό', emoji:'💧'}, {letter:'Ξ', name:'Ξι', word:'ξυλόφωνο', emoji:'🎶'},
+                {letter:'Ο', name:'Όμικρον', word:'ομπρέλα', emoji:'☂️'}, {letter:'Π', name:'Πι', word:'παπί', emoji:'🦆'},
+                {letter:'Ρ', name:'Ρο', word:'ρομπότ', emoji:'🤖'}, {letter:'Σ', name:'Σίγμα', word:'σκύλος', emoji:'🐶'},
+                {letter:'Τ', name:'Ταυ', word:'τύμπανο', emoji:'🥁'}, {letter:'Υ', name:'Ύψιλον', word:'ύπνος', emoji:'😴'},
+                {letter:'Φ', name:'Φι', word:'φεγγάρι', emoji:'🌙'}, {letter:'Χ', name:'Χι', word:'χέρι', emoji:'✋'},
+                {letter:'Ψ', name:'Ψι', word:'ψάρι', emoji:'🐟'}, {letter:'Ω', name:'Ωμέγα', word:'ώρα', emoji:'🕐'}
             ]
         };
         letterSets.enUS = letterSets.en.map(item => ({ ...item }));
@@ -3389,7 +3463,7 @@
 
         const spainSpanishNames = {
             Corn:'Maíz', Tomato:'Tomate', Potato:'Patata', Peach:'Melocotón', 'Hot dog':'Perrito caliente',
-            Pig:'Cerdo', 'Cement mixer':'Hormigonera', 'Garbage truck':'Camión de la basura',
+            Pig:'Cerdito', 'Cement mixer':'Hormigonera', 'Garbage truck':'Camión de la basura',
             'Tow truck':'Grúa', Snowplow:'Quitanieves', Forklift:'Carretilla elevadora',
             'Skid steer':'Minicargadora', Paver:'Pavimentadora', 'Drilling rig':'Perforadora',
             'Police car':'Coche de policía', 'Delivery van':'Furgoneta de reparto',
@@ -3430,7 +3504,7 @@
                 chooseGame: 'Choose a game', previousGame: 'Previous game', nextGame: 'Next game',
                 chooseLanguage: 'Language', gamesLabel: 'Games', menuLabel: 'Play menu', playNow: 'Play now',
                 swipeForGames: 'Swipe for more games', hideControls: 'Hide controls', showControls: 'Games and languages',
-                randomGame:'Surprise game', playTimer:'Set play timer', playTimerTitle:'Play timer', playTimerPrompt:'How long should we play?', minutesShort:'min', noTimer:'No timer', cancel:'Cancel', timeUpTitle:'All done!', timeUpMessage:'Great playing. Time for a break!', moreTime:'Grown-up: add more time',
+                randomGame:'Surprise game', randomLanguageGame:'Surprise game and language', playTimer:'Set play timer', playTimerTitle:'Play timer', playTimerPrompt:'How long should we play?', minutesShort:'min', noTimer:'No timer', cancel:'Cancel', timeUpTitle:'All done!', timeUpMessage:'Great playing. Time for a break!', moreTime:'Grown-up: add more time',
                 santaPrompt: 'Ari can you feed Santa? 🎅', morePlease: 'What should Santa eat next Ari? 🎅',
                 tickle: 'Ho ho ho! That tickles Ari! 😆', santaLaugh: 'Ho! Ho! Ho!', dragFood: 'Drag or tap some food', popBalloons: 'Pop the balloons! 🎈',
                 popped: number => `Popped #${number}! ⭐`, balloonLevelUp: number => `Amazing! Now 1 to ${number}! 🚀`, santaLabel: 'Santa Claus',
@@ -3446,7 +3520,7 @@
                 chooseGame: 'Elige un juego', previousGame: 'Juego anterior', nextGame: 'Siguiente juego',
                 chooseLanguage: 'Idioma', gamesLabel: 'Juegos', menuLabel: 'Menú de juego', playNow: 'Jugar ahora',
                 swipeForGames: 'Desliza para ver más juegos', hideControls: 'Ocultar controles', showControls: 'Juegos e idiomas',
-                randomGame:'Juego sorpresa', playTimer:'Configura el tiempo de juego', playTimerTitle:'Tiempo de juego', playTimerPrompt:'¿Cuánto tiempo jugamos?', minutesShort:'min', noTimer:'Sin temporizador', cancel:'Cancelar', timeUpTitle:'¡Terminamos!', timeUpMessage:'¡Jugaste muy bien! Ahora toca descansar.', moreTime:'Adulto: añade más tiempo',
+                randomGame:'Juego sorpresa', randomLanguageGame:'Juego e idioma sorpresa', playTimer:'Configura el tiempo de juego', playTimerTitle:'Tiempo de juego', playTimerPrompt:'¿Cuánto tiempo jugamos?', minutesShort:'min', noTimer:'Sin temporizador', cancel:'Cancelar', timeUpTitle:'¡Terminamos!', timeUpMessage:'¡Jugaste muy bien! Ahora toca descansar.', moreTime:'Adulto: añade más tiempo',
                 santaPrompt: 'Ari ¿qué le damos de comer a Santa ahora? 🎅', morePlease: '¿Qué va a comer Santa ahora Ari? 🎅',
                 tickle: '¡Jo jo jo! ¡Eso me da cosquillas Ari! 😆', santaLaugh: '¡Jo! ¡Jo! ¡Jo!', dragFood: 'Arrastra o toca la comida', popBalloons: '¡Revienta los globos! 🎈',
                 popped: number => `¡Reventaste el globo número ${number}! ⭐`, balloonLevelUp: number => `¡Genial! ¡Ahora del 1 al ${number}! 🚀`, santaLabel: 'Santa Claus',
@@ -3462,7 +3536,7 @@
                 chooseGame: 'Choisis un jeu', previousGame: 'Jeu précédent', nextGame: 'Jeu suivant',
                 chooseLanguage: 'Langue', gamesLabel: 'Jeux', menuLabel: 'Menu de jeu', playNow: 'Jouer maintenant',
                 swipeForGames: 'Fais glisser pour voir plus de jeux', hideControls: 'Masquer les commandes', showControls: 'Jeux et langues',
-                randomGame:'Jeu surprise', playTimer:'Régler le temps de jeu', playTimerTitle:'Temps de jeu', playTimerPrompt:'Combien de temps joue-t-on ?', minutesShort:'min', noTimer:'Sans minuteur', cancel:'Annuler', timeUpTitle:'C’est fini !', timeUpMessage:'Bravo ! C’est l’heure de faire une pause.', moreTime:'Adulte : ajouter du temps',
+                randomGame:'Jeu surprise', randomLanguageGame:'Jeu et langue surprise', playTimer:'Régler le temps de jeu', playTimerTitle:'Temps de jeu', playTimerPrompt:'Combien de temps joue-t-on ?', minutesShort:'min', noTimer:'Sans minuteur', cancel:'Annuler', timeUpTitle:'C’est fini !', timeUpMessage:'Bravo ! C’est l’heure de faire une pause.', moreTime:'Adulte : ajouter du temps',
                 santaPrompt: 'Ari que va manger le Père Noël maintenant ? 🎅', morePlease: 'Que va manger le Père Noël maintenant Ari ? 🎅',
                 tickle: 'Ho ho ho ! Ça me chatouille Ari ! 😆', santaLaugh: 'Ho ! Ho ! Ho !', dragFood: 'Fais glisser ou touche un aliment', popBalloons: 'Éclate les ballons ! 🎈',
                 popped: number => `Tu as éclaté le ballon numéro ${number} ! ⭐`, balloonLevelUp: number => `Bravo ! Maintenant de 1 à ${number} ! 🚀`, santaLabel: 'Père Noël',
@@ -3478,7 +3552,7 @@
                 chooseGame: 'Διάλεξε παιχνίδι', previousGame: 'Προηγούμενο παιχνίδι', nextGame: 'Επόμενο παιχνίδι',
                 chooseLanguage: 'Γλώσσα', gamesLabel: 'Παιχνίδια', menuLabel: 'Μενού παιχνιδιού', playNow: 'Παίξε τώρα',
                 swipeForGames: 'Σύρε για περισσότερα παιχνίδια', hideControls: 'Κρύψε τα κουμπιά', showControls: 'Παιχνίδια και γλώσσες',
-                randomGame:'Παιχνίδι έκπληξη', playTimer:'Ρύθμισε τον χρόνο παιχνιδιού', playTimerTitle:'Χρόνος παιχνιδιού', playTimerPrompt:'Πόση ώρα θα παίξουμε;', minutesShort:'λεπτά', noTimer:'Χωρίς χρονόμετρο', cancel:'Ακύρωση', timeUpTitle:'Τελειώσαμε!', timeUpMessage:'Μπράβο! Ώρα για ένα διάλειμμα.', moreTime:'Μεγάλος: πρόσθεσε χρόνο',
+                randomGame:'Παιχνίδι έκπληξη', randomLanguageGame:'Παιχνίδι και γλώσσα έκπληξη', playTimer:'Ρύθμισε τον χρόνο παιχνιδιού', playTimerTitle:'Χρόνος παιχνιδιού', playTimerPrompt:'Πόση ώρα θα παίξουμε;', minutesShort:'λεπτά', noTimer:'Χωρίς χρονόμετρο', cancel:'Ακύρωση', timeUpTitle:'Τελειώσαμε!', timeUpMessage:'Μπράβο! Ώρα για ένα διάλειμμα.', moreTime:'Μεγάλος: πρόσθεσε χρόνο',
                 santaPrompt: 'Άρι τι θα φάει τώρα ο Άγιος Βασίλης; 🎅', morePlease: 'Τι θα φάει τώρα ο Άγιος Βασίλης Άρι; 🎅',
                 tickle: 'Χο χο χο! Με γαργαλάς Άρι! 😆', santaLaugh: 'Χο! Χο! Χο!', dragFood: 'Σύρε ή πάτησε ένα φαγητό', popBalloons: 'Σκάσε τα μπαλόνια! 🎈',
                 popped: number => `Έσκασες το μπαλόνι με τον αριθμό ${number}! ⭐`, balloonLevelUp: number => `Μπράβο! Τώρα από το 1 ως το ${number}! 🚀`, santaLabel: 'Άγιος Βασίλης',
@@ -4535,6 +4609,7 @@
                 button.classList.toggle('active', language === currentLangMode);
                 button.style.order = isAll ? '99' : String(allLanguageOrder.indexOf(language));
             });
+            document.getElementById('randomLanguageGameButton').hidden = enabledLanguages.length < 2;
         }
 
         function applyAppProfile(profile) {
@@ -4615,6 +4690,17 @@
         let timerOpenedFromTimeUp = false;
 
         function playRandomGame() {
+            playRandomGameFromButton(document.getElementById('randomGameButton'));
+        }
+
+        function playRandomLanguageGame() {
+            const languageChoices = enabledLanguages.filter(language => language !== currentLangMode);
+            const nextLanguage = languageChoices[Math.floor(Math.random() * languageChoices.length)] || enabledLanguages[0];
+            if (nextLanguage) setLanguage(nextLanguage);
+            playRandomGameFromButton(document.getElementById('randomLanguageGameButton'));
+        }
+
+        function playRandomGameFromButton(button) {
             const tabs = Array.from(document.querySelectorAll('.nav-tab'));
             const currentTab = tabs.find(tab => tab.getAttribute('aria-selected') === 'true');
             const choices = tabs.filter(tab => tab !== currentTab);
@@ -4622,7 +4708,6 @@
             if (!nextTab) return;
             const gameId = nextTab.getAttribute('onclick').match(/'([^']+)'/)?.[1];
             if (!gameId) return;
-            const button = document.getElementById('randomGameButton');
             button.animate([
                 {transform:'rotate(0) scale(1)'},
                 {transform:'rotate(200deg) scale(.8)'},
@@ -4816,6 +4901,7 @@
             document.getElementById('collapseControlsButton').setAttribute('aria-label', text.playNow);
             document.getElementById('expandControlsButton').setAttribute('aria-label', text.showControls);
             document.getElementById('randomGameButton').setAttribute('aria-label', text.randomGame);
+            document.getElementById('randomLanguageGameButton').setAttribute('aria-label', text.randomLanguageGame);
             document.getElementById('playTimerButton').setAttribute('aria-label', text.playTimer);
             document.getElementById('playTimerTitle').textContent = text.playTimerTitle;
             document.getElementById('playTimerPrompt').textContent = text.playTimerPrompt;
@@ -6629,6 +6715,11 @@
             if (kind === 'tambourine') { noiseBurst(.28,.25); tone(850,.22,'square',.06); }
             if (kind === 'trumpet') { tone(392,.22,'sawtooth',.13); tone(523,.4,'sawtooth',.13,.2); }
             if (kind === 'voice') [392,440,523].forEach((note,i) => tone(note,.28,'sine',.14,i*.22));
+            if (kind === 'violin') [440,523,659].forEach((note,i) => tone(note,.52,'triangle',.13,i*.12));
+            if (kind === 'saxophone') [294,349,392].forEach((note,i) => tone(note,.34,'sawtooth',.09,i*.14));
+            if (kind === 'flute') [659,784,880].forEach((note,i) => tone(note,.42,'sine',.13,i*.13));
+            if (kind === 'accordion') [262,330,392].forEach(note => tone(note,.62,'square',.055));
+            if (kind === 'banjo') [196,294,392].forEach((note,i) => tone(note,.22,'triangle',.18,i*.07));
         }
 
         function tapInstrument(button, item) {

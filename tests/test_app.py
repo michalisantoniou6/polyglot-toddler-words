@@ -154,13 +154,25 @@ class AppRegressionTests(unittest.TestCase):
 
     def test_letter_garden_is_spoken_multilingual_and_icon_led(self) -> None:
         letter_source = HTML[HTML.index("const letterSets = {"):HTML.index("const learningColors = [")]
-        self.assertGreaterEqual(letter_source.count("{letter:"), 24)
+        expected_counts = {"en": 26, "es": 27, "fr": 26, "el": 24}
+        boundaries = {"en": "es", "es": "fr", "fr": "el"}
+        for language, expected_count in expected_counts.items():
+            if language == "el":
+                source = letter_source[letter_source.index("            el: ["):letter_source.index("            ]\n        };")]
+            else:
+                next_language = boundaries[language]
+                source = letter_source[letter_source.index(f"            {language}: ["):letter_source.index(f"            {next_language}: [")]
+            self.assertEqual(expected_count, source.count("{letter:"), language)
         for language in ("en:", "es:", "fr:", "el:"):
             self.assertIn(language, letter_source)
+        self.assertIn("{letter:'Ñ', name:'Eñe'", letter_source)
+        self.assertIn("{letter:'Ω', name:'Ωμέγα'", letter_source)
         self.assertIn("letterSets.enUS = letterSets.en.map", HTML)
         self.assertIn("letterSets.esES = letterSets.es.map", HTML)
         self.assertIn("speakSingle(languageSettings[language].code, phrase", HTML)
         self.assertIn("letterLanguageIndex = (letterLanguageIndex + 1)", HTML)
+        self.assertIn("body.controls-collapsed #game-letters", HTML)
+        self.assertIn("#game-letters .academic-prompt { position:sticky", HTML)
 
     def test_color_and_shape_hunt_is_adaptive_and_auto_advances(self) -> None:
         self.assertIn("const learningColors = [", HTML)
@@ -216,6 +228,16 @@ class AppRegressionTests(unittest.TestCase):
         self.assertIsNotNone(random_button)
         self.assertGreaterEqual(int(random_button.group(1)), 44)
         self.assertGreaterEqual(int(random_button.group(2)), 44)
+
+    def test_multilingual_surprise_changes_both_game_and_enabled_language(self) -> None:
+        self.assertIn('id="randomLanguageGameButton"', HTML)
+        self.assertIn('onclick="playRandomLanguageGame()"', HTML)
+        self.assertIn("enabledLanguages.filter(language => language !== currentLangMode)", HTML)
+        self.assertIn("if (nextLanguage) setLanguage(nextLanguage)", HTML)
+        self.assertIn("playRandomGameFromButton(document.getElementById('randomLanguageGameButton'))", HTML)
+        self.assertIn("randomLanguageGame:'Surprise game and language'", HTML)
+        self.assertIn("randomLanguageGame:'Juego e idioma sorpresa'", HTML)
+        self.assertIn("randomLanguageGame:'Παιχνίδι και γλώσσα έκπληξη'", HTML)
 
     def test_play_timer_has_quick_choices_and_survives_refresh(self) -> None:
         for minutes in (5, 10, 15, 20):
@@ -329,14 +351,26 @@ class AppRegressionTests(unittest.TestCase):
         self.assertNotIn('id="findNextButton"', HTML)
 
     def test_regional_spanish_vocabulary_stays_distinct(self) -> None:
-        self.assertRegex(HTML, r'en:\s*"Pig",\s*es:\s*"Cochino"')
-
-    def test_monkey_uses_child_friendly_greek_word(self) -> None:
-        self.assertRegex(HTML, r'en:\s*"Monkey",\s*es:\s*"Mono",\s*fr:\s*"Singe",\s*el:\s*"Μαϊμού"')
-        self.assertNotIn('el: "Πίθηκος"', HTML)
-        self.assertIn("Pig:'Cerdo'", HTML)
+        self.assertRegex(HTML, r'en:\s*"Pig",\s*es:\s*"Cochinito"')
+        self.assertIn("Pig:'Cerdito'", HTML)
         self.assertRegex(HTML, r"en:'Straw',\s*es:'Popote'")
         self.assertIn("Straw:'Pajita'", HTML)
+
+    def test_animals_use_natural_greek_and_spanish_diminutives(self) -> None:
+        self.assertRegex(HTML, r'en:\s*"Monkey",\s*es:\s*"Monito",\s*fr:\s*"Singe",\s*el:\s*"Μαϊμουδάκι"')
+        for phrase in ("Perrito", "Gatito", "Osito", "Σκυλάκι", "Γατούλα", "Αρκουδάκι"):
+            self.assertIn(phrase, HTML)
+        self.assertNotIn('el: "Πίθηκος"', HTML)
+
+    def test_music_studio_has_more_instruments_and_its_own_touch_scroller(self) -> None:
+        instrument_source = array_source("instruments")
+        self.assertEqual(13, instrument_source.count("{ emoji:"))
+        for kind in ("violin", "saxophone", "flute", "accordion", "banjo"):
+            self.assertIn(f"kind:'{kind}'", instrument_source)
+            self.assertIn(f"kind === '{kind}'", HTML)
+        scroller = HTML[HTML.index("body.controls-collapsed #game-music"):HTML.index("#game-music .learning-game")]
+        self.assertIn("overflow-y:auto", scroller)
+        self.assertIn("touch-action:pan-y", scroller)
 
     def test_browser_back_restores_the_previous_game_state(self) -> None:
         self.assertIn("history.pushState(nextState, '')", HTML)
