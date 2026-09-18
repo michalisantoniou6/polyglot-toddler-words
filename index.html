@@ -3781,6 +3781,22 @@
         let activeRealSound = null;
         let realSoundStopTimeout = null;
         let realSoundAttemptId = 0;
+        const animalSoundProfiles = new Set(animals.map(animal => animal.sound));
+        const sirenSoundProfiles = new Set(['fireSiren', 'ambulance', 'police']);
+        const hornSoundProfiles = new Set(['heavyTruck', 'train']);
+
+        function playOfflineSoundFallback(profileName) {
+            if (profileName === 'santaLaugh') return;
+            if (animalSoundProfiles.has(profileName)) {
+                SoundFX.animal(profileName);
+            } else if (sirenSoundProfiles.has(profileName)) {
+                SoundFX.siren();
+            } else if (hornSoundProfiles.has(profileName)) {
+                SoundFX.horn();
+            } else {
+                SoundFX.engine();
+            }
+        }
 
         function cachedRealSound(src) {
             if (!realSoundCache.has(src)) {
@@ -3836,6 +3852,7 @@
                 const candidate = rotatedCandidates[candidateIndex++];
                 if (!candidate) {
                     activeRealSound = null;
+                    playOfflineSoundFallback(profileName);
                     return;
                 }
                 const selectedClip = candidate.sound;

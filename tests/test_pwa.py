@@ -60,6 +60,21 @@ class ProgressiveWebAppTests(unittest.TestCase):
         self.assertIn("networkFirstNavigation(request)", SERVICE_WORKER)
         self.assertRegex(SERVICE_WORKER, re.compile(r"catch \(error\).*cache\.match", re.S))
 
+    def test_remote_animal_and_vehicle_recordings_have_an_offline_fallback(self) -> None:
+        self.assertIn("function playOfflineSoundFallback(profileName)", HTML)
+        self.assertIn("SoundFX.animal(profileName)", HTML)
+        self.assertIn("SoundFX.siren()", HTML)
+        self.assertIn("SoundFX.horn()", HTML)
+        self.assertIn("SoundFX.engine()", HTML)
+        self.assertRegex(
+            HTML,
+            re.compile(
+                r"if \(!candidate\) \{\s*activeRealSound = null;\s*"
+                r"playOfflineSoundFallback\(profileName\);",
+                re.S,
+            ),
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
