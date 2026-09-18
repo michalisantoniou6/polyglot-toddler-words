@@ -252,10 +252,24 @@ class AppRegressionTests(unittest.TestCase):
         self.assertIsNotNone(minimum_height)
         self.assertGreaterEqual(int(minimum_width.group(1)), 44)
         self.assertGreaterEqual(int(minimum_height.group(1)), 44)
-        self.assertIn("bodyFigure.style.transformOrigin = `${part.x}% ${part.y}%`", HTML)
+        self.assertIn("function positionBodyHotspots()", HTML)
+        self.assertIn("const [x,y,width,height] = button.dataset.bodyRegion.split(' ').map(Number)", HTML)
+        self.assertIn("bodyFigure.style.transformOrigin = `${focus.focusX}px ${focus.focusY}px`", HTML)
+        self.assertIn("new ResizeObserver", HTML)
         self.assertIn("bodyStage.classList.add('focused')", HTML)
         self.assertIn("bodyLanguageIndex = (bodyLanguageIndex + 1)", HTML)
         self.assertRegex(HTML, re.compile(r"bodyFocusTimer\s*=\s*setTimeout\(\(\)\s*=>\s*\{.*?\},\s*2400\);", re.S))
+
+    def test_body_explorer_face_targets_match_the_drawing(self) -> None:
+        body_markup = HTML[HTML.index('<div class="body-stage" id="bodyStage">'):HTML.index('<!-- 10. BROCCOLI BOUNCE -->')]
+        self.assertEqual(2, body_markup.count('data-body-part="ears"'))
+        for part, region in {
+            "eyes": "140 100 120 48",
+            "nose": "174 132 52 43",
+            "mouth": "154 158 92 45",
+        }.items():
+            self.assertIn(f'data-body-part="{part}" data-body-region="{region}"', body_markup)
+        self.assertNotIn('data-body-part="ears" type="button" style="left:24%;top:12%;width:52%;height:15%"', body_markup)
 
     def test_surprise_game_button_never_reselects_the_current_game(self) -> None:
         self.assertIn('id="randomGameButton"', HTML)

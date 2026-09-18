@@ -2222,8 +2222,8 @@
         .body-hotspot {
             position:absolute;
             z-index:3;
-            min-width:54px;
-            min-height:54px;
+            min-width:44px;
+            min-height:44px;
             padding:0;
             border:0;
             border-radius:999px;
@@ -3001,19 +3001,20 @@
                         <path d="M111 539h45M236 539h45"/>
                     </g>
                 </svg>
-                <button class="body-hotspot" data-body-part="head" type="button" style="left:31%;top:5%;width:38%;height:28%" aria-label="Head"></button>
-                <button class="body-hotspot" data-body-part="ears" type="button" style="left:24%;top:12%;width:52%;height:15%" aria-label="Ears"></button>
-                <button class="body-hotspot" data-body-part="eyes" type="button" style="left:37%;top:17%;width:26%;height:10%" aria-label="Eyes"></button>
-                <button class="body-hotspot" data-body-part="nose" type="button" style="left:44%;top:23%;width:12%;height:10%" aria-label="Nose"></button>
-                <button class="body-hotspot" data-body-part="mouth" type="button" style="left:40%;top:29%;width:20%;height:10%" aria-label="Mouth"></button>
-                <button class="body-hotspot" data-body-part="tummy" type="button" style="left:32%;top:42%;width:36%;height:24%" aria-label="Tummy"></button>
-                <button class="body-hotspot" data-body-part="arm" type="button" style="left:12%;top:40%;width:22%;height:28%" aria-label="Arm"></button>
-                <button class="body-hotspot" data-body-part="hand" type="button" style="left:7%;top:56%;width:21%;height:18%" aria-label="Hand and fingers"></button>
-                <button class="body-hotspot" data-body-part="fingers" type="button" style="left:72%;top:56%;width:21%;height:18%" aria-label="Fingers"></button>
-                <button class="body-hotspot" data-body-part="knee" type="button" style="left:26%;top:72%;width:21%;height:15%" aria-label="Knee"></button>
-                <button class="body-hotspot" data-body-part="leg" type="button" style="left:54%;top:67%;width:21%;height:22%" aria-label="Leg"></button>
-                <button class="body-hotspot" data-body-part="foot" type="button" style="left:20%;top:86%;width:25%;height:12%" aria-label="Foot and toes"></button>
-                <button class="body-hotspot" data-body-part="toes" type="button" style="left:55%;top:86%;width:25%;height:12%" aria-label="Toes"></button>
+                <button class="body-hotspot" data-body-part="head" data-body-region="150 42 100 62" type="button" aria-label="Head"></button>
+                <button class="body-hotspot" data-body-part="ears" data-body-region="96 82 64 68" type="button" aria-label="Ears"></button>
+                <button class="body-hotspot" data-body-part="ears" data-body-region="240 82 64 68" type="button" aria-label="Ears"></button>
+                <button class="body-hotspot" data-body-part="eyes" data-body-region="140 100 120 48" type="button" aria-label="Eyes"></button>
+                <button class="body-hotspot" data-body-part="nose" data-body-region="174 132 52 43" type="button" aria-label="Nose"></button>
+                <button class="body-hotspot" data-body-part="mouth" data-body-region="154 158 92 45" type="button" aria-label="Mouth"></button>
+                <button class="body-hotspot" data-body-part="tummy" data-body-region="128 242 144 150" type="button" aria-label="Tummy"></button>
+                <button class="body-hotspot" data-body-part="arm" data-body-region="68 232 80 145" type="button" aria-label="Arm"></button>
+                <button class="body-hotspot" data-body-part="hand" data-body-region="38 326 78 72" type="button" aria-label="Hand and fingers"></button>
+                <button class="body-hotspot" data-body-part="fingers" data-body-region="290 326 78 72" type="button" aria-label="Fingers"></button>
+                <button class="body-hotspot" data-body-part="knee" data-body-region="106 432 68 68" type="button" aria-label="Knee"></button>
+                <button class="body-hotspot" data-body-part="leg" data-body-region="226 384 74 132" type="button" aria-label="Leg"></button>
+                <button class="body-hotspot" data-body-part="foot" data-body-region="88 500 92 66" type="button" aria-label="Foot and toes"></button>
+                <button class="body-hotspot" data-body-part="toes" data-body-region="220 500 92 66" type="button" aria-label="Toes"></button>
                 <div class="body-tap-hint" id="bodyTapHint" aria-hidden="true">👆 Tap the character</div>
             </div>
         </main>
@@ -3566,19 +3567,19 @@
         }));
 
         const bodyParts = {
-            head:    {x:50,y:16,en:'Head',es:'Cabeza',fr:'Tête',el:'Κεφάλι'},
-            ears:    {x:50,y:18,en:'Ears',es:'Orejas',fr:'Oreilles',el:'Αυτιά'},
-            eyes:    {x:50,y:21,en:'Eyes',es:'Ojos',fr:'Yeux',el:'Μάτια'},
-            nose:    {x:50,y:27,en:'Nose',es:'Nariz',fr:'Nez',el:'Μύτη'},
-            mouth:   {x:50,y:32,en:'Mouth',es:'Boca',fr:'Bouche',el:'Στόμα'},
-            tummy:   {x:50,y:53,en:'Tummy',es:'Barriga',fr:'Ventre',el:'Κοιλιά'},
-            arm:     {x:22,y:52,en:'Arm',es:'Brazo',fr:'Bras',el:'Μπράτσο'},
-            hand:    {x:18,y:63,en:'Hand · Fingers',es:'Mano · Dedos',fr:'Main · Doigts',el:'Χέρι · Δάχτυλα'},
-            fingers: {x:82,y:63,en:'Fingers',es:'Dedos',fr:'Doigts',el:'Δάχτυλα'},
-            knee:    {x:35,y:78,en:'Knee',es:'Rodilla',fr:'Genou',el:'Γόνατο'},
-            leg:     {x:64,y:76,en:'Leg',es:'Pierna',fr:'Jambe',el:'Πόδι'},
-            foot:    {x:31,y:91,en:'Foot · Toes',es:'Pie · Dedos del pie',fr:'Pied · Orteils',el:'Πατούσα · Δάχτυλα των ποδιών'},
-            toes:    {x:69,y:91,en:'Toes',es:'Dedos del pie',fr:'Orteils',el:'Δάχτυλα των ποδιών'}
+            head:    {en:'Head',es:'Cabeza',fr:'Tête',el:'Κεφάλι'},
+            ears:    {en:'Ears',es:'Orejas',fr:'Oreilles',el:'Αυτιά'},
+            eyes:    {en:'Eyes',es:'Ojos',fr:'Yeux',el:'Μάτια'},
+            nose:    {en:'Nose',es:'Nariz',fr:'Nez',el:'Μύτη'},
+            mouth:   {en:'Mouth',es:'Boca',fr:'Bouche',el:'Στόμα'},
+            tummy:   {en:'Tummy',es:'Barriga',fr:'Ventre',el:'Κοιλιά'},
+            arm:     {en:'Arm',es:'Brazo',fr:'Bras',el:'Μπράτσο'},
+            hand:    {en:'Hand · Fingers',es:'Mano · Dedos',fr:'Main · Doigts',el:'Χέρι · Δάχτυλα'},
+            fingers: {en:'Fingers',es:'Dedos',fr:'Doigts',el:'Δάχτυλα'},
+            knee:    {en:'Knee',es:'Rodilla',fr:'Genou',el:'Γόνατο'},
+            leg:     {en:'Leg',es:'Pierna',fr:'Jambe',el:'Πόδι'},
+            foot:    {en:'Foot · Toes',es:'Pie · Dedos del pie',fr:'Pied · Orteils',el:'Πατούσα · Δάχτυλα των ποδιών'},
+            toes:    {en:'Toes',es:'Dedos del pie',fr:'Orteils',el:'Δάχτυλα των ποδιών'}
         };
         Object.values(bodyParts).forEach(part => {
             part.enUS = part.en;
@@ -6537,8 +6538,42 @@
             document.querySelectorAll('.body-hotspot.active').forEach(button => button.classList.remove('active'));
         }
 
+        function bodyHotspotLayout(button) {
+            const [x,y,width,height] = button.dataset.bodyRegion.split(' ').map(Number);
+            const viewBox = bodyFigure.viewBox.baseVal;
+            const figureWidth = bodyFigure.clientWidth;
+            const figureHeight = bodyFigure.clientHeight;
+            const scale = Math.min(figureWidth / viewBox.width, figureHeight / viewBox.height);
+            const offsetX = (figureWidth - viewBox.width * scale) / 2;
+            const offsetY = (figureHeight - viewBox.height * scale) / 2;
+            return {
+                left: offsetX + x * scale,
+                top: offsetY + y * scale,
+                width: width * scale,
+                height: height * scale,
+                focusX: offsetX + (x + width / 2) * scale,
+                focusY: offsetY + (y + height / 2) * scale
+            };
+        }
+
+        function positionBodyHotspots() {
+            if (!bodyFigure.clientWidth || !bodyFigure.clientHeight) return;
+            document.querySelectorAll('.body-hotspot').forEach(button => {
+                const layout = bodyHotspotLayout(button);
+                button.style.left = `${layout.left}px`;
+                button.style.top = `${layout.top}px`;
+                button.style.width = `${layout.width}px`;
+                button.style.height = `${layout.height}px`;
+            });
+        }
+
+        new ResizeObserver(() => {
+            if (!bodyStage.classList.contains('focused')) positionBodyHotspots();
+        }).observe(bodyStage);
+
         function renderBodyExplorer() {
             clearBodyFocus();
+            positionBodyHotspots();
             bodyDisplayLanguage = learningRoundLanguage(bodyLanguageIndex);
             const text = interfaceText[bodyDisplayLanguage];
             document.getElementById('bodyFlag').textContent = languageSettings[bodyDisplayLanguage].flag;
@@ -6556,7 +6591,8 @@
             cancelRepeatSequence();
             const language = bodyDisplayLanguage;
             const label = part[language];
-            bodyFigure.style.transformOrigin = `${part.x}% ${part.y}%`;
+            const focus = bodyHotspotLayout(button);
+            bodyFigure.style.transformOrigin = `${focus.focusX}px ${focus.focusY}px`;
             button.classList.add('active');
             bodyStage.classList.add('focused');
             document.getElementById('bodyPromptText').textContent = label;
