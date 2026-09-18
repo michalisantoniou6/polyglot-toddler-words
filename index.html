@@ -1186,11 +1186,43 @@
         }
         .onboarding-language .flag { display:block; margin-bottom:5px; font-size:2.35rem; line-height:1; }
         .onboarding-language.selected { border-color:#3182ce; background:#ebf8ff; box-shadow:0 5px 0 rgba(49,130,206,.22); }
-        .onboarding-toggle { position:relative; display:block; }
+        .onboarding-toggle { position:relative; display:block; min-width:0; }
+        .onboarding-toggle .onboarding-language {
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            width:100%;
+            height:100%;
+            box-sizing:border-box;
+        }
         .onboarding-toggle input { position:absolute; opacity:0; pointer-events:none; }
         .onboarding-toggle input:focus-visible + .onboarding-language { outline:4px solid rgba(49,130,206,.28); outline-offset:2px; }
         .onboarding-toggle input:checked + .onboarding-language { border-color:#38a169; background:#f0fff4; box-shadow:0 5px 0 rgba(56,161,105,.2); }
-        .onboarding-toggle input:disabled + .onboarding-language::after { content:' ✓'; color:#2f855a; }
+        .onboarding-toggle input:disabled + .onboarding-language { border-color:#3182ce; background:#ebf8ff; box-shadow:0 5px 0 rgba(49,130,206,.22); }
+        .onboarding-toggle .onboarding-language::after {
+            content:attr(data-status);
+            display:block;
+            min-width:52px;
+            margin:8px auto 0;
+            padding:4px 10px;
+            border-radius:999px;
+            background:#e2e8f0;
+            color:#627d98;
+            font-size:.76rem;
+            line-height:1;
+        }
+        .onboarding-toggle input:checked + .onboarding-language::after { background:#c6f6d5; color:#276749; }
+        .onboarding-toggle input:disabled + .onboarding-language::after { background:#bee3f8; color:#2b6cb0; }
+        .onboarding-language-summary {
+            margin:16px 0 0;
+            padding:10px 14px;
+            border-radius:14px;
+            background:#edf2f7;
+            color:#486581;
+            font-weight:900;
+            text-align:center;
+        }
         .onboarding-name-field { margin-top:15px; }
         .onboarding-name-field[hidden] { display:none; }
         .onboarding-name-field label { display:block; margin-bottom:7px; color:#486581; font-weight:900; }
@@ -2019,6 +2051,7 @@
                     <label class="onboarding-toggle"><input type="checkbox" value="esES" data-enabled-language="esES" onchange="changeOnboardingLanguage(this)"><span class="onboarding-language"><span class="flag">🇪🇸</span>Español (España)</span></label>
                     <label class="onboarding-toggle"><input type="checkbox" value="fr" data-enabled-language="fr" onchange="changeOnboardingLanguage(this)"><span class="onboarding-language"><span class="flag">🇫🇷</span>Français</span></label>
                 </div>
+                <p class="onboarding-language-summary" id="onboardingLanguageSummary" aria-live="polite"></p>
             </section>
 
             <section class="onboarding-step" id="onboardingStep3" hidden>
@@ -3175,8 +3208,9 @@
                 step: number => `Βήμα ${number} από 3`,
                 primaryTitle: 'Ποια είναι η κύρια γλώσσα του παιχνιδιού;',
                 primaryLead: 'Θα εμφανίζεται πρώτη και θα χρησιμοποιείται στα μενού.',
-                languagesTitle: 'Ποιες γλώσσες θέλεις να ενεργοποιήσεις;',
-                languagesLead: 'Η κύρια γλώσσα είναι ήδη ενεργή. Διάλεξε όσες ακόμη θέλεις.',
+                languagesTitle: 'Ποιες γλώσσες θέλεις να ακούει το παιδί;',
+                languagesLead: 'Πάτησε μια κάρτα για ενεργοποίηση ή απενεργοποίηση. Μπορείς να τις αλλάξεις αργότερα.',
+                languageMain: 'Κύρια', languageOn: 'Ενεργή', languageOff: 'Ανενεργή', languageCount: count => `${count} γλώσσες ενεργές`,
                 namesTitle: 'Πώς θέλεις να φωνάζει το παιχνίδι το παιδί;',
                 namesLead: 'Γράψε τα ονόματα όπως θέλεις να ακούγονται. Αποθηκεύονται μόνο σε αυτή τη συσκευή.',
                 greekLabel: '🇬🇷 Στα Ελληνικά', otherLabel: '🌍 Στις άλλες γλώσσες',
@@ -3188,8 +3222,9 @@
                 step: number => `Step ${number} of 3`,
                 primaryTitle: 'What is the game’s primary language?',
                 primaryLead: 'It will appear first and be used for menus.',
-                languagesTitle: 'Which languages do you want to enable?',
-                languagesLead: 'The primary language is already on. Choose any others you want.',
+                languagesTitle: 'Which languages should your child hear?',
+                languagesLead: 'Tap a card to turn it on or off. You can change this later.',
+                languageMain: 'Main', languageOn: 'On', languageOff: 'Off', languageCount: count => `${count} languages on`,
                 namesTitle: 'What should the game call your child?',
                 namesLead: 'Enter names exactly as you want them spoken. Names are saved only on this device.',
                 greekLabel: '🇬🇷 In Greek', otherLabel: '🌍 In the other languages',
@@ -3201,8 +3236,9 @@
                 step: number => `Paso ${number} de 3`,
                 primaryTitle: '¿Cuál es el idioma principal del juego?',
                 primaryLead: 'Aparecerá primero y se usará en los menús.',
-                languagesTitle: '¿Qué idiomas quieres activar?',
-                languagesLead: 'El idioma principal ya está activado. Elige los demás que quieras.',
+                languagesTitle: '¿Qué idiomas quieres que escuche tu peque?',
+                languagesLead: 'Toca una tarjeta para activar o desactivar el idioma. Puedes cambiarlo después.',
+                languageMain: 'Principal', languageOn: 'Activado', languageOff: 'Desactivado', languageCount: count => `${count} idiomas activados`,
                 namesTitle: '¿Cómo quieres que el juego llame a tu hijo o hija?',
                 namesLead: 'Escribe los nombres tal como quieres que se escuchen. Se guardan solo en este dispositivo.',
                 greekLabel: '🇬🇷 En griego', otherLabel: '🌍 En los otros idiomas',
@@ -3214,8 +3250,9 @@
                 step: number => `Étape ${number} sur 3`,
                 primaryTitle: 'Quelle est la langue principale du jeu ?',
                 primaryLead: 'Elle apparaîtra en premier et sera utilisée dans les menus.',
-                languagesTitle: 'Quelles langues veux-tu activer ?',
-                languagesLead: 'La langue principale est déjà activée. Choisis les autres que tu veux.',
+                languagesTitle: 'Quelles langues veux-tu que ton enfant entende ?',
+                languagesLead: 'Touche une carte pour activer ou désactiver la langue. Tu pourras changer plus tard.',
+                languageMain: 'Principale', languageOn: 'Activée', languageOff: 'Désactivée', languageCount: count => `${count} langues activées`,
                 namesTitle: 'Comment veux-tu que le jeu appelle ton enfant ?',
                 namesLead: 'Saisis les prénoms comme tu veux les entendre. Ils restent uniquement sur cet appareil.',
                 greekLabel: '🇬🇷 En grec', otherLabel: '🌍 Dans les autres langues',
@@ -3557,7 +3594,12 @@
             document.querySelectorAll('[data-enabled-language]').forEach(input => {
                 input.checked = onboardingDraft.enabledLanguages.includes(input.value);
                 input.disabled = input.value === onboardingDraft.primaryLanguage;
+                const card = input.nextElementSibling;
+                const status = input.disabled ? copy.languageMain : (input.checked ? copy.languageOn : copy.languageOff);
+                card.dataset.status = status;
+                input.setAttribute('aria-label', `${card.textContent.trim()} ${status}`);
             });
+            document.getElementById('onboardingLanguageSummary').textContent = copy.languageCount(onboardingDraft.enabledLanguages.length);
 
             const hasGreek = onboardingDraft.enabledLanguages.includes('el');
             const hasOtherLanguage = onboardingDraft.enabledLanguages.some(language => language !== 'el');
