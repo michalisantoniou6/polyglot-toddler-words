@@ -206,6 +206,26 @@
         ][variant]
     });
 
+    const onboardingAgeOverrides = {
+        de:{step:n=>`Schritt ${n} von 4`,ageTitle:'Wie alt ist dein Kind?',ageLead:'Wir empfehlen die am besten passenden Spiele.',yearsOld:'Jahre'},
+        it:{step:n=>`Passaggio ${n} di 4`,ageTitle:'Quanti anni ha il tuo bambino?',ageLead:'Suggeriremo i giochi più adatti.',yearsOld:'anni'},
+        tr:{step:n=>`4 adımın ${n}. adımı`,ageTitle:'Çocuğun kaç yaşında?',ageLead:'En uygun oyunları önereceğiz.',yearsOld:'yaş'},
+        ptBR:{step:n=>`Etapa ${n} de 4`,ageTitle:'Quantos anos seu filho tem?',ageLead:'Vamos sugerir os jogos mais adequados.',yearsOld:'anos'},
+        nl:{step:n=>`Stap ${n} van 4`,ageTitle:'Hoe oud is je kind?',ageLead:'We stellen de meest geschikte spellen voor.',yearsOld:'jaar'},
+        pl:{step:n=>'Krok '+n+' z 4',ageTitle:'Ile lat ma twoje dziecko?',ageLead:'Zaproponujemy najlepiej dopasowane gry.',yearsOld:'lat'}
+    };
+    Object.entries(onboardingAgeOverrides).forEach(([language,copy]) => {
+        Object.assign(window.extraLanguagePacks[language].onboarding, copy);
+    });
+    const ageSettingsLabels = {
+        de:'🎂 Alter, Sprachen und Einrichtung', it:'🎂 Età, lingue e configurazione',
+        tr:'🎂 Yaş, diller ve kurulum', ptBR:'🎂 Idade, idiomas e configuração',
+        nl:'🎂 Leeftijd, talen en instellingen', pl:'🎂 Wiek, języki i konfiguracja'
+    };
+    Object.entries(ageSettingsLabels).forEach(([language,setup]) => {
+        window.extraLanguagePacks[language].settings.setup = setup;
+    });
+
     const runnerInterfaceOverrides = {
         de:{runner:'Füttere den Bären',runnerPrompt:'Drücken zum Fliegen · Loslassen und wieder drücken',runnerHint:'Drücken zum Fliegen',runnerTutorial:'Drücken zum Fliegen · Loslassen und wieder drücken'},
         it:{runner:'Dai da mangiare all’orsetto',runnerPrompt:'Premi per volare · Lascia e premi di nuovo',runnerHint:'Premi per volare',runnerTutorial:'Premi per volare · Lascia e premi di nuovo'},

@@ -70,16 +70,16 @@ class AppRegressionTests(unittest.TestCase):
             self.assertIn(f'id="{nav_id}"', HTML)
             self.assertIn(f"gameId === '{game}'", HTML)
 
-    def test_us_english_and_feed_the_bear_are_the_defaults(self) -> None:
+    def test_us_english_and_age_three_balloon_game_are_the_defaults(self) -> None:
         self.assertIn('<html lang="en-US" translate="no"', HTML)
         self.assertRegex(HTML, r"let\s+currentLangMode\s*=\s*'enUS';")
         self.assertIn("return 'enUS';", HTML)
         self.assertIn("primaryLanguage: preferredFirstRunLanguage()", HTML)
         self.assertIn('<option value="enUS" selected>', HTML)
         self.assertRegex(HTML, r'class="lang-pill active"[^>]+data-language="enUS"')
-        self.assertRegex(HTML, r'id="game-runner"\s+class="game-view active"')
-        self.assertRegex(HTML, r'class="nav-tab active"[^>]+aria-selected="true"[^>]+switchGame\(\'runner\', this\)')
-        self.assertIn('<span id="collapsedGameIcon" aria-hidden="true">🧸</span>', HTML)
+        self.assertRegex(HTML, r'id="game-balloons"\s+class="game-view active"')
+        self.assertRegex(HTML, r'class="nav-tab active"[^>]+aria-selected="true"[^>]+switchGame\(\'balloons\', this\)')
+        self.assertIn('<span id="collapsedGameIcon" aria-hidden="true">🎈</span>', HTML)
         self.assertIn("spawnBalloon(true);", HTML)
 
     def test_first_run_uses_device_locale_without_skipping_onboarding(self) -> None:
@@ -94,8 +94,8 @@ class AppRegressionTests(unittest.TestCase):
         self.assertIn("openOnboarding(false);", HTML)
 
     def test_saved_profile_versions_are_loaded_after_refresh(self) -> None:
-        self.assertIn("[1, 2, 3].includes(savedProfile?.schemaVersion)", HTML)
-        self.assertIn("schemaVersion: 3", HTML)
+        self.assertIn("[1, 2, 3, 4, 5].includes(savedProfile?.schemaVersion)", HTML)
+        self.assertIn("schemaVersion: 5", HTML)
         self.assertIn("return normalizedProfile;", HTML)
         self.assertIn("localStorage.setItem(appProfileStorageKey, JSON.stringify(appProfile))", HTML)
         self.assertIn("onboardingComplete: true", HTML)
@@ -135,6 +135,36 @@ class AppRegressionTests(unittest.TestCase):
 
     def test_new_profiles_begin_with_only_the_locale_matched_primary_language(self) -> None:
         self.assertGreaterEqual(HTML.count("enabledLanguages: [preferredFirstRunLanguage()]"), 2)
+
+    def test_onboarding_collects_age_and_chooses_an_age_based_first_game(self) -> None:
+        for age in (2, 3, 4, 5):
+            self.assertIn(f'data-child-age="{age}"', HTML)
+            self.assertIn(f"chooseOnboardingAge({age})", HTML)
+        self.assertIn("const childAge = [2, 3, 4, 5].includes", HTML)
+        self.assertIn("childAge,", HTML)
+        self.assertIn("const defaultGamesByAge = Object.freeze({ 2:'animals', 3:'balloons', 4:'runner', 5:'runner' })", HTML)
+        self.assertIn("activateDefaultGameForAge();", HTML)
+        self.assertIn("How old is your child?", HTML)
+        self.assertIn("Πόσο χρονών είναι το παιδί;", HTML)
+        self.assertIn("¿Cuántos años tiene tu peque?", HTML)
+        self.assertIn("Quel âge a ton enfant ?", HTML)
+        self.assertIn("onboardingStep4", HTML)
+        self.assertIn("onboardingStep < 4", HTML)
+        self.assertIn("childAgeConfirmed: true", HTML)
+        self.assertIn("openOnboarding(false, 3, true)", HTML)
+        self.assertIn("if (onboardingAgeOnly)", HTML)
+
+    def test_every_game_has_an_age_tier_and_dice_prioritizes_the_exact_age(self) -> None:
+        age_map = HTML[HTML.index("const gameMinimumAges") : HTML.index("const defaultGamesByAge")]
+        for game in (
+            "monster", "trucks", "balloons", "animals", "everyday", "letters", "shapes",
+            "counting", "body", "runner", "icecream", "birthday", "cooking", "music",
+            "beat", "dance", "bells",
+        ):
+            self.assertRegex(age_map, rf"\b{game}:[2345]\b")
+        self.assertIn("minimumAge <= appProfile.childAge", HTML)
+        self.assertIn("minimumAge === appProfile.childAge ? 4 : 1", HTML)
+        self.assertIn("ageAppropriateChoices.length ? ageAppropriateChoices", HTML)
 
     def test_primary_language_is_first_in_all_languages_mode(self) -> None:
         ordering_pattern = re.compile(
@@ -297,7 +327,8 @@ class AppRegressionTests(unittest.TestCase):
 
     def test_surprise_game_button_never_reselects_the_current_game(self) -> None:
         self.assertIn('id="randomGameButton"', HTML)
-        self.assertIn("const choices = tabs.filter(tab => tab !== currentTab)", HTML)
+        self.assertIn("const ageAppropriateChoices = tabs.filter", HTML)
+        self.assertIn("const weightedChoices = choices.flatMap", HTML)
         self.assertIn("switchGame(gameId, nextTab)", HTML)
         self.assertIn("randomGame:'Surprise game'", HTML)
         random_button = re.search(r"\.random-game-button\s*\{.*?width:\s*(\d+)px;.*?height:\s*(\d+)px;", HTML, re.S)

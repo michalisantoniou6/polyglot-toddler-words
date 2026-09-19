@@ -1259,6 +1259,36 @@
             font-weight:900;
             text-align:center;
         }
+        .onboarding-age-options {
+            display:grid;
+            grid-template-columns:repeat(4,minmax(0,1fr));
+            gap:10px;
+            margin-top:8px;
+        }
+        .onboarding-age-option {
+            min-width:0;
+            min-height:92px;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            gap:2px;
+            border:4px solid #cbd5e0;
+            border-radius:22px;
+            background:#f8fbff;
+            color:#486581;
+            font:inherit;
+            font-weight:950;
+            box-shadow:0 5px 0 rgba(72,101,129,.15);
+        }
+        .onboarding-age-option.active {
+            border-color:#48bb78;
+            background:#f0fff4;
+            color:#22543d;
+            box-shadow:0 5px 0 rgba(47,133,90,.24),0 0 0 5px rgba(72,187,120,.12);
+        }
+        .onboarding-age-number { font-size:2.5rem;line-height:1; }
+        .onboarding-age-label { font-size:.76rem;line-height:1.05; }
         .onboarding-name-field { margin-top:15px; }
         .onboarding-name-field[hidden] { display:none; }
         .onboarding-name-field label { display:block; margin-bottom:7px; color:#486581; font-weight:900; }
@@ -3049,8 +3079,9 @@
         <form class="onboarding-card" id="onboardingForm" onsubmit="continueOnboarding(event)">
             <button class="onboarding-close" id="onboardingClose" type="button" onclick="closeOnboarding()" aria-label="Κλείσιμο" hidden>×</button>
             <div class="onboarding-brand" aria-hidden="true">🎈🎵</div>
-            <div class="onboarding-progress" id="onboardingProgress" aria-label="Βήμα 1 από 3">
+            <div class="onboarding-progress" id="onboardingProgress" aria-label="Βήμα 1 από 4">
                 <span class="onboarding-progress-dot active"></span>
+                <span class="onboarding-progress-dot"></span>
                 <span class="onboarding-progress-dot"></span>
                 <span class="onboarding-progress-dot"></span>
             </div>
@@ -3082,6 +3113,17 @@
             </section>
 
             <section class="onboarding-step" id="onboardingStep3" hidden>
+                <h2 id="onboardingAgeTitle">Πόσο χρονών είναι το παιδί;</h2>
+                <p class="onboarding-lead" id="onboardingAgeLead">Θα προτείνουμε τα πιο κατάλληλα παιχνίδια</p>
+                <div class="onboarding-age-options" id="onboardingAgeOptions" role="group" aria-labelledby="onboardingAgeTitle">
+                    <button class="onboarding-age-option" type="button" data-child-age="2" aria-pressed="false" onclick="chooseOnboardingAge(2)"><span class="onboarding-age-number">2</span><span class="onboarding-age-label">χρονών</span></button>
+                    <button class="onboarding-age-option active" type="button" data-child-age="3" aria-pressed="true" onclick="chooseOnboardingAge(3)"><span class="onboarding-age-number">3</span><span class="onboarding-age-label">χρονών</span></button>
+                    <button class="onboarding-age-option" type="button" data-child-age="4" aria-pressed="false" onclick="chooseOnboardingAge(4)"><span class="onboarding-age-number">4</span><span class="onboarding-age-label">χρονών</span></button>
+                    <button class="onboarding-age-option" type="button" data-child-age="5" aria-pressed="false" onclick="chooseOnboardingAge(5)"><span class="onboarding-age-number">5</span><span class="onboarding-age-label">χρονών</span></button>
+                </div>
+            </section>
+
+            <section class="onboarding-step" id="onboardingStep4" hidden>
                 <h2 id="onboardingNamesTitle">Πώς να φωνάζουμε το παιδί;</h2>
                 <p class="onboarding-lead" id="onboardingNamesLead">Μπορείτε να βάλετε όνομα και χαϊδευτικά</p>
                 <div class="onboarding-name-field" id="onboardingGreekField">
@@ -3204,7 +3246,7 @@
                         <span class="nav-icon">🚜</span>
                         <span id="navTrucks">Big Trucks</span>
                     </button>
-                    <button class="nav-tab" role="tab" aria-selected="false" onclick="switchGame('balloons', this)">
+                    <button class="nav-tab active" role="tab" aria-selected="true" onclick="switchGame('balloons', this)">
                         <span class="nav-icon">🎈</span>
                         <span id="navBalloons">Balloon Pop</span>
                     </button>
@@ -3232,7 +3274,7 @@
                         <span class="nav-icon">🧒</span>
                         <span id="navBody">Body Explorer</span>
                     </button>
-                    <button class="nav-tab active" role="tab" aria-selected="true" onclick="switchGame('runner', this)">
+                    <button class="nav-tab" role="tab" aria-selected="false" onclick="switchGame('runner', this)">
                         <span class="nav-icon">🧸</span>
                         <span id="navRunner">Feed the Bear</span>
                     </button>
@@ -3285,7 +3327,7 @@
 
     <button class="controls-expand-button" id="expandControlsButton" type="button" onclick="setControlsCollapsed(false)" aria-controls="gameControlsHeader" aria-expanded="false" aria-label="Παιχνίδια και γλώσσες">
         <span id="collapsedLanguageFlag" aria-hidden="true">🇬🇷</span>
-        <span id="collapsedGameIcon" aria-hidden="true">🧸</span>
+        <span id="collapsedGameIcon" aria-hidden="true">🎈</span>
     </button>
 
     <div class="quick-play-controls" aria-label="Quick play">
@@ -3354,7 +3396,7 @@
     </div>
 
     <!-- 3. BALLOON POP & COUNT -->
-    <div id="game-balloons" class="game-view">
+    <div id="game-balloons" class="game-view active">
         <div class="balloon-status" id="balloonStatus">Pop the balloons! 🎈</div>
         <div class="balloon-sky" id="balloonSky"></div>
     </div>
@@ -3470,7 +3512,7 @@
     </div>
 
     <!-- 10. BROCCOLI BOUNCE -->
-    <div id="game-runner" class="game-view active">
+    <div id="game-runner" class="game-view">
         <main class="learning-game academic-game runner-game">
             <div class="runner-stage" id="runnerStage" role="button" tabindex="0" aria-label="Hold to fly and let go to land">
                 <div class="runner-hud">
@@ -3586,7 +3628,7 @@
         </main>
     </div>
 
-    <script src="languages.js?v=4"></script>
+    <script src="languages.js?v=5"></script>
     <script>
         /* -------------------------------------------------------------
            1. CORE DATASETS (4 Languages: EN, Mexican ES, FR, EL)
@@ -4690,7 +4732,7 @@
                 help: 'Χώρισέ τα με κόμμα. Κράτησε την ίδια σειρά και στις δύο λίστες.',
                 required: 'Γράψε τουλάχιστον ένα όνομα σε κάθε λίστα.',
                 error: 'Οι δύο λίστες πρέπει να έχουν τον ίδιο αριθμό ονομάτων.',
-                close: 'Κλείσιμο', cancel: 'Ακύρωση', save: 'Αποθήκευση', restore: 'Επαναφορά αρχικών', setup: '🌍 Γλώσσες και αρχική ρύθμιση',
+                close: 'Κλείσιμο', cancel: 'Ακύρωση', save: 'Αποθήκευση', restore: 'Επαναφορά αρχικών', setup: '🎂 Ηλικία, γλώσσες και αρχική ρύθμιση',
                 diceTitle: '🎲 Τι κάνει το ζάρι;', diceSingle: 'Μία γλώσσα', diceMultilingual: 'Όλες οι γλώσσες', diceRandom: 'Τυχαία γλώσσα', timer: 'Χρόνος παιχνιδιού',
                 childLockTitle: '🔒 Κλείδωμα παιδιού', childLockStart: '🔒 Κλείδωμα στο παιχνίδι', childLockStop: '🔓 Ξεκλείδωμα παιχνιδιού',
                 childLockHelp: 'Κρατά το Android σε αυτό το παιχνίδι. Για πλήρη προστασία ενεργοποίησε κωδικό για ξεκαρφίτσωμα στις ρυθμίσεις του κινητού.', childLockWeb: 'Το κλείδωμα είναι διαθέσιμο στην εφαρμογή Android.',
@@ -4703,7 +4745,7 @@
                 help: 'Separate nicknames with commas. Keep both lists in the same order.',
                 required: 'Enter at least one name in each list.',
                 error: 'Both lists need the same number of names.',
-                close: 'Close', cancel: 'Cancel', save: 'Save', restore: 'Restore defaults', setup: '🌍 Languages and setup',
+                close: 'Close', cancel: 'Cancel', save: 'Save', restore: 'Restore defaults', setup: '🎂 Age, languages & setup',
                 diceTitle: '🎲 What does the dice do?', diceSingle: 'One language', diceMultilingual: 'All languages', diceRandom: 'Random language', timer: 'Play timer',
                 childLockTitle: '🔒 Child lock', childLockStart: '🔒 Lock into the game', childLockStop: '🔓 Unlock the game',
                 childLockHelp: 'Keeps Android pinned to this game. For full protection enable Require PIN to unpin in the phone settings.', childLockWeb: 'Child lock is available in the Android app.',
@@ -4716,7 +4758,7 @@
                 help: 'Separa los apodos con comas. Mantén el mismo orden en las dos listas.',
                 required: 'Escribe al menos un nombre en cada lista.',
                 error: 'Las dos listas deben tener la misma cantidad de nombres.',
-                close: 'Cerrar', cancel: 'Cancelar', save: 'Guardar', restore: 'Restaurar valores', setup: '🌍 Idiomas y configuración',
+                close: 'Cerrar', cancel: 'Cancelar', save: 'Guardar', restore: 'Restaurar valores', setup: '🎂 Edad, idiomas y configuración',
                 diceTitle: '🎲 ¿Qué hace el dado?', diceSingle: 'Un idioma', diceMultilingual: 'Todos los idiomas', diceRandom: 'Idioma al azar', timer: 'Tiempo de juego',
                 childLockTitle: '🔒 Bloqueo infantil', childLockStart: '🔒 Bloquear en el juego', childLockStop: '🔓 Desbloquear el juego',
                 childLockHelp: 'Mantiene Android fijado en este juego. Para mayor protección activa Solicitar PIN para desanclar en los ajustes del teléfono.', childLockWeb: 'El bloqueo infantil está disponible en la app para Android.',
@@ -4729,7 +4771,7 @@
                 help: 'Sépare les surnoms par des virgules. Garde le même ordre dans les deux listes.',
                 required: 'Saisis au moins un prénom dans chaque liste.',
                 error: 'Les deux listes doivent contenir le même nombre de prénoms.',
-                close: 'Fermer', cancel: 'Annuler', save: 'Enregistrer', restore: 'Valeurs par défaut', setup: '🌍 Langues et configuration',
+                close: 'Fermer', cancel: 'Annuler', save: 'Enregistrer', restore: 'Valeurs par défaut', setup: '🎂 Âge, langues et configuration',
                 diceTitle: '🎲 Que fait le dé ?', diceSingle: 'Une langue', diceMultilingual: 'Toutes les langues', diceRandom: 'Langue au hasard', timer: 'Temps de jeu',
                 childLockTitle: '🔒 Verrou enfant', childLockStart: '🔒 Verrouiller dans le jeu', childLockStop: '🔓 Déverrouiller le jeu',
                 childLockHelp: 'Garde Android épinglé sur ce jeu. Pour une protection complète active le code requis pour désépingler dans les réglages du téléphone.', childLockWeb: 'Le verrou enfant est disponible dans l’application Android.',
@@ -4746,12 +4788,13 @@
 
         const onboardingCopy = {
             el: {
-                step: number => `Βήμα ${number} από 3`,
+                step: number => `Βήμα ${number} από 4`,
                 primaryTitle: 'Ποια είναι η κύρια γλώσσα του παιχνιδιού;',
                 primaryLead: 'Θα εμφανίζεται πρώτη και θα χρησιμοποιείται στα μενού.',
                 languagesTitle: 'Ποιες γλώσσες θέλεις να ακούει το παιδί;',
                 languagesLead: 'Πρόσθεσε όποιες άλλες γλώσσες θέλεις. Μπορείς να τις αλλάξεις αργότερα.',
                 languageMain: 'Κύρια', languageCount: count => `${count} γλώσσες ενεργές`, addLanguage: '+ Πρόσθεσε άλλη γλώσσα', allLanguagesAdded: 'Όλες οι γλώσσες έχουν προστεθεί', localeHint: '✨ Προεπιλογή από τη γλώσσα και την περιοχή της συσκευής σου',
+                ageTitle: 'Πόσο χρονών είναι το παιδί;', ageLead: 'Θα προτείνουμε τα πιο κατάλληλα παιχνίδια.', yearsOld: 'χρονών',
                 namesTitle: 'Πώς θέλεις να φωνάζει το παιχνίδι το παιδί;',
                 namesLead: 'Προαιρετικά: γράψε τα ονόματα όπως θέλεις να ακούγονται. Μπορείς και να το παραλείψεις.',
                 greekLabel: '🇬🇷 Στα Ελληνικά', otherLabel: '🌍 Στις άλλες γλώσσες',
@@ -4760,12 +4803,13 @@
                 required: 'Γράψε τουλάχιστον ένα όνομα.', mismatch: 'Οι δύο λίστες χρειάζονται τον ίδιο αριθμό ονομάτων.'
             },
             en: {
-                step: number => `Step ${number} of 3`,
+                step: number => `Step ${number} of 4`,
                 primaryTitle: 'What is the game’s primary language?',
                 primaryLead: 'It will appear first and be used for menus.',
                 languagesTitle: 'Which languages should your child hear?',
                 languagesLead: 'Add any other languages you want. You can change them later.',
                 languageMain: 'Main', languageCount: count => `${count} languages on`, addLanguage: '+ Add another language', allLanguagesAdded: 'All languages added', localeHint: '✨ Preselected from your device language and region',
+                ageTitle: 'How old is your child?', ageLead: 'We’ll suggest the most suitable games.', yearsOld: 'years old',
                 namesTitle: 'What should the game call your child?',
                 namesLead: 'Optional: enter names exactly as you want them spoken or skip this step.',
                 greekLabel: '🇬🇷 In Greek', otherLabel: '🌍 In the other languages',
@@ -4774,12 +4818,13 @@
                 required: 'Enter at least one name.', mismatch: 'Both lists need the same number of names.'
             },
             es: {
-                step: number => `Paso ${number} de 3`,
+                step: number => `Paso ${number} de 4`,
                 primaryTitle: '¿Cuál es el idioma principal del juego?',
                 primaryLead: 'Aparecerá primero y se usará en los menús.',
                 languagesTitle: '¿Qué idiomas quieres que escuche tu peque?',
                 languagesLead: 'Agrega los otros idiomas que quieras. Puedes cambiarlos después.',
                 languageMain: 'Principal', languageCount: count => `${count} idiomas activados`, addLanguage: '+ Agregar otro idioma', allLanguagesAdded: 'Todos los idiomas están agregados', localeHint: '✨ Preseleccionado según el idioma y la región de tu dispositivo',
+                ageTitle: '¿Cuántos años tiene tu peque?', ageLead: 'Recomendaremos los juegos más adecuados.', yearsOld: 'años',
                 namesTitle: '¿Cómo quieres que el juego llame a tu hijo o hija?',
                 namesLead: 'Opcional: escribe los nombres como quieres que se escuchen o salta este paso.',
                 greekLabel: '🇬🇷 En griego', otherLabel: '🌍 En los otros idiomas',
@@ -4788,12 +4833,13 @@
                 required: 'Escribe por lo menos un nombre.', mismatch: 'Las dos listas necesitan la misma cantidad de nombres.'
             },
             fr: {
-                step: number => `Étape ${number} sur 3`,
+                step: number => `Étape ${number} sur 4`,
                 primaryTitle: 'Quelle est la langue principale du jeu ?',
                 primaryLead: 'Elle apparaîtra en premier et sera utilisée dans les menus.',
                 languagesTitle: 'Quelles langues veux-tu que ton enfant entende ?',
                 languagesLead: 'Ajoute les autres langues souhaitées. Tu pourras les modifier plus tard.',
                 languageMain: 'Principale', languageCount: count => `${count} langues activées`, addLanguage: '+ Ajouter une autre langue', allLanguagesAdded: 'Toutes les langues sont ajoutées', localeHint: '✨ Présélectionné selon la langue et la région de ton appareil',
+                ageTitle: 'Quel âge a ton enfant ?', ageLead: 'Nous proposerons les jeux les plus adaptés.', yearsOld: 'ans',
                 namesTitle: 'Comment veux-tu que le jeu appelle ton enfant ?',
                 namesLead: 'Facultatif : saisis les prénoms comme tu veux les entendre ou passe cette étape.',
                 greekLabel: '🇬🇷 En grec', otherLabel: '🌍 Dans les autres langues',
@@ -4887,13 +4933,19 @@
             const diceMode = ['single', 'multilingual', 'random'].includes(rawProfile?.diceMode)
                 ? rawProfile.diceMode
                 : 'single';
+            const childAge = [2, 3, 4, 5].includes(Number(rawProfile?.childAge))
+                ? Number(rawProfile.childAge)
+                : 3;
+            const childAgeConfirmed = rawProfile?.childAgeConfirmed === true;
 
             return {
-                schemaVersion: 3,
+                schemaVersion: 5,
                 onboardingComplete,
                 primaryLanguage,
                 enabledLanguages: supportedLanguageOrder.filter(language => enabled.includes(language)),
                 diceMode,
+                childAge,
+                childAgeConfirmed,
                 greekNames,
                 otherNames
             };
@@ -4902,7 +4954,7 @@
         function loadAppProfile() {
             try {
                 const savedProfile = JSON.parse(localStorage.getItem(appProfileStorageKey));
-                if ([1, 2, 3].includes(savedProfile?.schemaVersion)) {
+                if ([1, 2, 3, 4, 5].includes(savedProfile?.schemaVersion)) {
                     const normalizedProfile = normalizeAppProfile(savedProfile);
                     const hasSavedNames = normalizedProfile.greekNames.length > 0 || normalizedProfile.otherNames.length > 0;
                     if (savedProfile.schemaVersion === 2 && !normalizedProfile.onboardingComplete && hasSavedNames) {
@@ -5194,6 +5246,7 @@
 
         let onboardingStep = 1;
         let onboardingEditing = false;
+        let onboardingAgeOnly = false;
         let onboardingDraft = null;
 
         function cloneProfile(profile) {
@@ -5234,7 +5287,8 @@
         function updateOnboardingView(shouldFocus = true) {
             if (!onboardingDraft) return;
             const copy = onboardingCopy[onboardingDraft.primaryLanguage];
-            const stepIds = ['onboardingStep1', 'onboardingStep2', 'onboardingStep3'];
+            const stepIds = ['onboardingStep1', 'onboardingStep2', 'onboardingStep3', 'onboardingStep4'];
+            const stepTitleIds = ['onboardingTitle', 'onboardingLanguagesTitle', 'onboardingAgeTitle', 'onboardingNamesTitle'];
             stepIds.forEach((id, index) => {
                 document.getElementById(id).hidden = index + 1 !== onboardingStep;
             });
@@ -5243,24 +5297,33 @@
             });
 
             document.getElementById('onboardingProgress').setAttribute('aria-label', copy.step(onboardingStep));
+            document.getElementById('onboardingProgress').hidden = onboardingAgeOnly;
             document.getElementById('onboardingPrimarySelect').setAttribute('aria-label', copy.primaryTitle);
             document.getElementById('onboardingTitle').textContent = copy.primaryTitle;
             document.getElementById('onboardingPrimaryLead').textContent = copy.primaryLead;
             document.getElementById('onboardingLocaleHint').textContent = copy.localeHint;
             document.getElementById('onboardingLanguagesTitle').textContent = copy.languagesTitle;
             document.getElementById('onboardingLanguagesLead').textContent = copy.languagesLead;
+            document.getElementById('onboardingAgeTitle').textContent = copy.ageTitle;
+            document.getElementById('onboardingAgeLead').textContent = copy.ageLead;
+            document.querySelectorAll('.onboarding-age-label').forEach(label => { label.textContent = copy.yearsOld; });
+            document.querySelectorAll('.onboarding-age-option').forEach(button => {
+                const isSelected = Number(button.dataset.childAge) === onboardingDraft.childAge;
+                button.classList.toggle('active', isSelected);
+                button.setAttribute('aria-pressed', String(isSelected));
+            });
             document.getElementById('onboardingNamesTitle').textContent = copy.namesTitle;
             document.getElementById('onboardingNamesLead').textContent = copy.namesLead;
             document.getElementById('onboardingGreekLabel').textContent = copy.greekLabel;
             document.getElementById('onboardingOtherLabel').textContent = copy.otherLabel;
             document.getElementById('onboardingNamesHelp').textContent = copy.namesHelp;
             document.getElementById('onboardingBack').textContent = copy.back;
-            document.getElementById('onboardingBack').hidden = onboardingStep === 1;
+            document.getElementById('onboardingBack').hidden = onboardingAgeOnly || onboardingStep === 1;
             document.getElementById('onboardingSkipName').textContent = copy.skipNames;
-            document.getElementById('onboardingSkipName').hidden = onboardingStep !== 3;
-            document.getElementById('onboardingNext').textContent = onboardingStep === 3 ? copy.finish : copy.next;
+            document.getElementById('onboardingSkipName').hidden = onboardingStep !== 4;
+            document.getElementById('onboardingNext').textContent = onboardingAgeOnly || onboardingStep === 4 ? copy.finish : copy.next;
             document.getElementById('onboardingClose').setAttribute('aria-label', copy.close);
-            document.getElementById('onboardingModal').setAttribute('aria-labelledby', stepIds[onboardingStep - 1] === 'onboardingStep1' ? 'onboardingTitle' : (onboardingStep === 2 ? 'onboardingLanguagesTitle' : 'onboardingNamesTitle'));
+            document.getElementById('onboardingModal').setAttribute('aria-labelledby', stepTitleIds[onboardingStep - 1]);
 
             document.getElementById('onboardingPrimarySelect').value = onboardingDraft.primaryLanguage;
             renderOnboardingLanguagePicker(copy);
@@ -5279,6 +5342,8 @@
                 } else if (onboardingStep === 2) {
                     const addLanguageSelect = document.getElementById('onboardingAddLanguageSelect');
                     (addLanguageSelect.disabled ? document.getElementById('onboardingNext') : addLanguageSelect).focus({ preventScroll: true });
+                } else if (onboardingStep === 3) {
+                    document.querySelector(`.onboarding-age-option[data-child-age="${onboardingDraft.childAge}"]`)?.focus({ preventScroll: true });
                 } else {
                     const firstVisibleInput = hasGreek ? document.getElementById('onboardingGreekNames') : document.getElementById('onboardingOtherNames');
                     firstVisibleInput.focus({ preventScroll: true });
@@ -5299,10 +5364,11 @@
             select.value = selectedLanguage;
         }
 
-        function openOnboarding(isEditing = false) {
+        function openOnboarding(isEditing = false, initialStep = 1, ageOnly = false) {
             pauseActivePlay();
             onboardingEditing = isEditing;
-            onboardingStep = 1;
+            onboardingAgeOnly = ageOnly;
+            onboardingStep = initialStep;
             onboardingDraft = cloneProfile(appProfile);
             populateOnboardingPrimaryOptions();
             document.getElementById('onboardingGreekNames').value = onboardingDraft.greekNames.join(', ');
@@ -5324,6 +5390,7 @@
             document.body.classList.remove('onboarding-open');
             setOnboardingBackgroundInert(false);
             onboardingDraft = null;
+            onboardingAgeOnly = false;
             if (reopenSettings) {
                 requestAnimationFrame(openSettings);
             }
@@ -5389,15 +5456,25 @@
             updateOnboardingView(false);
         }
 
+        function chooseOnboardingAge(age) {
+            if (![2, 3, 4, 5].includes(Number(age))) return;
+            onboardingDraft.childAge = Number(age);
+            updateOnboardingView(false);
+        }
+
         function backOnboarding() {
-            if (onboardingStep === 3) syncOnboardingNameDraft();
+            if (onboardingStep === 4) syncOnboardingNameDraft();
             if (onboardingStep > 1) onboardingStep--;
             updateOnboardingView();
         }
 
         function continueOnboarding(event) {
             event.preventDefault();
-            if (onboardingStep < 3) {
+            if (onboardingAgeOnly) {
+                finishOnboarding(false);
+                return;
+            }
+            if (onboardingStep < 4) {
                 onboardingStep++;
                 updateOnboardingView();
                 return;
@@ -5439,8 +5516,9 @@
                 showOnboardingError(copy.mismatch, otherInput);
                 return;
             }
-            applyAppProfile(normalizeAppProfile({ ...onboardingDraft, onboardingComplete: true }));
+            applyAppProfile(normalizeAppProfile({ ...onboardingDraft, childAgeConfirmed: true, onboardingComplete: true }));
             persistAppProfile();
+            activateDefaultGameForAge();
             onboardingEditing = false;
             closeOnboarding(false);
             setControlsCollapsed(true, true, false);
@@ -5724,6 +5802,29 @@
             playRandomGameFromButton(document.getElementById('randomGameButton'));
         }
 
+        const gameMinimumAges = Object.freeze({
+            monster:2, trucks:2, animals:2, everyday:2, body:2, music:2, bells:2,
+            balloons:3, letters:3, shapes:3, icecream:3, birthday:3, dance:3,
+            counting:4, runner:4, cooking:4,
+            beat:5
+        });
+        const defaultGamesByAge = Object.freeze({ 2:'animals', 3:'balloons', 4:'runner', 5:'runner' });
+
+        function gameIdFromTab(tab) {
+            return tab?.getAttribute('onclick')?.match(/'([^']+)'/)?.[1] || '';
+        }
+
+        function gameTabById(gameId) {
+            return Array.from(document.querySelectorAll('.nav-tab')).find(tab => gameIdFromTab(tab) === gameId);
+        }
+
+        function activateDefaultGameForAge(age = appProfile.childAge) {
+            const gameId = defaultGamesByAge[age] || 'balloons';
+            const tab = gameTabById(gameId);
+            if (tab && activeGameId() !== gameId) activateGameView(gameId, tab);
+            return gameId;
+        }
+
         function playConfiguredDiceGame() {
             if (appProfile.diceMode === 'multilingual' && enabledLanguages.length > 1) {
                 setLanguage('all');
@@ -5739,10 +5840,18 @@
         function playRandomGameFromButton(button) {
             const tabs = Array.from(document.querySelectorAll('.nav-tab'));
             const currentTab = tabs.find(tab => tab.getAttribute('aria-selected') === 'true');
-            const choices = tabs.filter(tab => tab !== currentTab);
-            const nextTab = choices[Math.floor(Math.random() * choices.length)];
+            const ageAppropriateChoices = tabs.filter(tab => {
+                const minimumAge = gameMinimumAges[gameIdFromTab(tab)];
+                return tab !== currentTab && minimumAge <= appProfile.childAge;
+            });
+            const choices = ageAppropriateChoices.length ? ageAppropriateChoices : tabs.filter(tab => tab !== currentTab);
+            const weightedChoices = choices.flatMap(tab => {
+                const minimumAge = gameMinimumAges[gameIdFromTab(tab)];
+                return Array(minimumAge === appProfile.childAge ? 4 : 1).fill(tab);
+            });
+            const nextTab = weightedChoices[Math.floor(Math.random() * weightedChoices.length)];
             if (!nextTab) return;
-            const gameId = nextTab.getAttribute('onclick').match(/'([^']+)'/)?.[1];
+            const gameId = gameIdFromTab(nextTab);
             if (!gameId) return;
             button.animate([
                 {transform:'rotate(0) scale(1)'},
@@ -8894,9 +9003,12 @@
 
         populateSoundCredits();
         updateInterfaceLanguage();
-        if (appProfile.onboardingComplete) {
+        if (appProfile.onboardingComplete && !appProfile.childAgeConfirmed) {
+            openOnboarding(false, 3, true);
+        } else if (appProfile.onboardingComplete) {
             const storedCollapsed = getStoredControlsCollapsed();
             if (!applyNavigationState(history.state, false)) {
+                activateDefaultGameForAge();
                 setControlsCollapsed(storedCollapsed, false, false);
                 initializeNavigationHistory(storedCollapsed);
             }
