@@ -2522,6 +2522,7 @@
         .creative-prompt .academic-flag { font-size:1.45em; }
         .ice-cream-game > .creative-prompt,
         .cooking-game > .creative-prompt { position:absolute;top:max(8px,env(safe-area-inset-top));left:50%;z-index:12;max-width:calc(100% - 92px);min-height:42px;padding:5px 12px;transform:translateX(-50%);pointer-events:none; }
+        .cooking-game > .creative-prompt { width:1px;height:1px;min-height:0;padding:0;border:0;clip:rect(0 0 0 0);clip-path:inset(50%);overflow:hidden;white-space:nowrap;box-shadow:none; }
 
         .ice-cream-stage { position:relative;width:100%;height:100%;background:radial-gradient(circle at 17% 16%,rgba(255,255,255,.9) 0 4%,transparent 4.5%),radial-gradient(circle at 82% 25%,rgba(255,255,255,.75) 0 3%,transparent 3.5%),linear-gradient(#d9f4ff,#fff8e8);overflow:hidden; }
         .ice-cream-machine { position:absolute;left:50%;top:clamp(76px,12svh,120px);width:200px;height:106px;transform:translateX(-50%);border-radius:24px 24px 16px 16px;background:linear-gradient(135deg,#f8fafc,#cbd5e0);box-shadow:0 8px 0 #9fb3c8; }
@@ -2594,19 +2595,31 @@
         .meal-choice small { position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap; }
         @keyframes mealInvite { 0%,72%,100%{transform:scale(1)} 82%{transform:scale(1.08)} 91%{transform:scale(.97)} }
         .cooking-workspace { position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center; }
-        .cooking-pot { position:relative;width:min(52vw,270px);height:min(31vw,162px);min-height:132px;margin-bottom:max(38px,env(safe-area-inset-bottom));border-radius:18px 18px 62px 62px;background:linear-gradient(110deg,#a0aec0,#edf2f7 48%,#718096);border:5px solid #4a5568;box-shadow:0 10px 0 rgba(45,55,72,.18);transition:transform .2s; }
+        .cooking-pot { position:relative;width:min(52vw,270px);height:min(31vw,162px);min-height:132px;margin-bottom:max(38px,env(safe-area-inset-bottom));border-radius:18px 18px 62px 62px;background:linear-gradient(110deg,#a0aec0,#edf2f7 48%,#718096);border:5px solid #4a5568;box-shadow:0 10px 0 rgba(45,55,72,.18);transition:transform .2s;touch-action:none;user-select:none;-webkit-user-select:none; }
         .cooking-pot::before,.cooking-pot::after { content:'';position:absolute;top:24px;width:55px;height:22px;border:9px solid #4a5568; }
         .cooking-pot::before { right:100%;border-radius:18px 0 0 18px;border-right:0; }
         .cooking-pot::after { left:100%;border-radius:0 18px 18px 0;border-left:0; }
         .cooking-pot-food { position:absolute;left:50%;top:-52px;transform:translateX(-50%);font-size:4.8rem; }
         .cooking-spoon { position:absolute;left:50%;top:-92px;z-index:3;display:none;font-size:6rem;transform:translateX(-50%) rotate(-22deg);filter:drop-shadow(0 5px 3px rgba(45,55,72,.25));pointer-events:none; }
+        .cooking-bubbles { position:absolute;inset:-44px 18px auto;height:70px;z-index:2;display:none;pointer-events:none; }
+        .cooking-bubbles i { position:absolute;bottom:0;width:16px;height:16px;border:3px solid rgba(99,179,237,.8);border-radius:50%;background:rgba(255,255,255,.55);animation:cookingBubbleUp .8s ease-in infinite; }
+        .cooking-bubbles i:nth-child(1) { left:13%;animation-delay:-.2s; }
+        .cooking-bubbles i:nth-child(2) { left:45%;width:21px;height:21px;animation-delay:-.55s; }
+        .cooking-bubbles i:nth-child(3) { right:12%;width:13px;height:13px;animation-delay:-.35s; }
+        @keyframes cookingBubbleUp { from{translate:0 20px;scale:.5;opacity:0} 30%{opacity:1} to{translate:0 -42px;scale:1.15;opacity:0} }
         .cooking-pot.ready-to-stir { cursor:pointer;animation:potInvite 1.15s ease-in-out infinite; }
         .cooking-pot.ready-to-stir .cooking-spoon { display:block;animation:spoonStir 1.05s ease-in-out infinite; }
+        .cooking-pot.stirring { animation:potStir .22s ease-in-out infinite alternate; }
+        .cooking-pot.stirring .cooking-spoon { display:block;animation:spoonTurn .42s linear infinite; }
+        .cooking-pot.stirring .cooking-bubbles,
+        .cooking-pot.bubbling .cooking-bubbles { display:block; }
         @keyframes potInvite { 50%{transform:scale(1.06)} }
         @keyframes spoonStir { 0%,100%{transform:translateX(-56%) rotate(-26deg)} 50%{transform:translateX(-36%) rotate(8deg)} }
+        @keyframes spoonTurn { from{transform:translateX(-50%) rotate(-30deg)} to{transform:translateX(-50%) rotate(330deg)} }
+        @keyframes potStir { to{transform:rotate(.8deg) scale(1.015)} }
         .cooking-pot.bubbling { animation:potBubble .25s ease-in-out 7 alternate; }
         @keyframes potBubble { to{transform:translateY(-5px) rotate(1.5deg)} }
-        .ingredient-tray { position:absolute;left:50%;top:clamp(82px,14svh,128px);z-index:4;width:min(94vw,620px);display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;transform:translateX(-50%); }
+        .ingredient-tray { position:absolute;left:50%;top:max(34px,env(safe-area-inset-top));z-index:4;width:min(94vw,620px);display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;transform:translateX(-50%); }
         .ingredient-button { width:100%;aspect-ratio:1;border:0;background:transparent;font-size:clamp(2.5rem,12vw,4.6rem);filter:drop-shadow(0 5px 2px rgba(89,54,22,.18));touch-action:none;animation:onionInvite 1.6s ease-in-out infinite; }
         .ingredient-button:nth-child(2n) { animation-delay:.16s; }
         @keyframes onionInvite { 0%,70%,100%{transform:translateY(0)} 82%{transform:translateY(-9px) rotate(-5deg)} 91%{transform:translateY(0) rotate(4deg)} }
@@ -2616,6 +2629,8 @@
         .chopping-board::after { content:'🔪';position:absolute;right:22%;top:12px;font-size:4.2rem;transform:rotate(-35deg);transform-origin:80% 80%; }
         .chopping-board.chop::after { animation:knifeChop .34s ease-in-out; }
         @keyframes knifeChop { 50%{transform:translate(-30px,48px) rotate(-5deg)} }
+        .cooking-onion-bit { position:absolute;left:calc(50% + var(--bit-x));top:clamp(190px,31svh,270px);z-index:6;width:var(--bit-size);height:calc(var(--bit-size) * .72);border:2px solid rgba(173,113,45,.4);border-radius:65% 35% 60% 40%;background:linear-gradient(135deg,#fff9de,#d7b46a);pointer-events:none;animation:onionBitToPot .95s cubic-bezier(.3,.75,.45,1) both; }
+        @keyframes onionBitToPot { 0%{transform:translate(0,0) rotate(0) scale(.35);opacity:0} 16%{opacity:1} 58%{transform:translate(var(--bit-drift),18svh) rotate(220deg) scale(1)} 100%{transform:translate(var(--bit-drift),52svh) rotate(520deg) scale(.25);opacity:0} }
         .cooking-main-ingredient { position:absolute;left:50%;top:clamp(110px,20svh,175px);z-index:4;width:min(58vw,270px);aspect-ratio:1;transform:translateX(-50%);border:0;background:transparent;font-size:clamp(7rem,34vw,12rem);filter:drop-shadow(0 10px 6px rgba(45,55,72,.23));animation:mainIngredientInvite 1.2s ease-in-out infinite;touch-action:manipulation; }
         .cooking-main-ingredient:active { scale:.9; }
         .cooking-main-ingredient.added { animation:mainIngredientDrop .7s cubic-bezier(.25,.75,.25,1) both;pointer-events:none; }
@@ -3335,7 +3350,7 @@
                     <div class="ingredient-tray" id="ingredientTray"></div>
                     <button class="chopping-board" id="choppingBoard" type="button" onclick="chopIngredient()" hidden aria-label="Chop the onions">🧅</button>
                     <button class="cooking-main-ingredient" id="cookingMainIngredient" type="button" onclick="addCookingMainIngredient()" hidden aria-label="Add the main ingredient">🍝</button>
-                    <div class="cooking-pot" id="cookingPot" role="button" tabindex="0" onclick="stirCookingPot()" aria-label="Stir the pot"><span class="cooking-spoon" aria-hidden="true">🥄</span><span class="cooking-pot-food" id="cookingPotFood">🍝</span></div>
+                    <div class="cooking-pot" id="cookingPot" role="button" tabindex="0" aria-label="Stir the pot"><span class="cooking-spoon" aria-hidden="true">🥄</span><span class="cooking-bubbles" aria-hidden="true"><i></i><i></i><i></i></span><span class="cooking-pot-food" id="cookingPotFood">🍝</span></div>
                     <div class="cooking-finished-plate" id="cookingFinishedPlate" role="button" tabindex="0" onclick="advanceCookingGame()" hidden aria-label="Cook another meal">🍝</div>
                 </div>
             </div>
@@ -7842,6 +7857,10 @@
         let cookingLanguageIndex = 0;
         let cookingIngredientDrag = null;
         let cookingTimers = [];
+        let cookingReminderTimers = [];
+        let cookingInstructionGeneration = 0;
+        let cookingStirInterval = null;
+        let cookingStirCount = 0;
 
         function cookingLater(callback, delay) {
             const timer = setTimeout(callback, delay);
@@ -7852,6 +7871,31 @@
         function clearCookingTimers() {
             cookingTimers.forEach(clearTimeout);
             cookingTimers = [];
+            clearCookingReminders();
+            stopCookingStir(false);
+        }
+
+        function clearCookingReminders() {
+            cookingInstructionGeneration++;
+            cookingReminderTimers.forEach(clearTimeout);
+            cookingReminderTimers = [];
+        }
+
+        function scheduleCookingReminders(language, instruction) {
+            clearCookingReminders();
+            const generation = cookingInstructionGeneration;
+            for (let reminder = 1; reminder <= 3; reminder++) {
+                cookingReminderTimers.push(setTimeout(() => {
+                    if (generation !== cookingInstructionGeneration || activeGameId() !== 'cooking') return;
+                    speakSingle(languageSettings[language].code, instruction);
+                }, reminder * 10_000));
+            }
+        }
+
+        function announceCookingInstruction(language, instruction, repeat = true) {
+            speakSingle(languageSettings[language].code, instruction);
+            if (repeat) scheduleCookingReminders(language, instruction);
+            else clearCookingReminders();
         }
 
         function cookingMainInstruction(language) {
@@ -7895,6 +7939,7 @@
             cookingStep = 'choose';
             cookingOnionCount = 0;
             cookingChopCount = 0;
+            cookingStirCount = 0;
             document.getElementById('cookingWorkspace').hidden = true;
             document.getElementById('mealChoices').hidden = false;
             document.getElementById('ingredientTray').innerHTML = '';
@@ -7904,10 +7949,10 @@
             mainIngredient.classList.remove('added');
             document.getElementById('cookingFinishedPlate').hidden = true;
             document.getElementById('cookingPotFood').textContent = '';
-            document.getElementById('cookingPot').classList.remove('ready-to-stir','bubbling');
+            document.getElementById('cookingPot').classList.remove('ready-to-stir','stirring','bubbling');
             const language = currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode;
             updateCookingLanguage(language);
-            if (speakInstruction) speakSingle(languageSettings[language].code, interfaceText[language].cookingChoose);
+            if (speakInstruction) announceCookingInstruction(language, interfaceText[language].cookingChoose);
         }
 
         function chooseCookingMeal(index) {
@@ -7916,6 +7961,7 @@
             cookingStep = 'add';
             cookingOnionCount = 0;
             cookingChopCount = 0;
+            cookingStirCount = 0;
             const language = creativeActionLanguage(cookingLanguageIndex++);
             const meal = cookingMeals[index];
             document.getElementById('mealChoices').hidden = true;
@@ -7947,6 +7993,7 @@
             document.getElementById('cookingFlag').textContent = languageSettings[language].flag;
             document.getElementById('cookingPrompt').textContent = interfaceText[language].cookingAddOnions;
             speakSingle(languageSettings[language].code, `${meal.names[language] || meal.names.en}. ${interfaceText[language].cookingAddOnions}`);
+            scheduleCookingReminders(language, interfaceText[language].cookingAddOnions);
         }
 
         function beginCookingIngredientDrag(event, button) {
@@ -7988,9 +8035,13 @@
             document.getElementById('cookingFlag').textContent = languageSettings[language].flag;
             const countWord = cookingCountWords[language]?.[cookingOnionCount - 1] || String(cookingOnionCount);
             document.getElementById('cookingPrompt').textContent = `${countWord} 🧅`;
+            clearCookingReminders();
             playCreativeSound([300 + cookingOnionCount * 60], .12);
             speakSingle(languageSettings[language].code, countWord);
-            if (cookingOnionCount < 5) return;
+            if (cookingOnionCount < 5) {
+                scheduleCookingReminders(language, interfaceText[language].cookingAddOnions);
+                return;
+            }
             cookingLater(() => {
                 cookingStep = 'chop';
                 document.getElementById('ingredientTray').hidden = true;
@@ -7998,19 +8049,25 @@
                 board.textContent = '🧅🧅🧅';
                 board.hidden = false;
                 updateCookingLanguage(language);
-                speakSingle(languageSettings[language].code, interfaceText[language].cookingChop);
+                announceCookingInstruction(language, interfaceText[language].cookingChop);
             }, 650);
         }
 
         function chopIngredient() {
             if (cookingStep !== 'chop') return;
+            clearCookingReminders();
             cookingChopCount++;
             const board = document.getElementById('choppingBoard');
             board.classList.remove('chop');
             void board.offsetWidth;
             board.classList.add('chop');
+            launchCookingOnionBits();
             playCreativeSound([180 + cookingChopCount * 35], .09);
-            if (cookingChopCount < 3) return;
+            if (cookingChopCount < 3) {
+                const reminderLanguage = currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode;
+                scheduleCookingReminders(reminderLanguage, interfaceText[reminderLanguage].cookingChop);
+                return;
+            }
             const language = creativeActionLanguage(cookingLanguageIndex++);
             cookingLater(() => {
                 cookingStep = 'addMain';
@@ -8020,12 +8077,27 @@
                 mainIngredient.textContent = cookingMeals[cookingMealIndex].emoji;
                 mainIngredient.hidden = false;
                 updateCookingLanguage(language);
-                speakSingle(languageSettings[language].code, cookingMainInstruction(language));
-            }, 420);
+                announceCookingInstruction(language, cookingMainInstruction(language));
+            }, 920);
+        }
+
+        function launchCookingOnionBits() {
+            const workspace = document.getElementById('cookingWorkspace');
+            for (let bitIndex = 0; bitIndex < 7; bitIndex++) {
+                const bit = document.createElement('span');
+                bit.className = 'cooking-onion-bit';
+                bit.style.setProperty('--bit-x', `${-94 + Math.random() * 188}px`);
+                bit.style.setProperty('--bit-drift', `${-42 + Math.random() * 84}px`);
+                bit.style.setProperty('--bit-size', `${8 + Math.random() * 9}px`);
+                bit.style.animationDelay = `${bitIndex * 35}ms`;
+                bit.addEventListener('animationend', () => bit.remove(), { once:true });
+                workspace.appendChild(bit);
+            }
         }
 
         function addCookingMainIngredient() {
             if (cookingStep !== 'addMain') return;
+            clearCookingReminders();
             cookingStep = 'addingMain';
             const language = creativeActionLanguage(cookingLanguageIndex++);
             const meal = cookingMeals[cookingMealIndex];
@@ -8042,15 +8114,63 @@
                 cookingStep = 'stir';
                 document.getElementById('cookingPot').classList.add('ready-to-stir');
                 updateCookingLanguage(language);
-                speakSingle(languageSettings[language].code, interfaceText[language].cookingStir);
+                announceCookingInstruction(language, interfaceText[language].cookingStir);
             }, 720);
         }
 
         function stirCookingPot() {
             if (cookingStep !== 'stir') return;
+            clearCookingReminders();
+            advanceCookingStir();
+            if (cookingStep === 'stir') {
+                const language = currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode;
+                scheduleCookingReminders(language, interfaceText[language].cookingStir);
+            }
+        }
+
+        function beginCookingStir(event) {
+            if (cookingStep !== 'stir' || event.isPrimary === false) return;
+            event.preventDefault();
+            clearCookingReminders();
+            const pot = document.getElementById('cookingPot');
+            if (event.pointerId !== undefined) pot.setPointerCapture(event.pointerId);
+            pot.classList.remove('ready-to-stir');
+            pot.classList.add('stirring');
+            advanceCookingStir();
+            clearInterval(cookingStirInterval);
+            if (cookingStep === 'stir') cookingStirInterval = setInterval(advanceCookingStir, 230);
+        }
+
+        function stopCookingStir(scheduleReminder = true) {
+            clearInterval(cookingStirInterval);
+            cookingStirInterval = null;
+            const pot = document.getElementById('cookingPot');
+            if (!pot) return;
+            pot.classList.remove('stirring');
+            if (cookingStep !== 'stir') return;
+            pot.classList.add('ready-to-stir');
+            if (scheduleReminder) {
+                const language = currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode;
+                scheduleCookingReminders(language, interfaceText[language].cookingStir);
+            }
+        }
+
+        function advanceCookingStir() {
+            if (cookingStep !== 'stir') return;
+            cookingStirCount++;
+            playCreativeSound([210 + cookingStirCount * 18], .075);
+            if (cookingStirCount < 8) return;
+            finishCookingStir();
+        }
+
+        function finishCookingStir() {
+            if (cookingStep !== 'stir') return;
+            clearCookingReminders();
             cookingStep = 'cooking';
             const pot = document.getElementById('cookingPot');
-            pot.classList.remove('ready-to-stir');
+            clearInterval(cookingStirInterval);
+            cookingStirInterval = null;
+            pot.classList.remove('ready-to-stir','stirring');
             pot.classList.add('bubbling');
             playCreativeSound([220,260,310,360], .18);
             cookingLater(() => {
@@ -8062,15 +8182,20 @@
                 plate.hidden = false;
                 updateCookingLanguage(language);
                 playCreativeSound([523,659,784,1047], .2);
-                speakSingle(languageSettings[language].code, interfaceText[language].cookingReady);
-            }, 1500);
+                announceCookingInstruction(language, interfaceText[language].cookingReady, false);
+            }, 900);
         }
 
         function advanceCookingGame() {
             prepareCookingGame(true);
         }
 
-        document.getElementById('cookingPot').addEventListener('keydown', event => {
+        const cookingPot = document.getElementById('cookingPot');
+        cookingPot.addEventListener('pointerdown', beginCookingStir);
+        cookingPot.addEventListener('pointerup', () => stopCookingStir(true));
+        cookingPot.addEventListener('pointercancel', () => stopCookingStir(true));
+        cookingPot.addEventListener('lostpointercapture', () => stopCookingStir(true));
+        cookingPot.addEventListener('keydown', event => {
             if (event.key === 'Enter' || event.key === ' ') {
                 event.preventDefault();
                 stirCookingPot();

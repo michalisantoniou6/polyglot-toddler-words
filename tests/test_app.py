@@ -493,6 +493,22 @@ class AppRegressionTests(unittest.TestCase):
         chop_source = HTML[HTML.index("function chopIngredient()") : HTML.index("function addCookingMainIngredient()")]
         self.assertNotIn("cookingStep = 'stir'", chop_source)
 
+    def test_little_chef_uses_voice_only_reminders_on_a_bounded_idle_schedule(self) -> None:
+        self.assertIn(".cooking-game > .creative-prompt { width:1px;height:1px", HTML)
+        self.assertIn("for (let reminder = 1; reminder <= 3; reminder++)", HTML)
+        self.assertIn("reminder * 10_000", HTML)
+        self.assertIn("scheduleCookingReminders(language, interfaceText[language].cookingAddOnions)", HTML)
+
+    def test_little_chef_animates_onion_bits_and_supports_hold_to_stir(self) -> None:
+        self.assertIn("function launchCookingOnionBits()", HTML)
+        self.assertIn("className = 'cooking-onion-bit'", HTML)
+        self.assertIn("@keyframes onionBitToPot", HTML)
+        self.assertIn("cookingPot.addEventListener('pointerdown', beginCookingStir)", HTML)
+        self.assertIn("setInterval(advanceCookingStir, 230)", HTML)
+        self.assertIn("cookingStirCount < 8", HTML)
+        self.assertIn("@keyframes spoonTurn", HTML)
+        self.assertIn(".cooking-pot.stirring .cooking-spoon", HTML)
+
     def test_little_chef_uses_the_full_screen_and_objects_instead_of_action_buttons(self) -> None:
         self.assertIn("#game-cooking { width:100%;max-width:none;height:100svh", HTML)
         self.assertIn("grid-template-columns:repeat(5,minmax(0,1fr))", HTML)
