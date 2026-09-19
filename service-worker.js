@@ -1,8 +1,8 @@
-const CACHE_VERSION = 'toddler-arcade-v19';
+const CACHE_VERSION = 'toddler-arcade-v20';
 const APP_SHELL = [
     './',
     './index.html',
-    './languages.js?v=3',
+    './languages.js?v=4',
     './manifest.webmanifest',
     './icons/icon-180.png',
     './icons/icon-192.png',

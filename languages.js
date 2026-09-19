@@ -205,4 +205,16 @@
             food+'! Bardzo mi smakowało! Dziękuję '+name+'!'
         ][variant]
     });
+
+    const runnerInterfaceOverrides = {
+        de:{runner:'Füttere den Bären',runnerPrompt:'Drücken zum Fliegen · Loslassen und wieder drücken',runnerHint:'Drücken zum Fliegen',runnerTutorial:'Drücken zum Fliegen · Loslassen und wieder drücken'},
+        it:{runner:'Dai da mangiare all’orsetto',runnerPrompt:'Premi per volare · Lascia e premi di nuovo',runnerHint:'Premi per volare',runnerTutorial:'Premi per volare · Lascia e premi di nuovo'},
+        tr:{runner:'Ayıcığı besle',runnerPrompt:'Uçmak için bas · Bırak ve yeniden bas',runnerHint:'Uçmak için bas',runnerTutorial:'Uçmak için bas · Bırak ve yeniden bas'},
+        ptBR:{runner:'Alimente o ursinho',runnerPrompt:'Aperte para voar · Solte e aperte de novo',runnerHint:'Aperte para voar',runnerTutorial:'Aperte para voar · Solte e aperte de novo'},
+        nl:{runner:'Voer het beertje',runnerPrompt:'Druk om te vliegen · Laat los en druk opnieuw',runnerHint:'Druk om te vliegen',runnerTutorial:'Druk om te vliegen · Laat los en druk opnieuw'},
+        pl:{runner:'Nakarm misia',runnerPrompt:'Naciśnij aby lecieć · Puść i naciśnij ponownie',runnerHint:'Naciśnij aby lecieć',runnerTutorial:'Naciśnij aby lecieć · Puść i naciśnij ponownie'}
+    };
+    Object.entries(runnerInterfaceOverrides).forEach(([language,copy]) => {
+        Object.assign(window.extraLanguagePacks[language].interface, copy);
+    });
 })();

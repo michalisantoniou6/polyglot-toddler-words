@@ -369,7 +369,7 @@ class AppRegressionTests(unittest.TestCase):
         for phrase in ("Play timer", "Tiempo de juego", "Temps de jeu", "Χρόνος παιχνιδιού"):
             self.assertIn(phrase, HTML)
 
-    def test_broccoli_bounce_uses_hold_to_fly_and_never_stops_after_a_crash(self) -> None:
+    def test_feed_the_bear_uses_short_repeatable_boosts_and_never_stops_after_a_crash(self) -> None:
         for phrase in (
             "runnerStage.addEventListener('pointerdown', startRunnerFlight)",
             "runnerStage.addEventListener('pointerup', stopRunnerFlight)",
@@ -391,6 +391,14 @@ class AppRegressionTests(unittest.TestCase):
         frame_source = HTML[HTML.index("function runnerFrame") : HTML.index("function playRunnerChime")]
         self.assertIn("if (!runnerRunning) return", frame_source)
         self.assertIn("if (runnerRunning) runnerAnimationFrame = requestAnimationFrame(runnerFrame)", frame_source)
+        self.assertIn("const runnerBoostDurationMilliseconds = 950", HTML)
+        self.assertIn("if (!runnerRunning || runnerPointerHeld) return", HTML)
+        self.assertIn("runnerBoostRemainingMilliseconds = runnerBoostDurationMilliseconds", HTML)
+        self.assertIn("runnerBoostRemainingMilliseconds - elapsedSeconds * 1000", frame_source)
+        self.assertIn("if (runnerBoostRemainingMilliseconds === 0) runnerThrusting = false", frame_source)
+        stop_source = HTML[HTML.index("function stopRunnerFlight") : HTML.index("function showRunnerTutorial")]
+        self.assertIn("runnerPointerHeld = false", stop_source)
+        self.assertIn("runnerBoostRemainingMilliseconds = 0", stop_source)
 
     def test_runner_stays_one_consistent_size(self) -> None:
         for removed_mechanic in (
@@ -436,7 +444,7 @@ class AppRegressionTests(unittest.TestCase):
         self.assertIn("πέντε', 'έξι', 'επτά'", HTML)
         self.assertNotIn("`${score} πόντοι`", HTML)
 
-    def test_broccoli_bounce_difficulty_unlocks_gradually_by_distance(self) -> None:
+    def test_feed_the_bear_difficulty_and_food_heights_progress_gradually(self) -> None:
         self.assertIn("if (runnerDistance < 60) return 'food'", HTML)
         self.assertIn("runnerDistance < 130 ? .10 : (runnerDistance < 220 ? .18 : .28)", HTML)
         self.assertIn("const canFly = type === 'rock' && runnerDistance >= 170", HTML)
@@ -444,6 +452,9 @@ class AppRegressionTests(unittest.TestCase):
         self.assertIn("Math.max(580, 980 - runnerDistance * 1.6)", HTML)
         self.assertIn("runnerDistance += speed * elapsedSeconds / 18", HTML)
         self.assertIn("runnerAltitude === 0 && !runnerThrusting", HTML)
+        self.assertIn("const runnerFoodAltitudeRatios = [0, .18, .38, .08, .48, .27]", HTML)
+        self.assertIn("runnerFoodLaneIndex++ % runnerFoodAltitudeRatios.length", HTML)
+        self.assertIn("stageHeight * foodAltitudeRatio", HTML)
 
     def test_runner_uses_four_fun_crash_reactions_and_recovers(self) -> None:
         self.assertIn("['crash-bandage', 'crash-dizzy', 'crash-tumble', 'crash-wobble']", HTML)
@@ -569,15 +580,18 @@ class AppRegressionTests(unittest.TestCase):
 
     def test_runner_localization_uses_natural_child_facing_instructions(self) -> None:
         for phrase in (
-            "Catch the Broccoli",
-            "Atrapa el brócoli",
-            "Attrape le brocoli",
-            "Πιάσε το μπρόκολο",
-            "Mantén presionado para volar",
-            "Maintiens appuyé pour voler",
-            "Κράτα πατημένο για να πετάξεις",
+            "Feed the Bear",
+            "Dale de comer al osito",
+            "Nourris l’ourson",
+            "Τάισε το αρκουδάκι",
+            "Presiona para volar",
+            "Appuie pour voler",
+            "Πάτησε για να πετάξει",
         ):
             self.assertIn(phrase, HTML)
+        self.assertIn('<span class="nav-icon">🧸</span>', HTML)
+        for old_title in ("Catch the Broccoli", "Atrapa el brócoli", "Attrape le brocoli", "Πιάσε το μπρόκολο"):
+            self.assertNotIn(old_title, HTML)
         for awkward_phrase in ("Salta por el brócoli", "Bondis vers le brocoli", "Πήδα στο μπρόκολο"):
             self.assertNotIn(awkward_phrase, HTML)
         self.assertIn("translate the child-facing intent into natural everyday speech", HTML)

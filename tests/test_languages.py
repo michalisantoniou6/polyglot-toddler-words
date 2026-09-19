@@ -55,12 +55,12 @@ class ExpandedLanguageRegressionTests(unittest.TestCase):
 
     def test_new_languages_have_localized_child_facing_copy(self) -> None:
         for phrase in (
-            "Fang den Brokkoli",
-            "Prendi il broccolo",
-            "Brokoliyi yakala",
-            "Pegue o brócolis",
-            "Vang de broccoli",
-            "Złap brokuł",
+            "Füttere den Bären",
+            "Dai da mangiare all’orsetto",
+            "Ayıcığı besle",
+            "Alimente o ursinho",
+            "Voer het beertje",
+            "Nakarm misia",
         ):
             self.assertIn(phrase, LANGUAGES)
         self.assertIn("Object.assign(window.extraLanguagePacks.pl", LANGUAGES)
