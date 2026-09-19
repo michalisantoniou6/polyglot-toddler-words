@@ -180,7 +180,7 @@ public final class MainActivity extends Activity implements TextToSpeech.OnInitL
 
     private final class AndroidSpeechBridge {
         @JavascriptInterface
-        public void speak(String text, String languageTag, int generation, float rate) {
+        public void speak(String text, String languageTag, int generation, float rate, float volume) {
             runOnUiThread(() -> {
                 if (!textToSpeechReady) {
                     webView.evaluateJavascript(
@@ -193,10 +193,15 @@ public final class MainActivity extends Activity implements TextToSpeech.OnInitL
                 textToSpeech.stop();
                 textToSpeech.setLanguage(Locale.forLanguageTag(languageTag));
                 textToSpeech.setSpeechRate(Math.max(0.5f, Math.min(rate, 1.25f)));
+                Bundle speechParameters = new Bundle();
+                speechParameters.putFloat(
+                    TextToSpeech.Engine.KEY_PARAM_VOLUME,
+                    Math.max(0.0f, Math.min(volume, 1.0f))
+                );
                 textToSpeech.speak(
                     text,
                     TextToSpeech.QUEUE_FLUSH,
-                    null,
+                    speechParameters,
                     "web-" + generation
                 );
             });
@@ -250,7 +255,13 @@ public final class MainActivity extends Activity implements TextToSpeech.OnInitL
                 || "enUS".equals(language)
                 || "es".equals(language)
                 || "esES".equals(language)
-                || "fr".equals(language);
+                || "fr".equals(language)
+                || "de".equals(language)
+                || "it".equals(language)
+                || "tr".equals(language)
+                || "ptBR".equals(language)
+                || "nl".equals(language)
+                || "pl".equals(language);
         }
     }
 }

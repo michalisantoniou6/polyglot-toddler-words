@@ -299,7 +299,7 @@ class AppRegressionTests(unittest.TestCase):
         self.assertIn("function skipOnboardingNames()", HTML)
         self.assertIn("finishOnboarding(true)", HTML)
         self.assertIn("const hasAnyNames = onboardingDraft.greekNames.length > 0", HTML)
-        self.assertIn("return [{ el:'', en:'', enUS:'', es:'', esES:'', fr:'' }]", HTML)
+        self.assertIn("Object.fromEntries(supportedLanguageOrder.map(language => [language,'']))", HTML)
         self.assertIn("name ? `🎤 Your turn ${name}!` : '🎤 Your turn!'", HTML)
 
     def test_timer_is_only_in_parent_settings(self) -> None:
@@ -353,12 +353,12 @@ class AppRegressionTests(unittest.TestCase):
             "runnerThrusting = true",
             "runnerThrusting = false",
             "runnerCharacter.classList.add('flying')",
-            "shrinkRunner();",
+            "shrinkRunner(reaction);",
             "runnerCrashed = false;",
-            "scheduleRunnerObject(720);",
+            "scheduleRunnerObject(620);",
         ):
             self.assertIn(phrase, HTML)
-        self.assertRegex(HTML, re.compile(r"runnerRestartTimer\s*=\s*setTimeout\(\(\)\s*=>\s*\{.*?\},\s*1050\);", re.S))
+        self.assertRegex(HTML, re.compile(r"runnerRestartTimer\s*=\s*setTimeout\(\(\)\s*=>\s*\{.*?\},\s*1650\);", re.S))
 
     def test_runner_grows_every_five_foods_caps_at_seventy_percent_and_shrinks_on_rocks(self) -> None:
         self.assertEqual(5, constant_number("runnerFoodsPerGrowthStep"))
@@ -368,7 +368,7 @@ class AppRegressionTests(unittest.TestCase):
         self.assertIn("runnerStage.clientHeight * runnerMaximumHeightRatio / runnerBaseCharacterHeight", HTML)
         self.assertIn("runnerGrowthLevel++", HTML)
         self.assertIn("runnerGrowthLevel = Math.max(-2, runnerGrowthLevel - 1)", HTML)
-        self.assertIn("setRunnerScale(runnerScaleForLevel(runnerGrowthLevel), 'bumped')", HTML)
+        self.assertIn("setRunnerScale(runnerScaleForLevel(runnerGrowthLevel), animationClass)", HTML)
         self.assertIn("playRunnerGrowthSound();", HTML)
         self.assertIn(".runner-character.growing", HTML)
         self.assertIn("content:'✨ ⬆️ ✨'", HTML)
@@ -380,12 +380,13 @@ class AppRegressionTests(unittest.TestCase):
         self.assertIn("if (runnerObject.dataset.type === 'food') collectRunnerFood();", HTML)
         self.assertIn("else crashRunner();", HTML)
         self.assertIn("const speed = Math.min(155, 76 + runnerDistance * .24)", HTML)
-        self.assertIn("runnerCaught(activeRunnerFood[runnerDisplayLanguage], runnerScore)", HTML)
+        self.assertIn("const foodName = activeRunnerFood[runnerDisplayLanguage]", HTML)
+        self.assertIn("{ volume: .38 }", HTML)
 
     def test_runner_rotates_through_fruits_and_vegetables_and_tallies_catches(self) -> None:
         food_source = array_source("runnerFoods")
-        self.assertEqual(8, food_source.count("{emoji:"))
-        for emoji in ("🥦", "🍅", "🥕", "🍎", "🍌", "🍓", "🍊", "🌽"):
+        self.assertEqual(16, food_source.count("{emoji:"))
+        for emoji in ("🥦", "🍅", "🥕", "🍎", "🍌", "🍓", "🍊", "🌽", "🍐", "🍇", "🍉", "🍍", "🥑", "🍒", "🍋", "🥔"):
             self.assertIn(emoji, food_source)
         self.assertIn("runnerFoods[runnerFoodIndex++ % runnerFoods.length]", HTML)
         self.assertIn("runnerScore++", HTML)
@@ -404,12 +405,31 @@ class AppRegressionTests(unittest.TestCase):
 
     def test_broccoli_bounce_difficulty_unlocks_gradually_by_distance(self) -> None:
         self.assertIn("if (runnerDistance < 60) return 'food'", HTML)
-        self.assertIn("runnerDistance < 130 ? .15 : (runnerDistance < 220 ? .28 : .38)", HTML)
+        self.assertIn("runnerDistance < 130 ? .10 : (runnerDistance < 220 ? .18 : .28)", HTML)
         self.assertIn("const canFly = type === 'rock' && runnerDistance >= 170", HTML)
-        self.assertIn("const lastTwoWereRocks", HTML)
-        self.assertIn("Math.max(760, 1280 - runnerDistance * 2.2)", HTML)
+        self.assertIn("const lastWasRock", HTML)
+        self.assertIn("Math.max(580, 980 - runnerDistance * 1.6)", HTML)
         self.assertIn("runnerDistance += speed * elapsedSeconds / 18", HTML)
         self.assertIn("runnerAltitude === 0 && !runnerThrusting", HTML)
+
+    def test_runner_uses_four_fun_crash_reactions_and_recovers(self) -> None:
+        self.assertIn("['crash-dizzy', 'crash-tumble', 'crash-squash', 'crash-wobble']", HTML)
+        for animation in (
+            "@keyframes runnerCrashDizzy",
+            "@keyframes runnerCrashTumble",
+            "@keyframes runnerCrashSquash",
+            "@keyframes runnerCrashWobble",
+        ):
+            self.assertIn(animation, HTML)
+        self.assertIn("runnerCrashReactionIndex++ % runnerCrashReactions.length", HTML)
+        self.assertIn("document.getElementById('runnerCrashText').textContent = phrase", HTML)
+
+    def test_runner_speaks_food_before_a_quieter_score(self) -> None:
+        self.assertIn("speakSingle(languageSettings[runnerDisplayLanguage].code, foodName, () =>", HTML)
+        self.assertIn("runnerScorePhrases[runnerDisplayLanguage](runnerScore)", HTML)
+        self.assertIn("{ volume: .38 }", HTML)
+        self.assertIn("{ volume: 1 }", HTML)
+        self.assertIn("utterance.volume = volume", HTML)
 
     def test_runner_is_landscape_only_with_an_animated_first_play_demo(self) -> None:
         self.assertIn("@media (orientation:portrait)", HTML)

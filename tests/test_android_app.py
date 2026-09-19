@@ -20,8 +20,8 @@ class AndroidAppRegressionTests(unittest.TestCase):
         self.assertIn("compileSdk 36", BUILD)
         self.assertIn("targetSdk 36", BUILD)
         self.assertIn("minSdk 24", BUILD)
-        self.assertRegex(BUILD, r'versionCode\s+6\b')
-        self.assertRegex(BUILD, r'versionName\s+"1\.0\.5"')
+        self.assertRegex(BUILD, r'versionCode\s+7\b')
+        self.assertRegex(BUILD, r'versionName\s+"1\.0\.6"')
 
     def test_android_can_apply_an_explicit_per_device_language(self) -> None:
         self.assertIn('EXTRA_PRIMARY_LANGUAGE = "primaryLanguage"', ACTIVITY)
@@ -39,6 +39,7 @@ class AndroidAppRegressionTests(unittest.TestCase):
     def test_build_copies_the_same_web_game_into_the_app(self) -> None:
         self.assertIn('tasks.register("syncWebAssets", Sync)', BUILD)
         self.assertIn('include "index.html"', BUILD)
+        self.assertIn('include "languages.js"', BUILD)
         self.assertIn('include "assets/**"', BUILD)
         self.assertIn('dependsOn("syncWebAssets")', BUILD)
         self.assertIn("file:///android_asset/www/index.html", ACTIVITY)
@@ -67,6 +68,8 @@ class AndroidAppRegressionTests(unittest.TestCase):
         self.assertIn("window.AndroidSpeech?.speak", HTML)
         self.assertIn("window.AndroidSpeech?.stop", HTML)
         self.assertIn("const androidSpeechCallbacks = new Map()", HTML)
+        self.assertIn("TextToSpeech.Engine.KEY_PARAM_VOLUME", ACTIVITY)
+        self.assertIn("float rate, float volume", ACTIVITY)
 
     def test_app_stays_inside_the_local_child_safe_game(self) -> None:
         self.assertIn('android:allowBackup="false"', MANIFEST)

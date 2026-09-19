@@ -2377,11 +2377,21 @@
         .runner-character.growing { animation:runnerPowerUp .88s cubic-bezier(.2,.85,.3,1.2) both !important; }
         .runner-character.growing::after { content:'✨ ⬆️ ✨';position:absolute;left:50%;top:-34px;transform:translateX(-50%);font-size:1.55rem;white-space:nowrap;animation:runnerSparkle .88s ease-out both; }
         .runner-character.bumped { animation:runnerBump .72s ease-out both !important; }
+        .runner-character.crash-dizzy { animation:runnerCrashDizzy 1.55s ease-out both !important; }
+        .runner-character.crash-tumble { animation:runnerCrashTumble 1.55s cubic-bezier(.2,.8,.25,1) both !important; }
+        .runner-character.crash-squash { animation:runnerCrashSquash 1.55s ease-out both !important; }
+        .runner-character.crash-wobble { animation:runnerCrashWobble 1.55s ease-out both !important; }
+        .runner-character[class*="crash-"]::after { content:'💫 ⭐ 💫';position:absolute;left:50%;top:-38px;transform:translateX(-50%);font-size:1.7rem;white-space:nowrap;animation:runnerCrashStars 1.55s ease-out both; }
         @keyframes runnerSteps { from{transform:scale(var(--runner-scale))} to{transform:translateY(-5px) rotate(4deg) scale(var(--runner-scale))} }
         @keyframes runnerFly { from{transform:scale(var(--runner-scale))} to{transform:rotate(-7deg) scale(var(--runner-scale))} }
         @keyframes runnerPowerUp { 0%{transform:scale(var(--runner-previous-scale))} 45%{transform:translateY(-15px) scale(var(--runner-burst-scale));filter:drop-shadow(0 0 18px #ffd43b)} 72%{transform:translateY(2px) scale(var(--runner-scale))} 100%{transform:scale(var(--runner-scale))} }
         @keyframes runnerSparkle { 0%{opacity:0;transform:translate(-50%,16px) scale(.5)} 35%{opacity:1} 100%{opacity:0;transform:translate(-50%,-24px) scale(1.25)} }
         @keyframes runnerBump { 0%{transform:scale(var(--runner-previous-scale))} 25%{transform:translate(-16px,-18px) rotate(-12deg) scale(var(--runner-previous-scale))} 55%{transform:translate(9px,0) rotate(8deg) scale(var(--runner-scale))} 100%{transform:scale(var(--runner-scale))} }
+        @keyframes runnerCrashDizzy { 0%{transform:scale(var(--runner-previous-scale))} 22%{transform:translate(-20px,-18px) rotate(-24deg) scale(var(--runner-scale))} 48%{transform:rotate(390deg) scale(var(--runner-scale))} 72%{transform:rotate(340deg) scale(var(--runner-scale))} 100%{transform:rotate(360deg) scale(var(--runner-scale))} }
+        @keyframes runnerCrashTumble { 0%{transform:scale(var(--runner-previous-scale))} 28%{transform:translate(-36px,-28px) rotate(-95deg) scale(var(--runner-scale))} 58%{transform:translate(24px,4px) rotate(-300deg) scale(var(--runner-scale))} 78%{transform:translate(-8px,-8px) rotate(-350deg) scale(var(--runner-scale))} 100%{transform:rotate(-360deg) scale(var(--runner-scale))} }
+        @keyframes runnerCrashSquash { 0%{transform:scale(var(--runner-previous-scale))} 20%{transform:translateX(-22px) scaleX(1.18) scaleY(.62)} 42%{transform:translateY(-35px) scaleX(.72) scaleY(1.28)} 66%{transform:translateY(5px) scaleX(1.12) scaleY(.82)} 100%{transform:scale(var(--runner-scale))} }
+        @keyframes runnerCrashWobble { 0%{transform:scale(var(--runner-previous-scale))} 18%{transform:translateX(-25px) rotate(-22deg) scale(var(--runner-scale))} 35%{transform:translateX(20px) rotate(20deg) scale(var(--runner-scale))} 52%{transform:translateX(-14px) rotate(-15deg) scale(var(--runner-scale))} 70%{transform:translateX(9px) rotate(10deg) scale(var(--runner-scale))} 100%{transform:scale(var(--runner-scale))} }
+        @keyframes runnerCrashStars { 0%{opacity:0;transform:translate(-50%,20px) scale(.4)} 22%,68%{opacity:1;transform:translate(-50%,-4px) scale(1.15)} 100%{opacity:0;transform:translate(-50%,-24px) rotate(40deg) scale(.7)} }
         .runner-object {
             position:absolute;
             right:-100px;
@@ -2750,7 +2760,13 @@
                         <button class="lang-pill" data-language="es" onclick="setLanguage('es', this)">🇲🇽 MX</button>
                         <button class="lang-pill" data-language="esES" onclick="setLanguage('esES', this)">🇪🇸 ES</button>
                         <button class="lang-pill" data-language="fr" onclick="setLanguage('fr', this)">🇫🇷 FR</button>
-                        <button class="lang-pill" id="allLanguagesButton" data-language="all" onclick="setLanguage('all', this)">🌍 Και οι 6</button>
+                        <button class="lang-pill" data-language="de" onclick="setLanguage('de', this)">🇩🇪 DE</button>
+                        <button class="lang-pill" data-language="it" onclick="setLanguage('it', this)">🇮🇹 IT</button>
+                        <button class="lang-pill" data-language="tr" onclick="setLanguage('tr', this)">🇹🇷 TR</button>
+                        <button class="lang-pill" data-language="ptBR" onclick="setLanguage('ptBR', this)">🇧🇷 BR</button>
+                        <button class="lang-pill" data-language="nl" onclick="setLanguage('nl', this)">🇳🇱 NL</button>
+                        <button class="lang-pill" data-language="pl" onclick="setLanguage('pl', this)">🇵🇱 PL</button>
+                        <button class="lang-pill" id="allLanguagesButton" data-language="all" onclick="setLanguage('all', this)">🌍 Και οι 12</button>
                     </div>
                 </div>
             </section>
@@ -3086,6 +3102,7 @@
         </main>
     </div>
 
+    <script src="languages.js"></script>
     <script>
         /* -------------------------------------------------------------
            1. CORE DATASETS (4 Languages: EN, Mexican ES, FR, EL)
@@ -3594,7 +3611,15 @@
             {emoji:'🍌',en:'Banana',es:'Plátano',esES:'Plátano',fr:'Banane',el:'Μπανάνα'},
             {emoji:'🍓',en:'Strawberry',es:'Fresa',esES:'Fresa',fr:'Fraise',el:'Φράουλα'},
             {emoji:'🍊',en:'Orange',es:'Naranja',esES:'Naranja',fr:'Orange',el:'Πορτοκάλι'},
-            {emoji:'🌽',en:'Corn',es:'Elote',esES:'Maíz',fr:'Maïs',el:'Καλαμπόκι'}
+            {emoji:'🌽',en:'Corn',es:'Elote',esES:'Maíz',fr:'Maïs',el:'Καλαμπόκι'},
+            {emoji:'🍐',en:'Pear',es:'Pera',esES:'Pera',fr:'Poire',el:'Αχλάδι'},
+            {emoji:'🍇',en:'Grapes',es:'Uvas',esES:'Uvas',fr:'Raisins',el:'Σταφύλια'},
+            {emoji:'🍉',en:'Watermelon',es:'Sandía',esES:'Sandía',fr:'Pastèque',el:'Καρπούζι'},
+            {emoji:'🍍',en:'Pineapple',es:'Piña',esES:'Piña',fr:'Ananas',el:'Ανανάς'},
+            {emoji:'🥑',en:'Avocado',es:'Aguacate',esES:'Aguacate',fr:'Avocat',el:'Αβοκάντο'},
+            {emoji:'🍒',en:'Cherries',es:'Cerezas',esES:'Cerezas',fr:'Cerises',el:'Κεράσια'},
+            {emoji:'🍋',en:'Lemon',es:'Limón',esES:'Limón',fr:'Citron',el:'Λεμόνι'},
+            {emoji:'🥔',en:'Potato',es:'Papa',esES:'Patata',fr:'Pomme de terre',el:'Πατάτα'}
         ];
         runnerFoods.forEach(food => { food.enUS = food.en; });
 
@@ -3631,6 +3656,30 @@
             fr:['Do','Ré','Mi','Fa','Sol'],
             el:['Ντο','Ρε','Μι','Φα','Σολ']
         };
+        const extraLanguagePacks = window.extraLanguagePacks || {};
+        const assignLanguageVector = (items, values, language, promptValues = null) => {
+            if (!Array.isArray(values) || values.length !== items.length) {
+                throw new Error('Invalid '+language+' translation count');
+            }
+            items.forEach((item,index) => {
+                item[language] = values[index];
+                if (promptValues) item[language+'Prompt'] = promptValues[index];
+            });
+        };
+        Object.entries(extraLanguagePacks).forEach(([language,pack]) => {
+            assignLanguageVector(foods, pack.foods, language);
+            assignLanguageVector(trucks, pack.trucks, language);
+            assignLanguageVector(animals, pack.animals, language);
+            assignLanguageVector(numbers, pack.numbers, language);
+            assignLanguageVector(everydayItems, pack.everyday, language, pack.everydayPrompts);
+            assignLanguageVector(instruments, pack.instruments, language);
+            assignLanguageVector(learningColors, pack.colors, language);
+            assignLanguageVector(learningShapes, pack.shapes, language);
+            assignLanguageVector(runnerFoods, pack.runnerFoods, language);
+            Object.keys(bodyParts).forEach((key,index) => { bodyParts[key][language] = pack.body[index]; });
+            letterSets[language] = pack.letters;
+            bellNoteLabels[language] = pack.bellNotes;
+        });
 
         function greekPointScore(score) {
             const units = ['', 'ένας', 'δύο', 'τρεις', 'τέσσερις', 'πέντε', 'έξι', 'επτά', 'οκτώ', 'εννέα'];
@@ -3717,6 +3766,9 @@
 
         interfaceText.enUS = { ...interfaceText.en };
         interfaceText.esES = { ...interfaceText.es };
+        Object.entries(extraLanguagePacks).forEach(([language,pack]) => {
+            interfaceText[language] = { ...interfaceText.en, ...pack.interface };
+        });
 
         const santaFoodNames = {
             '🍎': { es: 'la manzana', fr: 'la pomme', el: 'το μήλο' },
@@ -3752,6 +3804,9 @@
         };
         Object.entries(santaFoodNames).forEach(([emoji, names]) => {
             names.esES = spainSantaFoodNames[emoji] || names.es;
+        });
+        Object.entries(extraLanguagePacks).forEach(([language,pack]) => {
+            foods.forEach((food,index) => { santaFoodNames[food.emoji][language] = pack.santaFoods[index]; });
         });
 
         /* -------------------------------------------------------------
@@ -4088,7 +4143,10 @@
             esES: { code: 'es-ES', flag: '🇪🇸' },
             fr: { code: 'fr-FR', flag: '🇫🇷' }
         };
-        const supportedLanguageOrder = ['en', 'enUS', 'el', 'es', 'esES', 'fr'];
+        Object.entries(extraLanguagePacks).forEach(([language,pack]) => {
+            languageSettings[language] = { code:pack.code, flag:pack.flag };
+        });
+        const supportedLanguageOrder = ['en', 'enUS', 'el', 'es', 'esES', 'fr', 'de', 'it', 'tr', 'ptBR', 'nl', 'pl'];
         const languagePickerOptions = {
             el: '🇬🇷 Ελλάδα — Ελληνικά',
             en: '🇬🇧 United Kingdom — English',
@@ -4097,6 +4155,9 @@
             esES: '🇪🇸 España — Español',
             fr: '🇫🇷 France — Français'
         };
+        Object.entries(extraLanguagePacks).forEach(([language,pack]) => {
+            languagePickerOptions[language] = pack.picker;
+        });
         let enabledLanguages = [...supportedLanguageOrder];
         let allLanguageOrder = [...supportedLanguageOrder];
         const appProfileStorageKey = 'polyglotToddler.profile.v1';
@@ -4107,6 +4168,9 @@
             { el: 'Αρούλλη', en: 'Aroulli', enUS: 'Aroulli', es: 'Aroulli', esES: 'Aroulli', fr: 'Aroulli' },
             { el: 'Αριστοφάνη', en: 'Aristofani', enUS: 'Aristofani', es: 'Aristofani', esES: 'Aristofani', fr: 'Aristofani' }
         ];
+        defaultChildNames.forEach(names => {
+            Object.keys(extraLanguagePacks).forEach(language => { names[language] = names.enUS; });
+        });
         const settingsCopy = {
             el: {
                 button: 'Ρυθμίσεις για γονείς', title: 'Ρυθμίσεις για γονείς',
@@ -4152,6 +4216,9 @@
 
         settingsCopy.enUS = { ...settingsCopy.en };
         settingsCopy.esES = { ...settingsCopy.es };
+        Object.entries(extraLanguagePacks).forEach(([language,pack]) => {
+            settingsCopy[language] = { ...settingsCopy.en, ...pack.settings };
+        });
 
         const onboardingCopy = {
             el: {
@@ -4214,6 +4281,9 @@
 
         onboardingCopy.enUS = { ...onboardingCopy.en };
         onboardingCopy.esES = { ...onboardingCopy.es };
+        Object.entries(extraLanguagePacks).forEach(([language,pack]) => {
+            onboardingCopy[language] = { ...onboardingCopy.en, ...pack.onboarding };
+        });
 
         function cleanName(value) {
             return String(value).trim().replace(/\s+/g, ' ').slice(0, 40);
@@ -4262,6 +4332,12 @@
                 if (locale.startsWith('es')) return 'esES';
                 if (locale.startsWith('el')) return 'el';
                 if (locale.startsWith('fr')) return 'fr';
+                if (locale.startsWith('de')) return 'de';
+                if (locale.startsWith('it')) return 'it';
+                if (locale.startsWith('tr')) return 'tr';
+                if (locale.startsWith('pt')) return 'ptBR';
+                if (locale.startsWith('nl')) return 'nl';
+                if (locale.startsWith('pl')) return 'pl';
                 if (locale.startsWith('en-gb')) return 'en';
                 if (locale.startsWith('en')) return 'enUS';
             }
@@ -4337,19 +4413,19 @@
             let greekNames = sanitizeNameArray(profile.greekNames);
             let otherNames = sanitizeNameArray(profile.otherNames);
             if (greekNames.length === 0 && otherNames.length === 0) {
-                return [{ el:'', en:'', enUS:'', es:'', esES:'', fr:'' }];
+                return [Object.fromEntries(supportedLanguageOrder.map(language => [language,'']))];
             }
             if (greekNames.length === 0) greekNames = [...otherNames];
             if (otherNames.length === 0) otherNames = [...greekNames];
             const count = Math.max(greekNames.length, otherNames.length);
-            return Array.from({ length: count }, (_, index) => ({
-                el: greekNames[index] || greekNames[0],
-                en: otherNames[index] || otherNames[0],
-                enUS: otherNames[index] || otherNames[0],
-                es: otherNames[index] || otherNames[0],
-                esES: otherNames[index] || otherNames[0],
-                fr: otherNames[index] || otherNames[0]
-            }));
+            return Array.from({ length: count }, (_, index) => Object.fromEntries(
+                supportedLanguageOrder.map(language => [
+                    language,
+                    language === 'el'
+                        ? (greekNames[index] || greekNames[0])
+                        : (otherNames[index] || otherNames[0])
+                ])
+            ));
         }
 
         function persistAppProfile() {
@@ -4758,6 +4834,14 @@
         };
         repeatCopy.enUS = { ...repeatCopy.en };
         repeatCopy.esES = { ...repeatCopy.es };
+        Object.assign(repeatCopy, {
+            de:{listen:'👂 Hör zu…',repeat:name=>name?'🎤 Du bist dran '+name+'!':'🎤 Du bist dran!',spokenRepeat:name=>name?'Du bist dran '+name+'!':'Du bist dran!',again:'🔁 Noch einmal',next:'▶ Weiter',done:'✓ Fertig',close:'Schließen'},
+            it:{listen:'👂 Ascolta…',repeat:name=>name?'🎤 Tocca a te '+name+'!':'🎤 Tocca a te!',spokenRepeat:name=>name?'Tocca a te '+name+'!':'Tocca a te!',again:'🔁 Ancora',next:'▶ Avanti',done:'✓ Fine',close:'Chiudi'},
+            tr:{listen:'👂 Dinle…',repeat:name=>name?'🎤 Şimdi sıra sende '+name+'!':'🎤 Şimdi sıra sende!',spokenRepeat:name=>name?'Şimdi sıra sende '+name+'!':'Şimdi sıra sende!',again:'🔁 Tekrar',next:'▶ İleri',done:'✓ Bitti',close:'Kapat'},
+            ptBR:{listen:'👂 Escute…',repeat:name=>name?'🎤 Sua vez '+name+'!':'🎤 Sua vez!',spokenRepeat:name=>name?'Sua vez '+name+'!':'Sua vez!',again:'🔁 De novo',next:'▶ Próximo',done:'✓ Pronto',close:'Fechar'},
+            nl:{listen:'👂 Luister…',repeat:name=>name?'🎤 Jij bent '+name+'!':'🎤 Jij bent!',spokenRepeat:name=>name?'Jij bent '+name+'!':'Jij bent!',again:'🔁 Nog eens',next:'▶ Volgende',done:'✓ Klaar',close:'Sluiten'},
+            pl:{listen:'👂 Posłuchaj…',repeat:name=>name?'🎤 Teraz ty '+name+'!':'🎤 Teraz ty!',spokenRepeat:name=>name?'Teraz ty '+name+'!':'Teraz ty!',again:'🔁 Jeszcze raz',next:'▶ Dalej',done:'✓ Koniec',close:'Zamknij'}
+        });
         const repeatAnimationClasses = ['repeat-bounce', 'repeat-wiggle', 'repeat-float', 'repeat-pop'];
         let voices = [];
         function loadVoices() {
@@ -5166,7 +5250,7 @@
             const text = interfaceText[displayLanguage];
             document.documentElement.lang = displayLanguage;
             document.title = text.pageTitle;
-            document.getElementById('allLanguagesButton').textContent = `🌍 ${text.allLanguages.replace('4', String(enabledLanguages.length))}`;
+            document.getElementById('allLanguagesButton').textContent = `🌍 ${text.allLanguages.replace(/\d+/, String(enabledLanguages.length))}`;
             document.getElementById('navMonster').textContent = text.feedSanta;
             document.getElementById('navTrucks').textContent = text.trucks;
             document.getElementById('navBalloons').textContent = text.balloons;
@@ -5260,9 +5344,11 @@
             });
         }
 
-        function speakSingle(langCode, text, onDone) {
+        function speakSingle(langCode, text, onDone, options = {}) {
             const generation = ++speechGeneration;
             const speechText = text.replace(/,/g, '');
+            const rate = options.rate ?? 0.78;
+            const volume = options.volume ?? 1;
             const finish = () => {
                 if (generation !== speechGeneration) return;
                 androidSpeechCallbacks.delete(generation);
@@ -5272,7 +5358,7 @@
 
             if (window.AndroidSpeech?.speak) {
                 androidSpeechCallbacks.set(generation, finish);
-                window.AndroidSpeech.speak(speechText, langCode, generation, 0.78);
+                window.AndroidSpeech.speak(speechText, langCode, generation, rate, volume);
                 return;
             }
 
@@ -5284,7 +5370,8 @@
             window.speechSynthesis.cancel();
             const utterance = new SpeechSynthesisUtterance(speechText);
             utterance.lang = langCode;
-            utterance.rate = 0.78;
+            utterance.rate = rate;
+            utterance.volume = volume;
             const voice = getVoiceForLang(langCode);
             if (voice) utterance.voice = voice;
             window._activeUtterance = utterance;
@@ -5914,7 +6001,9 @@
                     `${food.el}! Μου άρεσε πολύ! Ευχαριστώ για ${foodName} ${name}!`
                 ]
             };
-            const response = responses[languageFamily][responseIndex];
+            const response = extraLanguagePacks[language]?.santaThanks
+                ? extraLanguagePacks[language].santaThanks(localizedFood, foodName, name, responseIndex)
+                : responses[languageFamily][responseIndex];
             if (name) return response;
             return response
                 .replace(/\s+([!?.,;:])/g, '$1')
@@ -6651,6 +6740,24 @@
         let runnerFoodIndex = 0;
         let activeRunnerFood = runnerFoods[0];
         let runnerTutorialSeen = false;
+        let runnerCrashReactionIndex = 0;
+        const runnerCrashReactions = ['crash-dizzy', 'crash-tumble', 'crash-squash', 'crash-wobble'];
+        const runnerCrashPhrases = {
+            en:['Oh no!','Bonk!','Oops!','Silly bear!'], enUS:['Oh no!','Bonk!','Oops!','Silly bear!'],
+            es:['¡Ay no!','¡Pum!','¡Uy!','¡Osito travieso!'], esES:['¡Ay no!','¡Pum!','¡Uy!','¡Osito travieso!'],
+            fr:['Oh non !','Boum !','Oups !','Petit ours rigolo !'], el:['Ωχ όχι!','Μπαμ!','Ωχ!','Αρκουδάκι μου!'],
+            de:['Oh nein!','Rumms!','Hoppla!','Du lustiger Bär!'], it:['Oh no!','Bum!','Ops!','Orsetto buffo!'],
+            tr:['Eyvah!','Güm!','Hop!','Komik ayıcık!'], ptBR:['Ah não!','Pum!','Opa!','Ursinho sapeca!'],
+            nl:['O nee!','Boem!','Oeps!','Gek beertje!'], pl:['O nie!','Bum!','Ups!','Zabawny misiu!']
+        };
+        const runnerScorePhrases = {
+            en:score=>score === 1 ? 'One point' : `${score} points`, enUS:score=>score === 1 ? 'One point' : `${score} points`,
+            es:score=>score === 1 ? 'Un punto' : `${score} puntos`, esES:score=>score === 1 ? 'Un punto' : `${score} puntos`,
+            fr:score=>score === 1 ? 'Un point' : `${score} points`, el:score=>greekPointScore(score),
+            de:score=>score === 1 ? 'Ein Punkt' : `${score} Punkte`, it:score=>score === 1 ? 'Un punto' : `${score} punti`,
+            tr:score=>`${score} puan`, ptBR:score=>score === 1 ? 'Um ponto' : `${score} pontos`,
+            nl:score=>score === 1 ? 'Eén punt' : `${score} punten`, pl:score=>score === 1 ? 'Jeden punkt' : `${score} punktów`
+        };
 
         function updateRunnerLanguage(language = null) {
             runnerDisplayLanguage = language || learningRoundLanguage(runnerLanguageIndex);
@@ -6672,9 +6779,9 @@
 
         function chooseRunnerObjectType() {
             if (runnerDistance < 60) return 'food';
-            const lastTwoWereRocks = runnerRecentTypes.slice(-2).every(type => type === 'rock') && runnerRecentTypes.length >= 2;
-            const rockChance = runnerDistance < 130 ? .15 : (runnerDistance < 220 ? .28 : .38);
-            const type = lastTwoWereRocks || Math.random() >= rockChance ? 'food' : 'rock';
+            const lastWasRock = runnerRecentTypes.at(-1) === 'rock';
+            const rockChance = runnerDistance < 130 ? .10 : (runnerDistance < 220 ? .18 : .28);
+            const type = lastWasRock || Math.random() >= rockChance ? 'food' : 'rock';
             runnerRecentTypes.push(type);
             runnerRecentTypes = runnerRecentTypes.slice(-2);
             return type;
@@ -6718,7 +6825,7 @@
 
         function scheduleRunnerObject(delay = null) {
             clearTimeout(runnerSpawnTimer);
-            const reactionDelay = delay ?? Math.max(760, 1280 - runnerDistance * 2.2);
+            const reactionDelay = delay ?? Math.max(580, 980 - runnerDistance * 1.6);
             runnerSpawnTimer = setTimeout(spawnRunnerObject, reactionDelay);
         }
 
@@ -6802,7 +6909,7 @@
             runnerCharacter.style.setProperty('--runner-scale', nextScale.toFixed(3));
             runnerCharacter.style.setProperty('--runner-burst-scale', Math.min(nextScale * 1.12, maximumScale).toFixed(3));
             clearTimeout(runnerGrowthAnimationTimer);
-            runnerCharacter.classList.remove('growing', 'bumped');
+            runnerCharacter.classList.remove('growing', 'bumped', ...runnerCrashReactions);
             if (!animationClass) return;
             void runnerCharacter.offsetWidth;
             runnerCharacter.classList.add(animationClass);
@@ -6823,9 +6930,9 @@
             return true;
         }
 
-        function shrinkRunner() {
+        function shrinkRunner(animationClass = 'bumped') {
             runnerGrowthLevel = Math.max(-2, runnerGrowthLevel - 1);
-            setRunnerScale(runnerScaleForLevel(runnerGrowthLevel), 'bumped');
+            setRunnerScale(runnerScaleForLevel(runnerGrowthLevel), animationClass);
         }
 
         function playRunnerCrashSound() {
@@ -6855,9 +6962,11 @@
             void celebration.offsetWidth;
             celebration.classList.add('active');
             if (runnerScore % runnerFoodsPerGrowthStep !== 0 || !growRunner()) playRunnerChime();
-            const caughtMessage = interfaceText[runnerDisplayLanguage].runnerCaught(activeRunnerFood[runnerDisplayLanguage], runnerScore);
-            speakSingle(languageSettings[runnerDisplayLanguage].code, caughtMessage);
-            scheduleRunnerObject(980);
+            const foodName = activeRunnerFood[runnerDisplayLanguage];
+            speakSingle(languageSettings[runnerDisplayLanguage].code, foodName, () => {
+                speakSingle(languageSettings[runnerDisplayLanguage].code, runnerScorePhrases[runnerDisplayLanguage](runnerScore), null, { volume: .38 });
+            }, { volume: 1 });
+            scheduleRunnerObject(620);
         }
 
         function crashRunner() {
@@ -6870,21 +6979,25 @@
             runnerStage.classList.remove('running');
             runnerThrusting = false;
             runnerCharacter.classList.remove('flying');
-            shrinkRunner();
+            const reaction = runnerCrashReactions[runnerCrashReactionIndex++ % runnerCrashReactions.length];
+            shrinkRunner(reaction);
             document.getElementById('runnerCrash').classList.add('active');
             playRunnerCrashSound();
-            speakSingle(languageSettings[runnerDisplayLanguage].code, interfaceText[runnerDisplayLanguage].runnerOw);
+            const phrases = runnerCrashPhrases[runnerDisplayLanguage] || runnerCrashPhrases.enUS;
+            const phrase = phrases[(runnerCrashReactionIndex - 1) % phrases.length];
+            document.getElementById('runnerCrashText').textContent = phrase;
+            speakSingle(languageSettings[runnerDisplayLanguage].code, phrase);
             runnerRestartTimer = setTimeout(() => {
                 if (activeGameId() !== 'runner' || !document.body.classList.contains('controls-collapsed')) return;
                 document.getElementById('runnerCrash').classList.remove('active');
-                runnerCharacter.classList.remove('bumped');
+                runnerCharacter.classList.remove('bumped', ...runnerCrashReactions);
                 runnerCrashed = false;
                 runnerRunning = true;
                 runnerLastFrame = 0;
                 runnerStage.classList.add('running');
-                scheduleRunnerObject(720);
+                scheduleRunnerObject(620);
                 runnerAnimationFrame = requestAnimationFrame(runnerFrame);
-            }, 1050);
+            }, 1650);
         }
 
         function startRunnerFlight(event = null) {
@@ -7252,6 +7365,11 @@
             fr:'À toi !',
             el:'Η σειρά σου!'
         };
+        Object.entries(extraLanguagePacks).forEach(([language,pack]) => {
+            danceMoves.forEach((move,index) => { move[language] = pack.danceMoves[index]; });
+            freezeCue[language] = pack.freeze;
+            leaderMoves[language] = pack.leader;
+        });
         let dancePartyActive = false;
         let danceStepTimer = null;
         let danceBeatTimer = null;
