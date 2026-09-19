@@ -20,8 +20,8 @@ class AndroidAppRegressionTests(unittest.TestCase):
         self.assertIn("compileSdk 36", BUILD)
         self.assertIn("targetSdk 36", BUILD)
         self.assertIn("minSdk 24", BUILD)
-        self.assertRegex(BUILD, r'versionCode\s+12\b')
-        self.assertRegex(BUILD, r'versionName\s+"1\.0\.11"')
+        self.assertRegex(BUILD, r'versionCode\s+13\b')
+        self.assertRegex(BUILD, r'versionName\s+"1\.0\.12"')
 
     def test_android_can_apply_an_explicit_per_device_language(self) -> None:
         self.assertIn('EXTRA_PRIMARY_LANGUAGE = "primaryLanguage"', ACTIVITY)

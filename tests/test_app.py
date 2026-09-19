@@ -213,7 +213,8 @@ class AppRegressionTests(unittest.TestCase):
         self.assertIn("speakSingle(languageSettings[language].code, phrase", HTML)
         self.assertIn("letterLanguageIndex = (letterLanguageIndex + 1)", HTML)
         self.assertIn("body.controls-collapsed #game-letters", HTML)
-        self.assertIn("#game-letters .academic-prompt { position:sticky", HTML)
+        self.assertRegex(HTML, re.compile(r"#letterPrompt\s*\{.*?clip-path:inset\(50%\)", re.S))
+        self.assertIn("#game-letters .letter-grid { padding-top:0; }", HTML)
 
     def test_color_and_shape_hunt_is_adaptive_and_auto_advances(self) -> None:
         self.assertIn("const learningColors = [", HTML)
@@ -264,7 +265,7 @@ class AppRegressionTests(unittest.TestCase):
         self.assertRegex(HTML, re.compile(r"bodyFocusTimer\s*=\s*setTimeout\(\(\)\s*=>\s*\{.*?\},\s*2400\);", re.S))
 
     def test_body_explorer_face_targets_match_the_drawing(self) -> None:
-        body_markup = HTML[HTML.index('<div class="body-stage" id="bodyStage">'):HTML.index('<!-- 10. BROCCOLI BOUNCE -->')]
+        body_markup = HTML[HTML.index('<div class="body-stage" id="bodyStage"'):HTML.index('<!-- 10. BROCCOLI BOUNCE -->')]
         self.assertEqual(2, body_markup.count('data-body-part="ears"'))
         for part, region in {
             "eyes": "140 100 120 48",
@@ -467,6 +468,8 @@ class AppRegressionTests(unittest.TestCase):
         self.assertIn("3 2 1", birthday_source)
         self.assertNotIn("getUserMedia", birthday_source)
         self.assertNotIn("MediaRecorder", birthday_source)
+        self.assertNotIn('id="birthdayStart"', HTML)
+        self.assertIn('id="birthdayStage" role="button" tabindex="0" data-tap-invite', HTML)
 
     def test_little_chef_guides_choice_counting_chopping_and_stirring(self) -> None:
         self.assertIn('id="game-cooking"', HTML)
@@ -597,6 +600,57 @@ class AppRegressionTests(unittest.TestCase):
 
     def test_spoken_text_strips_commas(self) -> None:
         self.assertIn("const speechText = text.replace(/,/g, '')", HTML)
+
+    def test_toddler_play_is_voice_first_without_reading_required(self) -> None:
+        for element_id in (
+            "balloonStatus",
+            "monsterSpeech",
+            "findQuestion",
+            "letterPromptText",
+            "shapePromptText",
+            "countingPromptText",
+            "bodyPromptText",
+            "iceCreamPrompt",
+            "birthdayPrompt",
+        ):
+            self.assertIn(f"#{element_id}", HTML)
+        hidden_prompt_layer = HTML[HTML.index("#balloonStatus,") : HTML.index("#letterPrompt {")]
+        self.assertIn("clip-path:inset(50%)", hidden_prompt_layer)
+        self.assertIn("overflow:hidden !important", hidden_prompt_layer)
+        self.assertIn("speakSingle(languageSettings[language].code, instruction)", HTML)
+
+    def test_toddler_guidance_is_bounded_and_stops_after_interaction(self) -> None:
+        guidance_source = HTML[HTML.index("let toddlerGuidanceTimers") : HTML.index("function navigationState")]
+        self.assertIn("for (let reminder = 1; reminder <= 3; reminder++)", guidance_source)
+        self.assertIn("reminder * 10_000", guidance_source)
+        self.assertIn("document.addEventListener('pointerdown'", guidance_source)
+        self.assertIn("if (activeGame) clearToddlerGuidance()", guidance_source)
+        self.assertNotIn("monster: ()", guidance_source)
+        self.assertIn("clearToddlerGuidance();\n            cancelRepeatSequence();", HTML)
+
+    def test_toddler_targets_and_press_feedback_follow_mobile_guidance(self) -> None:
+        self.assertIn("button { min-width:48px;min-height:48px; }", HTML)
+        self.assertIn("button:disabled { cursor:default; }", HTML)
+        self.assertIn(".tap-invite", HTML)
+        self.assertIn("@media (prefers-reduced-motion:reduce)", HTML)
+        self.assertIn("transition-duration:.01ms !important", HTML)
+
+    def test_bottom_controls_do_not_cover_guided_game_choices(self) -> None:
+        self.assertRegex(
+            HTML,
+            re.compile(
+                r"\.ice-cream-flavors,\s*\.ice-cream-topping-buttons\s*\{\s*bottom:max\(86px",
+                re.S,
+            ),
+        )
+        self.assertRegex(
+            HTML,
+            re.compile(r"\.cooking-pot\s*\{\s*margin-bottom:max\(92px", re.S),
+        )
+        self.assertRegex(
+            HTML,
+            re.compile(r"\.birthday-game\s*\{.*?padding:8px 8px max\(82px", re.S),
+        )
 
 
 if __name__ == "__main__":

@@ -2211,7 +2211,6 @@
         }
         body.controls-collapsed #game-letters { height:100svh;overflow-y:auto;overscroll-behavior-y:contain;touch-action:pan-y;-webkit-overflow-scrolling:touch;align-items:flex-start; }
         #game-letters .learning-game { min-height:auto; }
-        #game-letters .academic-prompt { position:sticky;top:0;z-index:8; }
         #game-letters .letter-grid { padding-bottom:90px; }
         .letter-card,
         .academic-choice {
@@ -2584,8 +2583,6 @@
         .birthday-confetti { position:absolute;inset:0;pointer-events:none;overflow:hidden; }
         .birthday-confetti span { position:absolute;top:-20px;font-size:1.4rem;animation:confettiFall 1.8s ease-in both; }
         @keyframes confettiFall { to{transform:translateY(520px) rotate(420deg);opacity:.2} }
-        .birthday-start { min-width:min(82vw,380px);min-height:68px;border:0;border-radius:999px;background:linear-gradient(135deg,#ed64a6,#805ad5);color:white;font:inherit;font-size:clamp(1.15rem,5vw,1.5rem);font-weight:1000;box-shadow:0 7px 0 #6b46c1; }
-
         .cooking-stage { position:relative;width:100%;height:100%;min-height:0;background:radial-gradient(circle at 50% 8%,#fff 0 5%,transparent 5.5%),linear-gradient(#dff5ff 0 50%,#ffe4b7 50% 100%);overflow:hidden; }
         .meal-choices { position:absolute;inset:76px 12px 20px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-items:center; }
         .meal-choice { aspect-ratio:1;border:0;border-radius:50%;background:radial-gradient(circle,#fff 0 52%,#d7eef9 53% 65%,#fff 66%);font:inherit;font-size:clamp(3.4rem,15vw,7rem);filter:drop-shadow(0 8px 5px rgba(45,55,72,.2));animation:mealInvite 1.8s ease-in-out infinite; }
@@ -2846,6 +2843,100 @@
             .beat-start-button.ready-to-play span,
             .tap-invite,
             .jingle-sleigh-art { animation:none; }
+        }
+
+        /* Toddler-quality consistency layer: voice-first, generous targets and maximum play space. */
+        button { min-width:48px;min-height:48px; }
+        button:disabled { cursor:default; }
+        .academic-game { position:relative; }
+
+        #balloonStatus,
+        #monsterSpeech,
+        #findQuestion,
+        #letterPromptText,
+        #shapePromptText,
+        #countingPromptText,
+        #bodyPromptText,
+        #iceCreamPrompt,
+        #birthdayPrompt {
+            position:absolute !important;
+            width:1px !important;
+            height:1px !important;
+            padding:0 !important;
+            margin:-1px !important;
+            overflow:hidden !important;
+            clip:rect(0 0 0 0) !important;
+            clip-path:inset(50%) !important;
+            white-space:nowrap !important;
+            border:0 !important;
+        }
+
+        #shapePrompt,
+        #countingPrompt,
+        #bodyPrompt,
+        .ice-cream-game > .creative-prompt,
+        .birthday-game > .creative-prompt {
+            position:absolute;
+            top:max(10px,env(safe-area-inset-top));
+            left:max(10px,env(safe-area-inset-left));
+            z-index:14;
+            width:52px;
+            min-width:52px;
+            height:52px;
+            min-height:52px;
+            padding:5px;
+            border-radius:50%;
+            transform:none;
+            pointer-events:none;
+        }
+        #shapePrompt .academic-flag,
+        #countingPrompt .academic-flag,
+        #bodyPrompt .academic-flag,
+        .ice-cream-game > .creative-prompt .academic-flag,
+        .birthday-game > .creative-prompt .academic-flag { font-size:1.75rem; }
+
+        #letterPrompt {
+            position:absolute;
+            width:1px;
+            height:1px;
+            padding:0;
+            margin:-1px;
+            overflow:hidden;
+            clip:rect(0 0 0 0);
+            clip-path:inset(50%);
+            white-space:nowrap;
+            border:0;
+        }
+        #game-letters .letter-grid { padding-top:0; }
+        #game-shapes .academic-choice,
+        #game-counting .academic-choice { min-height:clamp(150px,24svh,220px); }
+        #game-body .body-stage { max-height:calc(100svh - 30px); }
+        #game-everyday .find-stage { justify-content:center; }
+
+        .ice-cream-flavors,
+        .ice-cream-topping-buttons { bottom:max(86px,calc(env(safe-area-inset-bottom) + 76px)); }
+        .ice-cream-result { bottom:clamp(198px,27svh,260px); }
+        .birthday-game { position:relative;padding:8px 8px max(82px,calc(env(safe-area-inset-bottom) + 72px)); }
+        .birthday-stage { flex:1;height:auto;max-height:760px;min-height:520px; }
+        .cooking-pot { margin-bottom:max(92px,calc(env(safe-area-inset-bottom) + 78px)); }
+        .meal-choices { inset:max(34px,env(safe-area-inset-top)) 12px max(90px,calc(env(safe-area-inset-bottom) + 76px)); }
+
+        .santa-drag-hint { font-size:1.35rem;letter-spacing:.16em; }
+        .body-stage[data-tap-invite].tap-invite,
+        .birthday-stage[data-tap-invite].tap-invite { animation:largeTargetInvite .9s ease both; }
+        @keyframes largeTargetInvite { 45%{transform:scale(1.012);filter:brightness(1.025)} }
+
+        @media (max-height:620px) {
+            .birthday-stage { min-height:430px; }
+            .ice-cream-result { bottom:174px; }
+            .ice-cream-flavors,
+            .ice-cream-topping-buttons { bottom:max(72px,calc(env(safe-area-inset-bottom) + 64px)); }
+        }
+
+        @media (prefers-reduced-motion:reduce) {
+            *,*::before,*::after { scroll-behavior:auto !important;transition-duration:.01ms !important; }
+            .body-stage[data-tap-invite].tap-invite,
+            .birthday-stage[data-tap-invite].tap-invite { animation:none !important; }
         }
     </style>
 </head>
@@ -3160,7 +3251,7 @@
         <div class="monster-stage" id="santaDropZone">
             <button class="monster-avatar" id="monsterAvatar" type="button" onclick="tickleMonster()" aria-label="Santa Claus">🎅</button>
         </div>
-        <div class="santa-drag-hint" id="santaDragHint">🍎 ⬆️ 🎅 Σύρε ή πάτησε ένα φαγητό</div>
+        <div class="santa-drag-hint" id="santaDragHint" aria-label="Drag or tap some food">🍎 ⬆️ 🎅</div>
         <div class="food-grid" id="monsterFoodGrid"></div>
     </div>
 
@@ -3233,7 +3324,7 @@
     <div id="game-body" class="game-view">
         <main class="learning-game academic-game body-explorer-game">
             <div class="academic-prompt" id="bodyPrompt" aria-live="polite"><span class="academic-flag" id="bodyFlag" aria-hidden="true">🇬🇧</span><span id="bodyPromptText">Tap a body part</span></div>
-            <div class="body-stage" id="bodyStage">
+            <div class="body-stage" id="bodyStage" data-tap-invite>
                 <svg class="body-figure" id="bodyFigure" viewBox="0 0 400 600" aria-hidden="true">
                     <ellipse cx="200" cy="574" rx="142" ry="18" fill="#c6e6d0" opacity=".7"/>
                     <circle cx="128" cy="112" r="30" fill="#b9794e"/>
@@ -3327,7 +3418,7 @@
     <div id="game-birthday" class="game-view">
         <main class="birthday-game">
             <div class="creative-prompt" aria-live="polite"><span class="academic-flag" id="birthdayFlag" aria-hidden="true">🇺🇸</span><span id="birthdayPrompt">Tap the cake when you are ready</span></div>
-            <div class="birthday-stage" id="birthdayStage" role="button" tabindex="0" onclick="birthdayStagePressed()" aria-label="Birthday cake">
+            <div class="birthday-stage" id="birthdayStage" role="button" tabindex="0" data-tap-invite onclick="birthdayStagePressed()" aria-label="Birthday cake">
                 <div class="birthday-countdown" id="birthdayCountdown" aria-live="polite">🎈</div>
                 <div class="birthday-confetti" id="birthdayConfetti" aria-hidden="true"></div>
                 <div class="birthday-cake" aria-hidden="true">
@@ -3336,7 +3427,6 @@
                     <div class="cake-layer bottom"></div>
                 </div>
             </div>
-            <button class="birthday-start" id="birthdayStart" type="button" onclick="startBirthdayRound()">🎂 Start</button>
         </main>
     </div>
 
@@ -3351,7 +3441,7 @@
                     <button class="chopping-board" id="choppingBoard" type="button" onclick="chopIngredient()" hidden aria-label="Chop the onions">🧅</button>
                     <button class="cooking-main-ingredient" id="cookingMainIngredient" type="button" onclick="addCookingMainIngredient()" hidden aria-label="Add the main ingredient">🍝</button>
                     <div class="cooking-pot" id="cookingPot" role="button" tabindex="0" aria-label="Stir the pot"><span class="cooking-spoon" aria-hidden="true">🥄</span><span class="cooking-bubbles" aria-hidden="true"><i></i><i></i><i></i></span><span class="cooking-pot-food" id="cookingPotFood">🍝</span></div>
-                    <div class="cooking-finished-plate" id="cookingFinishedPlate" role="button" tabindex="0" onclick="advanceCookingGame()" hidden aria-label="Cook another meal">🍝</div>
+                    <div class="cooking-finished-plate" id="cookingFinishedPlate" role="button" tabindex="0" data-tap-invite onclick="advanceCookingGame()" hidden aria-label="Cook another meal">🍝</div>
                 </div>
             </div>
         </main>
@@ -5433,6 +5523,50 @@
             return activeGame ? activeGame.id.replace('game-', '') : '';
         }
 
+        let toddlerGuidanceTimers = [];
+        let toddlerGuidanceGeneration = 0;
+
+        function clearToddlerGuidance() {
+            toddlerGuidanceGeneration++;
+            toddlerGuidanceTimers.forEach(clearTimeout);
+            toddlerGuidanceTimers = [];
+        }
+
+        function toddlerGuidanceText(gameId, language) {
+            const text = interfaceText[language];
+            const instructions = {
+                balloons: () => text.popBalloons,
+                letters: () => text.letterPrompt,
+                body: () => text.bodyPrompt,
+                icecream: () => text.iceCreamPick,
+                birthday: () => text.birthdayReady,
+                dance: () => text.danceStart
+            };
+            return instructions[gameId]?.().replace(/[▶■🎂🎅🎈]/gu, '').trim() || '';
+        }
+
+        function startToddlerGuidance(gameId = activeGameId(), speakNow = true) {
+            clearToddlerGuidance();
+            const language = currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode;
+            const instruction = toddlerGuidanceText(gameId, language);
+            if (!instruction) return;
+            const generation = toddlerGuidanceGeneration;
+            if (speakNow) speakSingle(languageSettings[language].code, instruction);
+            for (let reminder = 1; reminder <= 3; reminder++) {
+                toddlerGuidanceTimers.push(setTimeout(() => {
+                    if (generation !== toddlerGuidanceGeneration
+                        || activeGameId() !== gameId
+                        || !document.body.classList.contains('controls-collapsed')) return;
+                    speakSingle(languageSettings[language].code, instruction);
+                }, reminder * 10_000));
+            }
+        }
+
+        document.addEventListener('pointerdown', event => {
+            const activeGame = event.target.closest?.('.game-view.active');
+            if (activeGame) clearToddlerGuidance();
+        }, { capture:true, passive:true });
+
         function navigationState(isCollapsed = document.body.classList.contains('controls-collapsed')) {
             return {
                 polyglotPlayroom: true,
@@ -5609,6 +5743,7 @@
         }
 
         function pauseActivePlay() {
+            clearToddlerGuidance();
             cancelRepeatSequence();
             cancelFoodDrag(false);
             stopRealSound();
@@ -5641,6 +5776,7 @@
             if (gameId === 'cooking') prepareCookingGame(true);
             if (gameId === 'music') inviteMusicPads();
             if (gameId === 'beat') prepareBeatIntro();
+            startToddlerGuidance(gameId);
         }
 
         function setControlsCollapsed(isCollapsed, shouldStore = true, shouldUpdateHistory = true) {
@@ -5727,7 +5863,8 @@
             document.getElementById('monsterSpeech').textContent = personalizeText(text.santaPrompt, displayLanguage);
             document.getElementById('monsterAvatar').setAttribute('aria-label', text.santaLabel);
             document.getElementById('dancingSanta').setAttribute('aria-label', text.santaLabel);
-            document.getElementById('santaDragHint').textContent = `🍎 ⬆️ 🎅 ${text.dragFood}`;
+            document.getElementById('santaDragHint').textContent = '🍎 ⬆️ 🎅';
+            document.getElementById('santaDragHint').setAttribute('aria-label', text.dragFood);
             document.getElementById('balloonStatus').textContent = text.popBalloons;
             document.getElementById('everydayTitle').textContent = text.everyday;
             document.getElementById('everydayPrompt').textContent = text.everydayPrompt;
@@ -7763,7 +7900,9 @@
             const displayLanguage = language || (currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode);
             document.getElementById('birthdayFlag').textContent = languageSettings[displayLanguage].flag;
             if (!birthdayRoundActive) document.getElementById('birthdayPrompt').textContent = interfaceText[displayLanguage].birthdayReady;
-            document.getElementById('birthdayStart').textContent = interfaceText[displayLanguage].birthdayStart;
+            document.getElementById('birthdayStage').setAttribute('aria-label', birthdayRoundActive
+                ? interfaceText[displayLanguage].birthdayBlow
+                : interfaceText[displayLanguage].birthdayReady);
         }
 
         function prepareBirthdayGame() {
@@ -7773,7 +7912,6 @@
             document.getElementById('birthdayConfetti').innerHTML = '';
             document.getElementById('birthdayCountdown').textContent = '🎈';
             renderBirthdayCandles(4);
-            document.getElementById('birthdayStart').hidden = false;
             updateBirthdayLanguage();
         }
 
@@ -7785,7 +7923,7 @@
             renderBirthdayCandles(4);
             document.getElementById('birthdayFlag').textContent = languageSettings[language].flag;
             document.getElementById('birthdayPrompt').textContent = text.birthdayBlow;
-            document.getElementById('birthdayStart').hidden = true;
+            document.getElementById('birthdayStage').setAttribute('aria-label', text.birthdayBlow);
             document.getElementById('birthdayStage').classList.remove('celebrate');
             document.getElementById('birthdayConfetti').innerHTML = '';
             const countdown = document.getElementById('birthdayCountdown');
@@ -7832,9 +7970,7 @@
             }
             playCreativeSound([392,523,659,784,1047], .22);
             speakSingle(languageSettings[language].code, interfaceText[language].birthdayCheer);
-            const button = document.getElementById('birthdayStart');
-            button.textContent = interfaceText[language].birthdayAgain;
-            button.hidden = false;
+            document.getElementById('birthdayStage').setAttribute('aria-label', interfaceText[language].birthdayAgain);
         }
 
         document.getElementById('birthdayStage').addEventListener('keydown', event => {
