@@ -480,6 +480,19 @@ class AppRegressionTests(unittest.TestCase):
         self.assertIn("cookingChopCount < 3", HTML)
         self.assertIn("cookingCountWords", HTML)
 
+    def test_little_chef_speaks_each_instruction_and_requires_the_main_ingredient(self) -> None:
+        self.assertIn("if (gameId === 'cooking') prepareCookingGame(true)", HTML)
+        self.assertIn("`${meal.names[language] || meal.names.en}. ${interfaceText[language].cookingAddOnions}`", HTML)
+        self.assertIn("cookingAddOnions:'Add five onions. Tap each onion to put it on the chopping board.'", HTML)
+        self.assertIn("cookingAddOnions:'Βάλε πέντε κρεμμυδάκια στο ξύλο κοπής. Πάτησε κάθε κρεμμυδάκι.'", HTML)
+        self.assertIn('id="cookingMainIngredient"', HTML)
+        self.assertIn("cookingStep = 'addMain'", HTML)
+        self.assertIn("function addCookingMainIngredient()", HTML)
+        self.assertIn("document.getElementById('cookingPotFood').textContent = meal.emoji", HTML)
+        self.assertIn("names:{en:'Carrots',enUS:'Carrots'", HTML)
+        chop_source = HTML[HTML.index("function chopIngredient()") : HTML.index("function addCookingMainIngredient()")]
+        self.assertNotIn("cookingStep = 'stir'", chop_source)
+
     def test_little_chef_uses_the_full_screen_and_objects_instead_of_action_buttons(self) -> None:
         self.assertIn("#game-cooking { width:100%;max-width:none;height:100svh", HTML)
         self.assertIn("grid-template-columns:repeat(5,minmax(0,1fr))", HTML)

@@ -2611,11 +2611,16 @@
         .ingredient-button:nth-child(2n) { animation-delay:.16s; }
         @keyframes onionInvite { 0%,70%,100%{transform:translateY(0)} 82%{transform:translateY(-9px) rotate(-5deg)} 91%{transform:translateY(0) rotate(4deg)} }
         .ingredient-button.added { animation:ingredientFly .62s ease-in both;pointer-events:none; }
-        @keyframes ingredientFly { to{transform:translate(0,46svh) scale(.2) rotate(240deg);opacity:0} }
+        @keyframes ingredientFly { to{transform:translate(0,18svh) scale(.25) rotate(240deg);opacity:0} }
         .chopping-board { position:absolute;left:50%;top:clamp(98px,18svh,155px);z-index:4;width:min(82%,430px);height:min(31svh,220px);transform:translateX(-50%);border:5px solid #9c6b30;border-radius:27px;background:linear-gradient(100deg,#efc174,#d89c4b);font-size:clamp(4.5rem,19vw,7rem);box-shadow:0 8px 0 #81511f; }
         .chopping-board::after { content:'🔪';position:absolute;right:22%;top:12px;font-size:4.2rem;transform:rotate(-35deg);transform-origin:80% 80%; }
         .chopping-board.chop::after { animation:knifeChop .34s ease-in-out; }
         @keyframes knifeChop { 50%{transform:translate(-30px,48px) rotate(-5deg)} }
+        .cooking-main-ingredient { position:absolute;left:50%;top:clamp(110px,20svh,175px);z-index:4;width:min(58vw,270px);aspect-ratio:1;transform:translateX(-50%);border:0;background:transparent;font-size:clamp(7rem,34vw,12rem);filter:drop-shadow(0 10px 6px rgba(45,55,72,.23));animation:mainIngredientInvite 1.2s ease-in-out infinite;touch-action:manipulation; }
+        .cooking-main-ingredient:active { scale:.9; }
+        .cooking-main-ingredient.added { animation:mainIngredientDrop .7s cubic-bezier(.25,.75,.25,1) both;pointer-events:none; }
+        @keyframes mainIngredientInvite { 50%{transform:translateX(-50%) scale(1.08) rotate(-3deg)} }
+        @keyframes mainIngredientDrop { to{transform:translate(-50%,48svh) scale(.18) rotate(190deg);opacity:0} }
         .cooking-finished-plate { position:absolute;left:50%;top:50%;z-index:5;width:min(78vw,470px);aspect-ratio:1;display:grid;place-items:center;transform:translate(-50%,-48%);border-radius:50%;background:radial-gradient(circle,#fff 0 45%,#bee3f8 46% 56%,#fff 57%);font-size:clamp(8rem,35vw,13rem);filter:drop-shadow(0 13px 8px rgba(45,55,72,.2));animation:mealReady 1s cubic-bezier(.2,.9,.35,1.2) both;cursor:pointer; }
         @keyframes mealReady { from{transform:scale(.25) rotate(-20deg);opacity:0} to{transform:none;opacity:1} }
         .cooking-finished-plate:not([hidden]) { animation:finishedPlateIn 1s cubic-bezier(.2,.9,.35,1.2) both,finishedPlateInvite 1.6s 1.1s ease-in-out infinite; }
@@ -3329,6 +3334,7 @@
                 <div class="cooking-workspace" id="cookingWorkspace" hidden>
                     <div class="ingredient-tray" id="ingredientTray"></div>
                     <button class="chopping-board" id="choppingBoard" type="button" onclick="chopIngredient()" hidden aria-label="Chop the onions">🧅</button>
+                    <button class="cooking-main-ingredient" id="cookingMainIngredient" type="button" onclick="addCookingMainIngredient()" hidden aria-label="Add the main ingredient">🍝</button>
                     <div class="cooking-pot" id="cookingPot" role="button" tabindex="0" onclick="stirCookingPot()" aria-label="Stir the pot"><span class="cooking-spoon" aria-hidden="true">🥄</span><span class="cooking-pot-food" id="cookingPotFood">🍝</span></div>
                     <div class="cooking-finished-plate" id="cookingFinishedPlate" role="button" tabindex="0" onclick="advanceCookingGame()" hidden aria-label="Cook another meal">🍝</div>
                 </div>
@@ -3996,7 +4002,7 @@
                 everydayPrompt:'Explore six things at a time', everydayExplore:'👀 Explore', everydayFind:'👆 Press', everydayMore:'More things →', findQuestion:item=>`Press ${item}`, findTry:'Look again', findFound:()=>`That’s the one!`, findNext:'▶ Next one', findReal:()=>`Can you find one like this nearby and show a grown-up?`,
                 letterPrompt:'Tap a letter', letterPhrase:item=>`${item.name}. ${item.name} is for ${item.word}.`, shapePrompt:(color,shape)=>`Tap. Color ${color}. Shape ${shape}.`, shapeTry:'Look again', shapeGreat:'You found it!', countPrompt:'How many?', countTry:'Count again', countGreat:number=>`${number}! Great counting!`, bodyPrompt:'Tap a body part', bodyHint:'Tap the character', runnerPrompt:'Hold to fly · Let go to land', runnerHint:'Hold to fly', runnerRotate:'Turn the phone sideways', runnerTutorial:'Hold to fly · Let go to land', runnerCaught:(food,score)=>`${food}! ${score === 1 ? 'One point' : `${score} points`}!`, runnerOw:'Ow!',
                 musicPrompt:'Make your own music', musicTogether:'Take turns and copy each other', beatPrompt:'Watch the pattern', beatStart:'Press the dancing bear', beatNext:'▶ New pattern', beatReady:'Are you ready to play? Press the dancing bear.', beatExplain:'Watch the pattern. Then play it back. Ready?', beatYourTurn:'Your turn!', beatGreat:'You remembered it!', beatPraise:['Great job!','Well done!','You did it!','Amazing!'], beatAgain:'Watch the same pattern again',
-                iceCreamPick:'Pick a flavor', iceCreamTop:'Add toppings', iceCreamReady:'Your ice cream is ready!', birthdayReady:'Tap the cake when you are ready', birthdayStart:'🎂 Start', birthdayBlow:'Blow out the candles!', birthdayAgain:'🎂 Again', birthdayCheer:'Happy birthday!', cookingChoose:'Choose what to cook', cookingAddOnions:'Add five onions', cookingChop:'Tap the board to chop', cookingStir:'Stir the pot', cookingReady:'The food is ready!', cookingNext:'Next',
+                iceCreamPick:'Pick a flavor', iceCreamTop:'Add toppings', iceCreamReady:'Your ice cream is ready!', birthdayReady:'Tap the cake when you are ready', birthdayStart:'🎂 Start', birthdayBlow:'Blow out the candles!', birthdayAgain:'🎂 Again', birthdayCheer:'Happy birthday!', cookingChoose:'Choose what to cook', cookingAddOnions:'Add five onions. Tap each onion to put it on the chopping board.', cookingChop:'Tap the chopping board three times', cookingAddMain:'Now add {item} to the pot', cookingStir:'Stir the pot', cookingReady:'The food is ready!', cookingNext:'Next',
                 danceReady:'Ready?', danceStart:'▶ Start dancing', danceStop:'■ Stop', danceTogether:'Make a clear space and dance together', bellsPrompt:'Play along with Santa', bellsSantaAction:'Hear Santa laugh', bellsBellAction:'Ring the big bell', jingleStart:'🎶 Play Jingle Bells', jingleStop:'■ Stop the song'
             },
             es: {
@@ -4013,7 +4019,7 @@
                 everydayPrompt:'Explora seis cosas a la vez', everydayExplore:'👀 Explora', everydayFind:'👆 Presiona', everydayMore:'Más cosas →', findQuestion:item=>`Presiona ${item}`, findTry:'Mira otra vez', findFound:()=>`¡Ese es!`, findNext:'▶ Otro', findReal:()=>`¿Puedes encontrar uno igual cerca y mostrárselo a un adulto?`,
                 letterPrompt:'Presiona una letra', letterPhrase:item=>`${item.name}. ${item.name} de ${item.word}.`, shapePrompt:(color,shape)=>`Presiona. Color ${color}. Forma ${shape}.`, shapeTry:'Mira otra vez', shapeGreat:'¡Lo encontraste!', countPrompt:'¿Cuántos hay?', countTry:'Cuenta otra vez', countGreat:number=>`¡${number}! ¡Muy bien contado!`, bodyPrompt:'Presiona una parte del cuerpo', bodyHint:'Toca al personaje', runnerPrompt:'Mantén presionado para volar · Suelta para bajar', runnerHint:'Mantén presionado para volar', runnerRotate:'Gira el teléfono de lado', runnerTutorial:'Mantén presionado para volar · Suelta para bajar', runnerCaught:(food,score)=>`¡${food}! ${score === 1 ? '¡Un punto!' : `¡${score} puntos!`}`, runnerOw:'¡Ay!',
                 musicPrompt:'Haz tu propia música', musicTogether:'Tomen turnos e imítense', beatPrompt:'Mira el patrón', beatStart:'Presiona el osito que baila', beatNext:'▶ Nuevo patrón', beatReady:'¿Listo para jugar? Presiona el osito que baila.', beatExplain:'Mira el patrón. Después repítelo. ¿Listo?', beatYourTurn:'¡Tu turno!', beatGreat:'¡Lo recordaste!', beatPraise:['¡Muy bien!','¡Bravo!','¡Lo hiciste!','¡Excelente!'], beatAgain:'Mira el mismo patrón otra vez',
-                iceCreamPick:'Elige un sabor', iceCreamTop:'Ponle cosas ricas', iceCreamReady:'¡Tu helado está listo!', birthdayReady:'Toca el pastel cuando estés listo', birthdayStart:'🎂 Empezar', birthdayBlow:'¡Sopla las velitas!', birthdayAgain:'🎂 Otra vez', birthdayCheer:'¡Feliz cumpleaños!', cookingChoose:'Elige qué cocinar', cookingAddOnions:'Pon cinco cebollitas', cookingChop:'Toca la tabla para picar', cookingStir:'Revuelve la olla', cookingReady:'¡La comida está lista!', cookingNext:'Siguiente',
+                iceCreamPick:'Elige un sabor', iceCreamTop:'Ponle cosas ricas', iceCreamReady:'¡Tu helado está listo!', birthdayReady:'Toca el pastel cuando estés listo', birthdayStart:'🎂 Empezar', birthdayBlow:'¡Sopla las velitas!', birthdayAgain:'🎂 Otra vez', birthdayCheer:'¡Feliz cumpleaños!', cookingChoose:'Elige qué cocinar', cookingAddOnions:'Pon cinco cebollitas. Toca cada cebollita para ponerla en la tabla.', cookingChop:'Toca la tabla tres veces para picar', cookingAddMain:'Ahora pon {item} en la olla', cookingStir:'Revuelve la olla', cookingReady:'¡La comida está lista!', cookingNext:'Siguiente',
                 danceReady:'¿Listo?', danceStart:'▶ Empieza a bailar', danceStop:'■ Detener', danceTogether:'Dejen espacio y bailen juntos', bellsPrompt:'Toca con Santa', bellsSantaAction:'Escucha a Santa', bellsBellAction:'Toca la campana grande', jingleStart:'🎶 Toca Jingle Bells', jingleStop:'■ Detén la canción'
             },
             fr: {
@@ -4030,7 +4036,7 @@
                 everydayPrompt:'Explore six objets à la fois', everydayExplore:'👀 Explore', everydayFind:'👆 Appuie', everydayMore:'Autres objets →', findQuestion:item=>`Appuie sur ${item}`, findTry:'Regarde encore', findFound:()=>`C’est celui-là !`, findNext:'▶ Le suivant', findReal:()=>`Peux-tu en trouver un pareil près de toi et le montrer à un adulte ?`,
                 letterPrompt:'Appuie sur une lettre', letterPhrase:item=>`${item.name}. ${item.name} comme ${item.word}.`, shapePrompt:(color,shape)=>`Appuie. Couleur ${color}. Forme ${shape}.`, shapeTry:'Regarde encore', shapeGreat:'Tu l’as trouvé !', countPrompt:'Combien y en a-t-il ?', countTry:'Compte encore', countGreat:number=>`${number} ! Bravo !`, bodyPrompt:'Appuie sur une partie du corps', bodyHint:'Touche le personnage', runnerPrompt:'Maintiens appuyé pour voler · Relâche pour descendre', runnerHint:'Maintiens appuyé pour voler', runnerRotate:'Tourne le téléphone sur le côté', runnerTutorial:'Maintiens appuyé pour voler · Relâche pour descendre', runnerCaught:(food,score)=>`${food} ! ${score === 1 ? 'Un point' : `${score} points`} !`, runnerOw:'Aïe !',
                 musicPrompt:'Crée ta propre musique', musicTogether:'Jouez chacun votre tour et imitez-vous', beatPrompt:'Regarde la suite', beatStart:'Appuie sur l’ours qui danse', beatNext:'▶ Nouvelle suite', beatReady:'Prêt à jouer ? Appuie sur l’ours qui danse.', beatExplain:'Regarde la suite. Puis refais-la. Prêt ?', beatYourTurn:'À toi !', beatGreat:'Tu t’en es souvenu !', beatPraise:['Bravo !','Très bien !','Tu as réussi !','Super !'], beatAgain:'Regarde encore la même suite',
-                iceCreamPick:'Choisis un parfum', iceCreamTop:'Ajoute des garnitures', iceCreamReady:'Ta glace est prête !', birthdayReady:'Touche le gâteau quand tu es prêt', birthdayStart:'🎂 Commencer', birthdayBlow:'Souffle les bougies !', birthdayAgain:'🎂 Encore', birthdayCheer:'Joyeux anniversaire !', cookingChoose:'Choisis quoi cuisiner', cookingAddOnions:'Ajoute cinq oignons', cookingChop:'Touche la planche pour couper', cookingStir:'Mélange la marmite', cookingReady:'Le repas est prêt !', cookingNext:'Suivant',
+                iceCreamPick:'Choisis un parfum', iceCreamTop:'Ajoute des garnitures', iceCreamReady:'Ta glace est prête !', birthdayReady:'Touche le gâteau quand tu es prêt', birthdayStart:'🎂 Commencer', birthdayBlow:'Souffle les bougies !', birthdayAgain:'🎂 Encore', birthdayCheer:'Joyeux anniversaire !', cookingChoose:'Choisis quoi cuisiner', cookingAddOnions:'Ajoute cinq petits oignons. Touche chaque oignon pour le poser sur la planche.', cookingChop:'Touche trois fois la planche pour couper', cookingAddMain:'Maintenant ajoute {item} dans la marmite', cookingStir:'Mélange la marmite', cookingReady:'Le repas est prêt !', cookingNext:'Suivant',
                 danceReady:'Prêt ?', danceStart:'▶ Commence à danser', danceStop:'■ Arrêter', danceTogether:'Faites de la place et dansez ensemble', bellsPrompt:'Joue avec le Père Noël', bellsSantaAction:'Écoute le Père Noël', bellsBellAction:'Fais sonner la grande cloche', jingleStart:'🎶 Joue Jingle Bells', jingleStop:'■ Arrête la chanson'
             },
             el: {
@@ -4047,7 +4053,7 @@
                 everydayPrompt:'Εξερεύνησε έξι πράγματα κάθε φορά', everydayExplore:'👀 Εξερεύνησε', everydayFind:'👆 Πάτησε', everydayMore:'Άλλα πράγματα →', findQuestion:item=>`Πάτησε ${item}`, findTry:'Κοίτα ξανά', findFound:()=>`Αυτό είναι!`, findNext:'▶ Επόμενο', findReal:()=>`Μπορείς να βρεις κάτι ίδιο κοντά σου και να το δείξεις σε έναν μεγάλο;`,
                 letterPrompt:'Πάτησε ένα γράμμα', letterPhrase:item=>`${item.name}. ${item.letter} όπως ${item.word}.`, shapePrompt:(color,shape)=>`Πάτησε. Χρώμα ${color}. Σχήμα ${shape}.`, shapeTry:'Κοίτα ξανά', shapeGreat:'Το βρήκες!', countPrompt:'Πόσα είναι;', countTry:'Μέτρα ξανά', countGreat:number=>`${number}! Μπράβο!`, bodyPrompt:'Πάτησε ένα μέρος του σώματος', bodyHint:'Πάτησε το ανθρωπάκι', runnerPrompt:'Κράτα πατημένο για να πετάξεις · Άφησε για να κατέβεις', runnerHint:'Κράτα πατημένο για να πετάξεις', runnerRotate:'Γύρισε το κινητό στο πλάι', runnerTutorial:'Κράτα πατημένο για να πετάξεις · Άφησε για να κατέβεις', runnerCaught:(food,score)=>`${food}! ${greekPointScore(score)}!`, runnerOw:'Άουτς!',
                 musicPrompt:'Φτιάξε τη δική σου μουσική', musicTogether:'Παίξτε με τη σειρά και αντιγράψτε ο ένας τον άλλον', beatPrompt:'Κοίτα το μοτίβο', beatStart:'Πάτησε το αρκουδάκι που χορεύει', beatNext:'▶ Νέο μοτίβο', beatReady:'Έτοιμος να παίξεις; Πάτησε το αρκουδάκι που χορεύει.', beatExplain:'Κοίτα το μοτίβο. Μετά παίξ’ το κι εσύ. Έτοιμος;', beatYourTurn:'Η σειρά σου!', beatGreat:'Το θυμήθηκες!', beatPraise:['Μπράβο!','Πολύ καλά!','Τα κατάφερες!','Το βρήκες!'], beatAgain:'Κοίτα ξανά το ίδιο μοτίβο',
-                iceCreamPick:'Διάλεξε γεύση', iceCreamTop:'Βάλε λιχουδιές', iceCreamReady:'Το παγωτό σου είναι έτοιμο!', birthdayReady:'Πάτησε την τούρτα όταν είσαι έτοιμος', birthdayStart:'🎂 Ξεκίνα', birthdayBlow:'Φύσηξε τα κεράκια!', birthdayAgain:'🎂 Ξανά', birthdayCheer:'Χρόνια πολλά!', cookingChoose:'Διάλεξε τι θα μαγειρέψεις', cookingAddOnions:'Βάλε πέντε κρεμμυδάκια', cookingChop:'Πάτησε το ξύλο για να κόψεις', cookingStir:'Ανακάτεψε την κατσαρόλα', cookingReady:'Το φαγητό είναι έτοιμο!', cookingNext:'Επόμενο',
+                iceCreamPick:'Διάλεξε γεύση', iceCreamTop:'Βάλε λιχουδιές', iceCreamReady:'Το παγωτό σου είναι έτοιμο!', birthdayReady:'Πάτησε την τούρτα όταν είσαι έτοιμος', birthdayStart:'🎂 Ξεκίνα', birthdayBlow:'Φύσηξε τα κεράκια!', birthdayAgain:'🎂 Ξανά', birthdayCheer:'Χρόνια πολλά!', cookingChoose:'Διάλεξε τι θα μαγειρέψεις', cookingAddOnions:'Βάλε πέντε κρεμμυδάκια στο ξύλο κοπής. Πάτησε κάθε κρεμμυδάκι.', cookingChop:'Πάτησε το ξύλο κοπής τρεις φορές', cookingAddMain:'Τώρα βάλε {item} στην κατσαρόλα', cookingStir:'Ανακάτεψε την κατσαρόλα', cookingReady:'Το φαγητό είναι έτοιμο!', cookingNext:'Επόμενο',
                 danceReady:'Έτοιμος;', danceStart:'▶ Ξεκίνα τον χορό', danceStop:'■ Σταμάτα', danceTogether:'Αδειάστε λίγο χώρο και χορέψτε μαζί', bellsPrompt:'Παίξε μαζί με τον Άγιο Βασίλη', bellsSantaAction:'Άκου τον Άγιο Βασίλη', bellsBellAction:'Χτύπα το μεγάλο κουδούνι', jingleStart:'🎶 Παίξε το Jingle Bells', jingleStop:'■ Σταμάτα το τραγούδι'
             }
         };
@@ -4058,12 +4064,12 @@
             interfaceText[language] = { ...interfaceText.en, ...pack.interface };
         });
         const creativeLanguageCopy = {
-            de:{iceCream:'Eisdiele',birthday:'Geburtstagstorte',cooking:'Kleine Küche',iceCreamPick:'Wähle eine Sorte',iceCreamTop:'Füge Toppings hinzu',iceCreamReady:'Dein Eis ist fertig!',birthdayReady:'Tippe auf die Torte wenn du bereit bist',birthdayStart:'🎂 Start',birthdayBlow:'Puste die Kerzen aus!',birthdayAgain:'🎂 Noch einmal',birthdayCheer:'Alles Gute zum Geburtstag!',cookingChoose:'Wähle was du kochen möchtest',cookingAddOnions:'Füge fünf Zwiebeln hinzu',cookingChop:'Tippe zum Schneiden auf das Brett',cookingStir:'Rühre im Topf',cookingReady:'Das Essen ist fertig!',cookingNext:'Weiter'},
-            it:{iceCream:'Gelateria',birthday:'Torta di compleanno',cooking:'Piccolo chef',iceCreamPick:'Scegli un gusto',iceCreamTop:'Aggiungi le decorazioni',iceCreamReady:'Il tuo gelato è pronto!',birthdayReady:'Tocca la torta quando sei pronto',birthdayStart:'🎂 Inizia',birthdayBlow:'Soffia sulle candeline!',birthdayAgain:'🎂 Ancora',birthdayCheer:'Buon compleanno!',cookingChoose:'Scegli cosa cucinare',cookingAddOnions:'Aggiungi cinque cipolline',cookingChop:'Tocca il tagliere per tagliare',cookingStir:'Mescola la pentola',cookingReady:'Il cibo è pronto!',cookingNext:'Avanti'},
-            tr:{iceCream:'Dondurma yap',birthday:'Doğum günü pastası',cooking:'Küçük şef',iceCreamPick:'Bir tat seç',iceCreamTop:'Üstüne süs ekle',iceCreamReady:'Dondurman hazır!',birthdayReady:'Hazır olunca pastaya dokun',birthdayStart:'🎂 Başla',birthdayBlow:'Mumları üfle!',birthdayAgain:'🎂 Yine',birthdayCheer:'İyi ki doğdun!',cookingChoose:'Ne pişireceğini seç',cookingAddOnions:'Beş soğan ekle',cookingChop:'Doğramak için tahtaya dokun',cookingStir:'Tencereyi karıştır',cookingReady:'Yemek hazır!',cookingNext:'İleri'},
-            ptBR:{iceCream:'Faça um sorvete',birthday:'Bolo de aniversário',cooking:'Pequeno chef',iceCreamPick:'Escolha um sabor',iceCreamTop:'Coloque coberturas',iceCreamReady:'Seu sorvete está pronto!',birthdayReady:'Toque no bolo quando estiver pronto',birthdayStart:'🎂 Começar',birthdayBlow:'Sopre as velinhas!',birthdayAgain:'🎂 De novo',birthdayCheer:'Feliz aniversário!',cookingChoose:'Escolha o que cozinhar',cookingAddOnions:'Coloque cinco cebolinhas',cookingChop:'Toque na tábua para cortar',cookingStir:'Mexa a panela',cookingReady:'A comida está pronta!',cookingNext:'Próximo'},
-            nl:{iceCream:'Maak een ijsje',birthday:'Verjaardagstaart',cooking:'Kleine kok',iceCreamPick:'Kies een smaak',iceCreamTop:'Voeg versiering toe',iceCreamReady:'Je ijsje is klaar!',birthdayReady:'Tik op de taart als je klaar bent',birthdayStart:'🎂 Start',birthdayBlow:'Blaas de kaarsjes uit!',birthdayAgain:'🎂 Nog een keer',birthdayCheer:'Fijne verjaardag!',cookingChoose:'Kies wat je gaat koken',cookingAddOnions:'Doe vijf uitjes in de pan',cookingChop:'Tik op de plank om te snijden',cookingStir:'Roer in de pan',cookingReady:'Het eten is klaar!',cookingNext:'Volgende'},
-            pl:{iceCream:'Zrób lody',birthday:'Tort urodzinowy',cooking:'Mały kucharz',iceCreamPick:'Wybierz smak',iceCreamTop:'Dodaj posypki',iceCreamReady:'Twoje lody są gotowe!',birthdayReady:'Dotknij tortu gdy będziesz gotowy',birthdayStart:'🎂 Start',birthdayBlow:'Zdmuchnij świeczki!',birthdayAgain:'🎂 Jeszcze raz',birthdayCheer:'Wszystkiego najlepszego!',cookingChoose:'Wybierz co ugotować',cookingAddOnions:'Dodaj pięć cebulek',cookingChop:'Dotknij deski aby kroić',cookingStir:'Zamieszaj w garnku',cookingReady:'Jedzenie jest gotowe!',cookingNext:'Dalej'}
+            de:{iceCream:'Eisdiele',birthday:'Geburtstagstorte',cooking:'Kleine Küche',iceCreamPick:'Wähle eine Sorte',iceCreamTop:'Füge Toppings hinzu',iceCreamReady:'Dein Eis ist fertig!',birthdayReady:'Tippe auf die Torte wenn du bereit bist',birthdayStart:'🎂 Start',birthdayBlow:'Puste die Kerzen aus!',birthdayAgain:'🎂 Noch einmal',birthdayCheer:'Alles Gute zum Geburtstag!',cookingChoose:'Wähle was du kochen möchtest',cookingAddOnions:'Lege fünf Zwiebeln auf das Schneidebrett. Tippe jede Zwiebel an.',cookingChop:'Tippe dreimal auf das Schneidebrett',cookingAddMain:'Gib jetzt {item} in den Topf',cookingStir:'Rühre im Topf',cookingReady:'Das Essen ist fertig!',cookingNext:'Weiter'},
+            it:{iceCream:'Gelateria',birthday:'Torta di compleanno',cooking:'Piccolo chef',iceCreamPick:'Scegli un gusto',iceCreamTop:'Aggiungi le decorazioni',iceCreamReady:'Il tuo gelato è pronto!',birthdayReady:'Tocca la torta quando sei pronto',birthdayStart:'🎂 Inizia',birthdayBlow:'Soffia sulle candeline!',birthdayAgain:'🎂 Ancora',birthdayCheer:'Buon compleanno!',cookingChoose:'Scegli cosa cucinare',cookingAddOnions:'Metti cinque cipolline sul tagliere. Tocca ogni cipollina.',cookingChop:'Tocca il tagliere tre volte',cookingAddMain:'Ora metti {item} nella pentola',cookingStir:'Mescola la pentola',cookingReady:'Il cibo è pronto!',cookingNext:'Avanti'},
+            tr:{iceCream:'Dondurma yap',birthday:'Doğum günü pastası',cooking:'Küçük şef',iceCreamPick:'Bir tat seç',iceCreamTop:'Üstüne süs ekle',iceCreamReady:'Dondurman hazır!',birthdayReady:'Hazır olunca pastaya dokun',birthdayStart:'🎂 Başla',birthdayBlow:'Mumları üfle!',birthdayAgain:'🎂 Yine',birthdayCheer:'İyi ki doğdun!',cookingChoose:'Ne pişireceğini seç',cookingAddOnions:'Kesme tahtasına beş soğan koy. Her soğana dokun.',cookingChop:'Kesme tahtasına üç kez dokun',cookingAddMain:'Şimdi {item} tencereye koy',cookingStir:'Tencereyi karıştır',cookingReady:'Yemek hazır!',cookingNext:'İleri'},
+            ptBR:{iceCream:'Faça um sorvete',birthday:'Bolo de aniversário',cooking:'Pequeno chef',iceCreamPick:'Escolha um sabor',iceCreamTop:'Coloque coberturas',iceCreamReady:'Seu sorvete está pronto!',birthdayReady:'Toque no bolo quando estiver pronto',birthdayStart:'🎂 Começar',birthdayBlow:'Sopre as velinhas!',birthdayAgain:'🎂 De novo',birthdayCheer:'Feliz aniversário!',cookingChoose:'Escolha o que cozinhar',cookingAddOnions:'Coloque cinco cebolinhas na tábua. Toque em cada cebola.',cookingChop:'Toque três vezes na tábua para cortar',cookingAddMain:'Agora coloque {item} na panela',cookingStir:'Mexa a panela',cookingReady:'A comida está pronta!',cookingNext:'Próximo'},
+            nl:{iceCream:'Maak een ijsje',birthday:'Verjaardagstaart',cooking:'Kleine kok',iceCreamPick:'Kies een smaak',iceCreamTop:'Voeg versiering toe',iceCreamReady:'Je ijsje is klaar!',birthdayReady:'Tik op de taart als je klaar bent',birthdayStart:'🎂 Start',birthdayBlow:'Blaas de kaarsjes uit!',birthdayAgain:'🎂 Nog een keer',birthdayCheer:'Fijne verjaardag!',cookingChoose:'Kies wat je gaat koken',cookingAddOnions:'Leg vijf uitjes op de snijplank. Tik op elk uitje.',cookingChop:'Tik drie keer op de snijplank',cookingAddMain:'Doe nu {item} in de pan',cookingStir:'Roer in de pan',cookingReady:'Het eten is klaar!',cookingNext:'Volgende'},
+            pl:{iceCream:'Zrób lody',birthday:'Tort urodzinowy',cooking:'Mały kucharz',iceCreamPick:'Wybierz smak',iceCreamTop:'Dodaj posypki',iceCreamReady:'Twoje lody są gotowe!',birthdayReady:'Dotknij tortu gdy będziesz gotowy',birthdayStart:'🎂 Start',birthdayBlow:'Zdmuchnij świeczki!',birthdayAgain:'🎂 Jeszcze raz',birthdayCheer:'Wszystkiego najlepszego!',cookingChoose:'Wybierz co ugotować',cookingAddOnions:'Połóż pięć cebulek na desce. Dotknij każdej cebulki.',cookingChop:'Dotknij deski trzy razy',cookingAddMain:'Teraz dodaj {item} do garnka',cookingStir:'Zamieszaj w garnku',cookingReady:'Jedzenie jest gotowe!',cookingNext:'Dalej'}
         };
         Object.entries(creativeLanguageCopy).forEach(([language,copy]) => Object.assign(interfaceText[language], copy));
 
@@ -5599,6 +5605,7 @@
             clearAcademicTimers();
             stopRunnerGame();
             stopBirthdayRoundTimers();
+            clearCookingTimers();
             clearSantaIdleTimer();
             hideSantaCelebration();
             findRoundId++;
@@ -5616,7 +5623,7 @@
             if (gameId === 'runner') startRunnerGame();
             if (gameId === 'icecream') updateIceCreamLanguage();
             if (gameId === 'birthday') prepareBirthdayGame();
-            if (gameId === 'cooking') updateCookingLanguage();
+            if (gameId === 'cooking') prepareCookingGame(true);
             if (gameId === 'music') inviteMusicPads();
             if (gameId === 'beat') prepareBeatIntro();
         }
@@ -6155,7 +6162,7 @@
             if (gameId === 'runner') startRunnerGame();
             if (gameId === 'icecream') updateIceCreamLanguage();
             if (gameId === 'birthday') prepareBirthdayGame();
-            if (gameId === 'cooking') updateCookingLanguage();
+            if (gameId === 'cooking') prepareCookingGame(true);
             tabEl.classList.add('active');
             tabEl.setAttribute('aria-selected', 'true');
             const activeIndex = Array.from(document.querySelectorAll('.nav-tab')).indexOf(tabEl);
@@ -7823,9 +7830,9 @@
         });
 
         const cookingMeals = [
-            {emoji:'🍝',names:{en:'Pasta',enUS:'Pasta',es:'Pastita',esES:'Pasta',fr:'Pâtes',el:'Μακαρονάκια',de:'Nudeln',it:'Pasta',tr:'Makarna',ptBR:'Macarrão',nl:'Pasta',pl:'Makaron'}},
-            {emoji:'🍗',names:{en:'Chicken',enUS:'Chicken',es:'Pollito',esES:'Pollo',fr:'Poulet',el:'Κοτοπουλάκι',de:'Hähnchen',it:'Pollo',tr:'Tavuk',ptBR:'Franguinho',nl:'Kip',pl:'Kurczak'}},
-            {emoji:'🥕',names:{en:'Veggies',enUS:'Veggies',es:'Verduritas',esES:'Verduras',fr:'Légumes',el:'Λαχανικάκια',de:'Gemüse',it:'Verdurine',tr:'Sebzeler',ptBR:'Legumes',nl:'Groentjes',pl:'Warzywa'}}
+            {emoji:'🍝',names:{en:'Pasta',enUS:'Pasta',es:'Pastita',esES:'Pasta',fr:'Pâtes',el:'Μακαρονάκια',de:'Nudeln',it:'Pasta',tr:'Makarna',ptBR:'Macarrão',nl:'Pasta',pl:'Makaron'},addNames:{en:'the pasta',enUS:'the pasta',fr:'les pâtes',el:'τα μακαρονάκια',it:'la pasta',tr:'makarnayı',ptBR:'o macarrão',nl:'de pasta',pl:'makaron'}},
+            {emoji:'🍗',names:{en:'Chicken',enUS:'Chicken',es:'Pollito',esES:'Pollo',fr:'Poulet',el:'Κοτοπουλάκι',de:'Hähnchen',it:'Pollo',tr:'Tavuk',ptBR:'Franguinho',nl:'Kip',pl:'Kurczak'},addNames:{en:'the chicken',enUS:'the chicken',fr:'le poulet',el:'το κοτοπουλάκι',it:'il pollo',tr:'tavuğu',ptBR:'o franguinho',nl:'de kip',pl:'kurczaka'}},
+            {emoji:'🥕',names:{en:'Carrots',enUS:'Carrots',es:'Zanahoritas',esES:'Zanahorias',fr:'Carottes',el:'Καροτάκια',de:'Karotten',it:'Carotine',tr:'Havuç',ptBR:'Cenourinhas',nl:'Worteltjes',pl:'Marchewki'},addNames:{en:'the carrots',enUS:'the carrots',fr:'les carottes',el:'τα καροτάκια',it:'le carotine',tr:'havucu',ptBR:'as cenourinhas',nl:'de worteltjes',pl:'marchewki'}}
         ];
         const cookingCountWords = {en:['one','two','three','four','five'],enUS:['one','two','three','four','five'],es:['una','dos','tres','cuatro','cinco'],esES:['una','dos','tres','cuatro','cinco'],fr:['un','deux','trois','quatre','cinq'],el:['ένα','δύο','τρία','τέσσερα','πέντε'],de:['eins','zwei','drei','vier','fünf'],it:['uno','due','tre','quattro','cinque'],tr:['bir','iki','üç','dört','beş'],ptBR:['uma','duas','três','quatro','cinco'],nl:['één','twee','drie','vier','vijf'],pl:['jedna','dwie','trzy','cztery','pięć']};
         let cookingStep = 'choose';
@@ -7834,6 +7841,24 @@
         let cookingChopCount = 0;
         let cookingLanguageIndex = 0;
         let cookingIngredientDrag = null;
+        let cookingTimers = [];
+
+        function cookingLater(callback, delay) {
+            const timer = setTimeout(callback, delay);
+            cookingTimers.push(timer);
+            return timer;
+        }
+
+        function clearCookingTimers() {
+            cookingTimers.forEach(clearTimeout);
+            cookingTimers = [];
+        }
+
+        function cookingMainInstruction(language) {
+            const meal = cookingMeals[cookingMealIndex];
+            const ingredientName = meal.addNames?.[language] || meal.names[language] || meal.names.en;
+            return interfaceText[language].cookingAddMain.replace('{item}', ingredientName);
+        }
 
         function renderMealChoices() {
             const container = document.getElementById('mealChoices');
@@ -7853,18 +7878,40 @@
             const displayLanguage = language || (currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode);
             const text = interfaceText[displayLanguage];
             document.getElementById('cookingFlag').textContent = languageSettings[displayLanguage].flag;
-            const promptKey = {choose:'cookingChoose',add:'cookingAddOnions',chop:'cookingChop',stir:'cookingStir',cooking:'cookingStir',ready:'cookingReady'}[cookingStep];
-            document.getElementById('cookingPrompt').textContent = text[promptKey];
+            const promptKey = {choose:'cookingChoose',add:'cookingAddOnions',chop:'cookingChop',addMain:'cookingAddMain',addingMain:'cookingAddMain',stir:'cookingStir',cooking:'cookingStir',ready:'cookingReady'}[cookingStep];
+            document.getElementById('cookingPrompt').textContent = promptKey === 'cookingAddMain' ? cookingMainInstruction(displayLanguage) : text[promptKey];
             document.querySelectorAll('.meal-choice').forEach((button,index) => {
                 const name = cookingMeals[index].names[displayLanguage] || cookingMeals[index].names.en;
                 button.querySelector('small').textContent = name;
                 button.setAttribute('aria-label', name);
             });
             document.getElementById('cookingPot').setAttribute('aria-label', text.cookingStir);
+            document.getElementById('cookingMainIngredient').setAttribute('aria-label', cookingMainInstruction(displayLanguage));
             document.getElementById('cookingFinishedPlate').setAttribute('aria-label', text.cookingChoose);
         }
 
+        function prepareCookingGame(speakInstruction = false) {
+            clearCookingTimers();
+            cookingStep = 'choose';
+            cookingOnionCount = 0;
+            cookingChopCount = 0;
+            document.getElementById('cookingWorkspace').hidden = true;
+            document.getElementById('mealChoices').hidden = false;
+            document.getElementById('ingredientTray').innerHTML = '';
+            document.getElementById('choppingBoard').hidden = true;
+            const mainIngredient = document.getElementById('cookingMainIngredient');
+            mainIngredient.hidden = true;
+            mainIngredient.classList.remove('added');
+            document.getElementById('cookingFinishedPlate').hidden = true;
+            document.getElementById('cookingPotFood').textContent = '';
+            document.getElementById('cookingPot').classList.remove('ready-to-stir','bubbling');
+            const language = currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode;
+            updateCookingLanguage(language);
+            if (speakInstruction) speakSingle(languageSettings[language].code, interfaceText[language].cookingChoose);
+        }
+
         function chooseCookingMeal(index) {
+            clearCookingTimers();
             cookingMealIndex = index;
             cookingStep = 'add';
             cookingOnionCount = 0;
@@ -7873,9 +7920,13 @@
             const meal = cookingMeals[index];
             document.getElementById('mealChoices').hidden = true;
             document.getElementById('cookingWorkspace').hidden = false;
-            document.getElementById('cookingPotFood').textContent = meal.emoji;
+            document.getElementById('cookingPotFood').textContent = '';
             document.getElementById('cookingFinishedPlate').hidden = true;
             document.getElementById('choppingBoard').hidden = true;
+            const mainIngredient = document.getElementById('cookingMainIngredient');
+            mainIngredient.hidden = true;
+            mainIngredient.classList.remove('added');
+            mainIngredient.textContent = meal.emoji;
             document.getElementById('cookingPot').classList.remove('ready-to-stir');
             const tray = document.getElementById('ingredientTray');
             tray.hidden = false;
@@ -7895,7 +7946,7 @@
             }
             document.getElementById('cookingFlag').textContent = languageSettings[language].flag;
             document.getElementById('cookingPrompt').textContent = interfaceText[language].cookingAddOnions;
-            speakSingle(languageSettings[language].code, meal.names[language] || meal.names.en);
+            speakSingle(languageSettings[language].code, `${meal.names[language] || meal.names.en}. ${interfaceText[language].cookingAddOnions}`);
         }
 
         function beginCookingIngredientDrag(event, button) {
@@ -7940,10 +7991,12 @@
             playCreativeSound([300 + cookingOnionCount * 60], .12);
             speakSingle(languageSettings[language].code, countWord);
             if (cookingOnionCount < 5) return;
-            setTimeout(() => {
+            cookingLater(() => {
                 cookingStep = 'chop';
                 document.getElementById('ingredientTray').hidden = true;
-                document.getElementById('choppingBoard').hidden = false;
+                const board = document.getElementById('choppingBoard');
+                board.textContent = '🧅🧅🧅';
+                board.hidden = false;
                 updateCookingLanguage(language);
                 speakSingle(languageSettings[language].code, interfaceText[language].cookingChop);
             }, 650);
@@ -7959,13 +8012,38 @@
             playCreativeSound([180 + cookingChopCount * 35], .09);
             if (cookingChopCount < 3) return;
             const language = creativeActionLanguage(cookingLanguageIndex++);
-            setTimeout(() => {
-                cookingStep = 'stir';
+            cookingLater(() => {
+                cookingStep = 'addMain';
                 board.hidden = true;
+                const mainIngredient = document.getElementById('cookingMainIngredient');
+                mainIngredient.classList.remove('added');
+                mainIngredient.textContent = cookingMeals[cookingMealIndex].emoji;
+                mainIngredient.hidden = false;
+                updateCookingLanguage(language);
+                speakSingle(languageSettings[language].code, cookingMainInstruction(language));
+            }, 420);
+        }
+
+        function addCookingMainIngredient() {
+            if (cookingStep !== 'addMain') return;
+            cookingStep = 'addingMain';
+            const language = creativeActionLanguage(cookingLanguageIndex++);
+            const meal = cookingMeals[cookingMealIndex];
+            const mainIngredient = document.getElementById('cookingMainIngredient');
+            mainIngredient.classList.add('added');
+            document.getElementById('cookingFlag').textContent = languageSettings[language].flag;
+            document.getElementById('cookingPrompt').textContent = meal.names[language] || meal.names.en;
+            playCreativeSound([294,392,523], .15);
+            speakSingle(languageSettings[language].code, meal.names[language] || meal.names.en);
+            cookingLater(() => {
+                mainIngredient.hidden = true;
+                mainIngredient.classList.remove('added');
+                document.getElementById('cookingPotFood').textContent = meal.emoji;
+                cookingStep = 'stir';
                 document.getElementById('cookingPot').classList.add('ready-to-stir');
                 updateCookingLanguage(language);
                 speakSingle(languageSettings[language].code, interfaceText[language].cookingStir);
-            }, 420);
+            }, 720);
         }
 
         function stirCookingPot() {
@@ -7975,7 +8053,7 @@
             pot.classList.remove('ready-to-stir');
             pot.classList.add('bubbling');
             playCreativeSound([220,260,310,360], .18);
-            setTimeout(() => {
+            cookingLater(() => {
                 pot.classList.remove('bubbling');
                 cookingStep = 'ready';
                 const language = creativeActionLanguage(cookingLanguageIndex++);
@@ -7989,11 +8067,7 @@
         }
 
         function advanceCookingGame() {
-            cookingStep = 'choose';
-            document.getElementById('cookingWorkspace').hidden = true;
-            document.getElementById('mealChoices').hidden = false;
-            document.getElementById('cookingPot').classList.remove('ready-to-stir');
-            updateCookingLanguage();
+            prepareCookingGame(true);
         }
 
         document.getElementById('cookingPot').addEventListener('keydown', event => {
