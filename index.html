@@ -2675,8 +2675,7 @@
             white-space:nowrap;
             pointer-events:none;
         }
-        .runner-tutorial,
-        .runner-rotate-overlay {
+        .runner-tutorial {
             position:absolute;
             inset:0;
             z-index:20;
@@ -2701,17 +2700,6 @@
         @keyframes runnerTutorialFly { 0%,100%{transform:translateY(0)} 45%,72%{transform:translateY(-58px)} }
         @keyframes runnerTutorialPress { 0%,100%{transform:scale(1)} 18%,72%{transform:scale(.78)} }
         @keyframes runnerTutorialFade { 0%,82%{opacity:1} 100%{opacity:0} }
-        .runner-rotate-overlay {
-            background:linear-gradient(145deg,#ebf8ff,#c6f6d5);
-            color:#2b6cb0;
-            font-size:clamp(1.3rem,7vw,2.2rem);
-            font-weight:950;
-        }
-        .runner-rotate-phone { display:block;font-size:6rem;transform:rotate(90deg); }
-        @media (orientation:portrait) {
-            #game-runner.active .runner-rotate-overlay { display:flex; }
-            #game-runner.active .runner-stage > :not(.runner-rotate-overlay) { visibility:hidden; }
-        }
         @media (orientation:landscape) {
             body.controls-collapsed #game-runner { width:100%;max-width:none;padding:2px; }
             body.controls-collapsed #game-runner .runner-game { padding:2px; }
@@ -3216,7 +3204,7 @@
                         <span class="nav-icon">🚜</span>
                         <span id="navTrucks">Big Trucks</span>
                     </button>
-                    <button class="nav-tab active" role="tab" aria-selected="true" onclick="switchGame('balloons', this)">
+                    <button class="nav-tab" role="tab" aria-selected="false" onclick="switchGame('balloons', this)">
                         <span class="nav-icon">🎈</span>
                         <span id="navBalloons">Balloon Pop</span>
                     </button>
@@ -3244,7 +3232,7 @@
                         <span class="nav-icon">🧒</span>
                         <span id="navBody">Body Explorer</span>
                     </button>
-                    <button class="nav-tab" role="tab" aria-selected="false" onclick="switchGame('runner', this)">
+                    <button class="nav-tab active" role="tab" aria-selected="true" onclick="switchGame('runner', this)">
                         <span class="nav-icon">🧸</span>
                         <span id="navRunner">Feed the Bear</span>
                     </button>
@@ -3297,7 +3285,7 @@
 
     <button class="controls-expand-button" id="expandControlsButton" type="button" onclick="setControlsCollapsed(false)" aria-controls="gameControlsHeader" aria-expanded="false" aria-label="Παιχνίδια και γλώσσες">
         <span id="collapsedLanguageFlag" aria-hidden="true">🇬🇷</span>
-        <span id="collapsedGameIcon" aria-hidden="true">🎈</span>
+        <span id="collapsedGameIcon" aria-hidden="true">🧸</span>
     </button>
 
     <div class="quick-play-controls" aria-label="Quick play">
@@ -3366,7 +3354,7 @@
     </div>
 
     <!-- 3. BALLOON POP & COUNT -->
-    <div id="game-balloons" class="game-view active">
+    <div id="game-balloons" class="game-view">
         <div class="balloon-status" id="balloonStatus">Pop the balloons! 🎈</div>
         <div class="balloon-sky" id="balloonSky"></div>
     </div>
@@ -3482,7 +3470,7 @@
     </div>
 
     <!-- 10. BROCCOLI BOUNCE -->
-    <div id="game-runner" class="game-view">
+    <div id="game-runner" class="game-view active">
         <main class="learning-game academic-game runner-game">
             <div class="runner-stage" id="runnerStage" role="button" tabindex="0" aria-label="Hold to fly and let go to land">
                 <div class="runner-hud">
@@ -3495,7 +3483,6 @@
                 <div class="runner-crash" id="runnerCrash" aria-hidden="true"><div class="runner-crash-ow" id="runnerCrashText">OW!</div><div class="runner-crash-dust">💥 💫</div></div>
                 <div class="runner-tutorial" id="runnerTutorial" aria-hidden="true"><div class="runner-tutorial-demo"><span class="runner-tutorial-hand">👇</span><span class="runner-tutorial-bear">🧸</span></div><div class="runner-tutorial-text" id="runnerTutorialText">Hold to fly · Let go to land</div></div>
                 <div class="runner-tap-hint" id="runnerTapHint" aria-hidden="true">👆 Hold to fly</div>
-                <div class="runner-rotate-overlay" id="runnerRotateOverlay" aria-hidden="true"><span class="runner-rotate-phone">📱</span><span id="runnerRotateText">Turn the phone sideways</span></div>
             </div>
         </main>
     </div>
@@ -6438,7 +6425,7 @@
             document.querySelectorAll('.game-nav-dot').forEach((dot, index) => {
                 dot.classList.toggle('active', index === activeIndex);
             });
-            const gameIcons = { monster:'🎅', trucks:'🚜', balloons:'🎈', animals:'🦁', everyday:'🥤', letters:'🔤', shapes:'🔺', counting:'🍎', body:'🧒', runner:'🥦', icecream:'🍦', birthday:'🎂', cooking:'🍳', music:'🥁', beat:'👏', dance:'🕺', bells:'🔔' };
+            const gameIcons = { monster:'🎅', trucks:'🚜', balloons:'🎈', animals:'🦁', everyday:'🥤', letters:'🔤', shapes:'🔺', counting:'🍎', body:'🧒', runner:'🧸', icecream:'🍦', birthday:'🎂', cooking:'🍳', music:'🥁', beat:'👏', dance:'🕺', bells:'🔔' };
             document.getElementById('collapsedGameIcon').textContent = gameIcons[gameId];
             dismissGameSwipeHint();
             revealActiveGame();
@@ -7467,7 +7454,6 @@
             document.getElementById('runnerPromptText').textContent = text.runnerPrompt;
             document.getElementById('runnerTapHint').textContent = `👆 ${text.runnerHint}`;
             document.getElementById('runnerTutorialText').textContent = text.runnerTutorial;
-            document.getElementById('runnerRotateText').textContent = text.runnerRotate;
             document.getElementById('runnerCrashText').textContent = text.runnerOw;
             runnerStage.setAttribute('aria-label', text.runnerPrompt);
         }
@@ -7715,10 +7701,6 @@
             if (runnerRunning && !runnerObjectActive) scheduleRunnerObject(520);
         }
 
-        function runnerIsLandscape() {
-            return window.innerWidth > window.innerHeight;
-        }
-
         function resetRunnerRound() {
             clearTimeout(runnerCrashCleanupTimer);
             clearTimeout(runnerSpawnTimer);
@@ -7749,7 +7731,6 @@
 
         function startRunnerGame() {
             if (runnerRunning || activeGameId() !== 'runner') return;
-            if (!runnerIsLandscape()) return;
             runnerRunning = true;
             runnerLastFrame = 0;
             runnerStage.classList.add('running');
@@ -7794,12 +7775,6 @@
         runnerStage.addEventListener('keyup', event => {
             if (event.key === 'Enter' || event.key === ' ') stopRunnerFlight();
         });
-        window.addEventListener('resize', () => {
-            if (activeGameId() !== 'runner' || !document.body.classList.contains('controls-collapsed')) return;
-            if (runnerIsLandscape()) startRunnerGame();
-            else stopRunnerGame();
-        });
-
         // --- Games 11–13: Guided creative play ---
         const iceCreamFlavors = [
             {emoji:'🍓',color:'#ff8fab',names:{en:'Strawberry',enUS:'Strawberry',es:'Fresita',esES:'Fresa',fr:'Fraise',el:'Φραουλίτσα',de:'Erdbeere',it:'Fragola',tr:'Çilek',ptBR:'Morango',nl:'Aardbei',pl:'Truskawka'}},

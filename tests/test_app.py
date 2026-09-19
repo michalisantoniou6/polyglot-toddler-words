@@ -70,14 +70,16 @@ class AppRegressionTests(unittest.TestCase):
             self.assertIn(f'id="{nav_id}"', HTML)
             self.assertIn(f"gameId === '{game}'", HTML)
 
-    def test_us_english_and_balloon_pop_are_the_defaults(self) -> None:
+    def test_us_english_and_feed_the_bear_are_the_defaults(self) -> None:
         self.assertIn('<html lang="en-US" translate="no"', HTML)
         self.assertRegex(HTML, r"let\s+currentLangMode\s*=\s*'enUS';")
         self.assertIn("return 'enUS';", HTML)
         self.assertIn("primaryLanguage: preferredFirstRunLanguage()", HTML)
         self.assertIn('<option value="enUS" selected>', HTML)
         self.assertRegex(HTML, r'class="lang-pill active"[^>]+data-language="enUS"')
-        self.assertRegex(HTML, r'id="game-balloons"\s+class="game-view active"')
+        self.assertRegex(HTML, r'id="game-runner"\s+class="game-view active"')
+        self.assertRegex(HTML, r'class="nav-tab active"[^>]+aria-selected="true"[^>]+switchGame\(\'runner\', this\)')
+        self.assertIn('<span id="collapsedGameIcon" aria-hidden="true">🧸</span>', HTML)
         self.assertIn("spawnBalloon(true);", HTML)
 
     def test_first_run_uses_device_locale_without_skipping_onboarding(self) -> None:
@@ -342,7 +344,7 @@ class AppRegressionTests(unittest.TestCase):
         self.assertIn("function inviteActiveGameClickables()", HTML)
         self.assertIn("button:not(:disabled), [data-tap-invite]", HTML)
         self.assertNotIn("button:not(:disabled), [role=\"button\"], [data-tap-invite]", HTML)
-        self.assertIn('.runner-rotate-phone { display:block;font-size:6rem;transform:rotate(90deg); }', HTML)
+        self.assertNotIn('runner-rotate-phone', HTML)
         self.assertNotIn('@keyframes runnerRotatePhone', HTML)
         self.assertIn("prefers-reduced-motion: reduce", HTML)
         self.assertIn("randomLanguageGame:'Juego e idioma sorpresa'", HTML)
@@ -568,11 +570,12 @@ class AppRegressionTests(unittest.TestCase):
         self.assertIn("{ volume: 1 }", HTML)
         self.assertIn("utterance.volume = volume", HTML)
 
-    def test_runner_is_landscape_only_with_an_animated_first_play_demo(self) -> None:
-        self.assertIn("@media (orientation:portrait)", HTML)
-        self.assertIn("#game-runner.active .runner-rotate-overlay { display:flex; }", HTML)
-        self.assertIn("return window.innerWidth > window.innerHeight", HTML)
-        self.assertIn("if (!runnerIsLandscape()) return", HTML)
+    def test_runner_starts_in_any_orientation_and_expands_in_landscape(self) -> None:
+        self.assertNotIn("runner-rotate-overlay", HTML)
+        self.assertNotIn("runnerIsLandscape", HTML)
+        self.assertNotIn("if (!runnerIsLandscape()) return", HTML)
+        self.assertIn("@media (orientation:landscape)", HTML)
+        self.assertIn("body.controls-collapsed #game-runner { width:100%;max-width:none;padding:2px; }", HTML)
         self.assertIn('id="runnerTutorial"', HTML)
         self.assertIn("@keyframes runnerTutorialFly", HTML)
         self.assertIn("@keyframes runnerTutorialPress", HTML)
