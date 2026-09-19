@@ -46,6 +46,12 @@ class ProgressiveWebAppTests(unittest.TestCase):
         self.assertEqual((512, 512), png_dimensions(ROOT / "icons/icon-512.png"))
         self.assertEqual((512, 512), png_dimensions(ROOT / "icons/icon-maskable-512.png"))
 
+    def test_boutique_character_art_has_mobile_ready_transparency(self) -> None:
+        for filename in ("toddler-arcade-bear.png", "toddler-arcade-santa.png"):
+            path = ROOT / "assets" / filename
+            self.assertEqual((640, 768), png_dimensions(path))
+            self.assertEqual(6, path.read_bytes()[25], f"{filename} must remain RGBA")
+
     def test_service_worker_is_registered_only_on_supported_web_origins(self) -> None:
         self.assertIn("'serviceWorker' in navigator", HTML)
         self.assertIn("location.protocol === 'https:'", HTML)
@@ -62,6 +68,8 @@ class ProgressiveWebAppTests(unittest.TestCase):
             "./assets/santa-ho-ho-ho.mp3?v=2",
             "./assets/runner-ouch.mp3",
             "./assets/santa-sleigh.png",
+            "./assets/toddler-arcade-bear.png",
+            "./assets/toddler-arcade-santa.png",
         ):
             self.assertIn(f"'{path}'", SERVICE_WORKER)
         self.assertIn("cache.addAll(APP_SHELL)", SERVICE_WORKER)

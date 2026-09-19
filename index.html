@@ -15,6 +15,8 @@
     <link rel="apple-touch-icon" href="icons/icon-180.png">
     <link rel="preload" href="assets/santa-ho-ho-ho.mp3?v=2" as="audio" type="audio/mpeg">
     <link rel="preload" href="assets/santa-sleigh.png" as="image" type="image/png">
+    <link rel="preload" href="assets/toddler-arcade-bear.png" as="image" type="image/png">
+    <link rel="preload" href="assets/toddler-arcade-santa.png" as="image" type="image/png">
     <title>Toddler Arcade</title>
     <style>
         * {
@@ -384,17 +386,19 @@
         }
 
         .monster-avatar {
-            font-size: 6.5rem;
-            line-height: 1;
+            width:clamp(132px,38vw,178px);
+            height:clamp(142px,40vw,190px);
             cursor: pointer;
             transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            display: inline-block;
-            padding: 0 12px;
+            display:grid;
+            place-items:center;
+            padding:0;
             border: 0;
             background: transparent;
             font-family: inherit;
             touch-action: manipulation;
         }
+        .monster-avatar img { width:100%;height:100%;object-fit:contain;pointer-events:none;filter:drop-shadow(0 10px 6px rgba(89,61,42,.2)); }
 
         .monster-avatar.chewing {
             animation: chomp 0.4s 3 ease-in-out;
@@ -438,12 +442,14 @@
         }
 
         .dancing-santa {
-            display: inline-block;
-            font-size: clamp(9rem, 38vw, 17rem);
-            line-height: 1;
+            display:grid;
+            place-items:center;
+            width:min(76vw,470px);
+            height:min(58vh,560px);
             filter: drop-shadow(0 18px 18px rgba(0,0,0,0.3));
             transform-origin: center;
         }
+        .dancing-santa img { width:100%;height:100%;object-fit:contain;pointer-events:none; }
 
         .dance-spin { animation: santaSpin 1.65s ease-in-out both; }
         .dance-bounce { animation: santaBounce 1.65s ease-in-out both; }
@@ -1848,7 +1854,7 @@
         .play-timer-option:active,
         .time-up-more-button:active { transform:translateY(3px);box-shadow:0 2px 0 #2b6cb0; }
         .play-timer-option.no-limit { background:#718096;box-shadow:0 5px 0 #4a5568; }
-        .time-up-bear { display:block;font-size:clamp(7rem,34vw,11rem);animation:bearCelebrate 1.1s ease-in-out infinite alternate; }
+        .time-up-bear { display:block;width:min(50vw,210px);height:auto;margin:auto;animation:bearCelebrate 1.1s ease-in-out infinite alternate;filter:drop-shadow(0 10px 6px rgba(89,61,42,.18)); }
         .time-up-more-button { width:100%; }
         .play-timer-close {
             margin-top:17px;
@@ -2058,7 +2064,8 @@
             line-height: 1;
         }
         .beat-start-button.ready-to-play { animation: beatStartInvite 1.8s ease-in-out 2; }
-        .beat-start-button.ready-to-play span { display:block; animation: beatBearDance 1.2s ease-in-out 2 alternate; }
+        .beat-start-button .boutique-bear { width:86%;height:86%;object-fit:contain;filter:drop-shadow(0 5px 3px rgba(31,70,44,.25)); }
+        .beat-start-button.ready-to-play .boutique-bear { display:block; animation: beatBearDance 1.2s ease-in-out 2 alternate; }
         .beat-start-button.playing { display: none; }
         .beat-start-button:disabled { opacity: .45; animation: none; }
         #game-beat.beat-awaiting .beat-grid { opacity: .42; transform: scale(.94); }
@@ -2316,11 +2323,15 @@
             bottom:10px;
             z-index:2;
             transform:translateX(-50%);
-            padding:7px 13px;
+            display:grid;
+            place-items:center;
+            width:54px;
+            min-height:54px;
+            padding:0;
             border-radius:999px;
             background:rgba(255,255,255,.86);
             color:#486581;
-            font-size:.88rem;
+            font-size:1.65rem;
             font-weight:900;
             white-space:nowrap;
             pointer-events:none;
@@ -2428,13 +2439,12 @@
             display:flex;
             align-items:center;
             justify-content:center;
-            font-size:4.8rem;
-            line-height:1;
             filter:drop-shadow(0 8px 3px rgba(45,55,72,.2));
             transform-origin:50% 100%;
             transform:scale(var(--runner-scale));
             will-change:transform;
         }
+        .runner-character .boutique-bear { width:100%;height:100%;object-fit:contain;pointer-events:none; }
         .runner-stage.running .runner-character:not(.flying) { animation:runnerSteps .34s ease-in-out infinite alternate; }
         .runner-character.flying { animation:runnerFly .42s ease-in-out infinite alternate; }
         .runner-character.growing { animation:runnerPowerUp .88s cubic-bezier(.2,.85,.3,1.2) both !important; }
@@ -2681,7 +2691,7 @@
             animation:runnerTutorialFade 3.4s ease both;
         }
         .runner-tutorial-demo { position:relative;width:170px;height:120px; }
-        .runner-tutorial-bear { position:absolute;left:72px;bottom:2px;font-size:4.5rem;animation:runnerTutorialFly 1.5s ease-in-out infinite; }
+        .runner-tutorial-bear { position:absolute;left:72px;bottom:2px;width:80px;height:92px;object-fit:contain;animation:runnerTutorialFly 1.5s ease-in-out infinite;filter:drop-shadow(0 6px 3px rgba(45,55,72,.18)); }
         .runner-tutorial-hand { position:absolute;left:5px;bottom:4px;font-size:3.5rem;animation:runnerTutorialPress 1.5s ease-in-out infinite; }
         .runner-tutorial-text { padding:8px 16px;border-radius:999px;background:white;color:#2b6cb0;font-size:clamp(1rem,4vw,1.35rem);font-weight:950; }
         @keyframes runnerTutorialFly { 0%,100%{transform:translateY(0)} 45%,72%{transform:translateY(-58px)} }
@@ -2938,6 +2948,97 @@
             .body-stage[data-tap-invite].tap-invite,
             .birthday-stage[data-tap-invite].tap-invite { animation:none !important; }
         }
+
+        /* Boutique storybook system: warm paper, tactile stickers and one coherent mascot family. */
+        :root {
+            --boutique-ink:#34495e;
+            --boutique-cream:#fffaf0;
+            --boutique-line:#eadfcd;
+            --boutique-peach:#ffe3d2;
+            --boutique-sky:#dff3ff;
+            --boutique-mint:#dcf4e5;
+            --boutique-lilac:#eee4ff;
+        }
+        body {
+            color:var(--boutique-ink);
+            background:
+                radial-gradient(circle at 12% 8%,rgba(255,255,255,.96) 0 4%,transparent 4.4%),
+                radial-gradient(circle at 86% 18%,rgba(255,255,255,.68) 0 3%,transparent 3.5%),
+                linear-gradient(150deg,#edf8ff 0%,#f8f4ed 52%,#f5efff 100%);
+        }
+        :is(.nav-tab,.food-item,.arcade-card,.everyday-card,.music-pad,.letter-card,.academic-choice,.find-choice) {
+            --boutique-tint:var(--boutique-cream);
+            border-color:var(--boutique-line);
+            background:linear-gradient(145deg,rgba(255,255,255,.98),var(--boutique-tint));
+            box-shadow:0 7px 0 rgba(107,88,67,.10),0 12px 24px rgba(78,67,53,.07);
+        }
+        :is(.nav-tab,.food-item,.arcade-card,.everyday-card,.music-pad,.letter-card,.academic-choice,.find-choice):nth-child(4n+1) { --boutique-tint:var(--boutique-peach); }
+        :is(.nav-tab,.food-item,.arcade-card,.everyday-card,.music-pad,.letter-card,.academic-choice,.find-choice):nth-child(4n+2) { --boutique-tint:var(--boutique-sky); }
+        :is(.nav-tab,.food-item,.arcade-card,.everyday-card,.music-pad,.letter-card,.academic-choice,.find-choice):nth-child(4n+3) { --boutique-tint:var(--boutique-mint); }
+        :is(.nav-tab,.food-item,.arcade-card,.everyday-card,.music-pad,.letter-card,.academic-choice,.find-choice):nth-child(4n) { --boutique-tint:var(--boutique-lilac); }
+        .nav-tab.active {
+            border-color:#e89a62;
+            background:linear-gradient(145deg,#fffaf2,#ffe0ba);
+            box-shadow:0 7px 0 rgba(202,112,55,.20),0 14px 26px rgba(132,82,49,.11);
+        }
+        .nav-icon,
+        .food-emoji,
+        .card-emoji,
+        .everyday-emoji,
+        .music-emoji,
+        .letter-picture,
+        .find-choice-emoji {
+            display:grid;
+            place-items:center;
+            margin-inline:auto;
+            border:3px solid rgba(255,255,255,.92);
+            border-radius:43% 57% 52% 48% / 48% 43% 57% 52%;
+            background:linear-gradient(150deg,rgba(255,255,255,.98),var(--boutique-tint,var(--boutique-cream)));
+            box-shadow:inset 0 -5px 0 rgba(91,72,52,.05),0 5px 11px rgba(74,61,46,.12);
+            filter:saturate(.92) drop-shadow(0 2px 1px rgba(83,62,45,.10));
+        }
+        .nav-icon { width:42px;height:38px;margin-bottom:4px;font-size:1.65rem; }
+        .nav-icon img { width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 2px 1px rgba(83,62,45,.12)); }
+        .food-emoji { width:56px;height:56px;font-size:2.55rem; }
+        .card-emoji { width:106px;height:84px;margin-bottom:7px;font-size:4rem; }
+        .everyday-emoji,
+        .music-emoji { width:88px;height:82px;font-size:clamp(3rem,13vw,4.4rem); }
+        .letter-picture { right:8px;bottom:7px;width:44px;height:44px;font-size:1.8rem; }
+        .find-choice-emoji { width:94px;height:84px;font-size:clamp(3.2rem,15vw,5rem); }
+        .food-item,
+        .arcade-card,
+        .everyday-card,
+        .music-pad,
+        .letter-card,
+        .academic-choice,
+        .find-choice { color:var(--boutique-ink); }
+        .repeat-visual {
+            border:5px solid rgba(255,255,255,.95);
+            border-radius:38% 62% 58% 42% / 45% 40% 60% 55%;
+            background:linear-gradient(150deg,#fffdf7,#e9f6ff);
+            box-shadow:inset 0 -10px 0 rgba(89,68,45,.05),0 14px 30px rgba(55,43,31,.12);
+        }
+        .meal-choice {
+            border:5px solid rgba(255,255,255,.94);
+            background:radial-gradient(circle,#fffdf7 0 50%,#e6f4f6 51% 65%,#d9cbb8 66% 69%,#fff 70%);
+        }
+        .dance-character { display:grid;place-items:center;min-height:clamp(190px,42vw,330px); }
+        .dance-character img { width:min(58vw,290px);height:min(42svh,330px);object-fit:contain;filter:drop-shadow(0 12px 8px rgba(78,54,35,.16)); }
+        .together-emoji {
+            display:grid;
+            width:min(58vw,250px);
+            aspect-ratio:1;
+            place-items:center;
+            border:6px solid rgba(255,255,255,.94);
+            border-radius:44% 56% 48% 52% / 51% 44% 56% 49%;
+            background:linear-gradient(145deg,#fff8e8,#e9f7ff);
+            box-shadow:0 12px 0 rgba(130,96,58,.10),0 20px 40px rgba(90,68,42,.09);
+            font-size:clamp(6rem,28vw,11rem);
+        }
+        @media (prefers-reduced-motion:reduce) {
+            .time-up-bear,
+            .beat-start-button.ready-to-play .boutique-bear { animation:none !important; }
+        }
     </style>
 </head>
 <body class="controls-collapsed">
@@ -3104,7 +3205,7 @@
                 <button class="nav-scroll-button previous" id="previousGameButton" type="button" onclick="scrollGames(-1)" aria-label="Previous game">‹</button>
                 <nav class="game-nav" id="gameNav" role="tablist" aria-label="Choose a game">
                     <button class="nav-tab" role="tab" aria-selected="false" onclick="switchGame('monster', this)">
-                        <span class="nav-icon">🎅</span>
+                        <span class="nav-icon"><img src="assets/toddler-arcade-santa.png" alt="" draggable="false"></span>
                         <span id="navMonster">Feed Santa</span>
                     </button>
                     <button class="nav-tab" role="tab" aria-selected="false" onclick="switchGame('trucks', this)">
@@ -3160,11 +3261,11 @@
                         <span id="navMusic">Music Studio</span>
                     </button>
                     <button class="nav-tab" role="tab" aria-selected="false" onclick="switchGame('beat', this)">
-                        <span class="nav-icon">👏</span>
+                        <span class="nav-icon"><img src="assets/toddler-arcade-bear.png" alt="" draggable="false"></span>
                         <span id="navBeat">Copy the Beat</span>
                     </button>
                     <button class="nav-tab" role="tab" aria-selected="false" onclick="switchGame('dance', this)">
-                        <span class="nav-icon">🕺</span>
+                        <span class="nav-icon"><img src="assets/toddler-arcade-santa.png" alt="" draggable="false"></span>
                         <span id="navDance">Dance & Freeze</span>
                     </button>
                     <button class="nav-tab" role="tab" aria-selected="false" onclick="switchGame('bells', this)">
@@ -3217,7 +3318,7 @@
 
     <div class="time-up-overlay" id="timeUpOverlay" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="timeUpTitle">
         <div class="time-up-card">
-            <span class="time-up-bear" aria-hidden="true">🐻</span>
+            <img class="time-up-bear" src="assets/toddler-arcade-bear.png" alt="" aria-hidden="true" draggable="false">
             <h2 id="timeUpTitle">All done!</h2>
             <p id="timeUpMessage">Great playing. Time for a break!</p>
             <button class="time-up-more-button" id="timeUpMoreButton" type="button" onclick="openPlayTimer(true)">Grown-up: add more time</button>
@@ -3242,14 +3343,14 @@
 
     <div id="santaCelebration" aria-hidden="true" onclick="hideSantaCelebration()">
         <div class="celebration-message" id="santaCelebrationMessage"></div>
-        <div class="dancing-santa" id="dancingSanta" role="img" aria-label="Santa Claus">🎅</div>
+        <div class="dancing-santa" id="dancingSanta" role="img" aria-label="Santa Claus"><img src="assets/toddler-arcade-santa.png" alt="" draggable="false"></div>
     </div>
 
     <!-- 1. FEED SANTA GAME -->
     <div id="game-monster" class="game-view">
         <div class="speech-bubble" id="monsterSpeech" aria-live="polite" aria-atomic="true">Άρι μπορείς να ταΐσεις τον Άγιο Βασίλη; 🎅</div>
         <div class="monster-stage" id="santaDropZone">
-            <button class="monster-avatar" id="monsterAvatar" type="button" onclick="tickleMonster()" aria-label="Santa Claus">🎅</button>
+            <button class="monster-avatar" id="monsterAvatar" type="button" onclick="tickleMonster()" aria-label="Santa Claus"><img src="assets/toddler-arcade-santa.png" alt="" draggable="false"></button>
         </div>
         <div class="santa-drag-hint" id="santaDragHint" aria-label="Drag or tap some food">🍎 ⬆️ 🎅</div>
         <div class="food-grid" id="monsterFoodGrid"></div>
@@ -3339,7 +3440,7 @@
                     <path d="M169 169Q200 194 231 169" fill="none" stroke="#8f3f4c" stroke-width="7" stroke-linecap="round"/>
                     <rect x="181" y="193" width="38" height="34" rx="14" fill="#d99a66"/>
                     <path d="M139 228Q200 199 261 228L280 388Q200 425 120 388Z" fill="#49a6d8"/>
-                    <text x="200" y="315" text-anchor="middle" font-size="64">🐻</text>
+                    <image href="assets/toddler-arcade-bear.png" x="170" y="270" width="60" height="72" preserveAspectRatio="xMidYMid meet"/>
                     <path d="M139 248Q102 278 77 344" fill="none" stroke="#d99a66" stroke-width="38" stroke-linecap="round"/>
                     <path d="M261 248Q298 278 323 344" fill="none" stroke="#d99a66" stroke-width="38" stroke-linecap="round"/>
                     <circle cx="72" cy="361" r="29" fill="#d99a66"/>
@@ -3371,7 +3472,7 @@
                 <button class="body-hotspot" data-body-part="leg" data-body-region="226 384 74 132" type="button" aria-label="Leg"></button>
                 <button class="body-hotspot" data-body-part="foot" data-body-region="88 500 92 66" type="button" aria-label="Foot and toes"></button>
                 <button class="body-hotspot" data-body-part="toes" data-body-region="220 500 92 66" type="button" aria-label="Toes"></button>
-                <div class="body-tap-hint" id="bodyTapHint" aria-hidden="true">👆 Tap the character</div>
+                <div class="body-tap-hint" id="bodyTapHint" aria-hidden="true">👆</div>
             </div>
         </main>
     </div>
@@ -3384,11 +3485,11 @@
                     <div class="academic-prompt runner-prompt" id="runnerPrompt" aria-live="polite"><span class="academic-flag" id="runnerFlag" aria-hidden="true">🇬🇧</span><span id="runnerPromptText">Hold to fly · Let go to land</span></div>
                     <div class="runner-score" id="runnerScore" aria-live="polite">⭐ 0</div>
                 </div>
-                <div class="runner-character" id="runnerCharacter" aria-hidden="true">🧸</div>
+                <div class="runner-character" id="runnerCharacter" aria-hidden="true"><img class="boutique-bear" src="assets/toddler-arcade-bear.png" alt="" draggable="false"></div>
                 <div class="runner-object" id="runnerObject" aria-hidden="true"></div>
                 <div class="runner-celebration" id="runnerCelebration" aria-hidden="true"><span id="runnerCelebrationText">🥦 +1</span></div>
                 <div class="runner-crash" id="runnerCrash" aria-hidden="true"><div class="runner-crash-ow" id="runnerCrashText">OW!</div><div class="runner-crash-dust">💥 💫</div></div>
-                <div class="runner-tutorial" id="runnerTutorial" aria-hidden="true"><div class="runner-tutorial-demo"><span class="runner-tutorial-hand">👇</span><span class="runner-tutorial-bear">🧸</span></div><div class="runner-tutorial-text" id="runnerTutorialText">Hold to fly · Let go to land</div></div>
+                <div class="runner-tutorial" id="runnerTutorial" aria-hidden="true"><div class="runner-tutorial-demo"><span class="runner-tutorial-hand">👇</span><img class="runner-tutorial-bear" src="assets/toddler-arcade-bear.png" alt="" draggable="false"></div><div class="runner-tutorial-text" id="runnerTutorialText">Hold to fly · Let go to land</div></div>
                 <div class="runner-tap-hint" id="runnerTapHint" aria-hidden="true">👆 Hold to fly</div>
                 <div class="runner-rotate-overlay" id="runnerRotateOverlay" aria-hidden="true"><span class="runner-rotate-phone">📱</span><span id="runnerRotateText">Turn the phone sideways</span></div>
             </div>
@@ -3459,7 +3560,7 @@
         <main class="learning-game">
             <h2 class="learning-title visually-hidden" id="beatTitle">Αντέγραψε το μοτίβο</h2>
             <p class="learning-prompt visually-hidden" id="beatPrompt" aria-live="polite">Κοίτα και αντέγραψε το μοτίβο</p>
-            <button class="game-action-button beat-start-button" id="beatStart" type="button" onclick="startBeatRound()" aria-label="Πάτησε το αρκουδάκι που χορεύει"><span aria-hidden="true">🐻</span></button>
+            <button class="game-action-button beat-start-button" id="beatStart" type="button" onclick="startBeatRound()" aria-label="Πάτησε το αρκουδάκι που χορεύει"><img class="boutique-bear" src="assets/toddler-arcade-bear.png" alt="" aria-hidden="true" draggable="false"></button>
             <div class="beat-grid" id="beatGrid"></div>
         </main>
     </div>
@@ -3471,7 +3572,7 @@
             <p class="together-note visually-hidden" id="danceTogetherNote">Αδειάστε λίγο χώρο και χορέψτε μαζί</p>
             <div class="dance-stage">
                 <div class="dance-cue" id="danceCue">Έτοιμος;</div>
-                <div class="dance-character" id="danceCharacter" aria-hidden="true">🎅</div>
+                <div class="dance-character" id="danceCharacter" aria-hidden="true"><img src="assets/toddler-arcade-santa.png" alt="" draggable="false"></div>
                 <button class="game-action-button" id="danceButton" type="button" onclick="toggleDanceParty()">▶ Ξεκίνα τον χορό</button>
             </div>
         </main>
@@ -5874,7 +5975,7 @@
             document.getElementById('everydayMoreButton').textContent = text.everydayMore;
             document.getElementById('beatTitle').textContent = text.beat;
             if (!beatAcceptingInput) document.getElementById('beatPrompt').textContent = text.beatReady;
-            document.getElementById('beatStart').innerHTML = '<span aria-hidden="true">🐻</span>';
+            document.getElementById('beatStart').innerHTML = '<img class="boutique-bear" src="assets/toddler-arcade-bear.png" alt="" aria-hidden="true" draggable="false">';
             document.getElementById('beatStart').setAttribute('aria-label', text.beatStart);
             document.getElementById('danceTitle').textContent = text.dance;
             document.getElementById('danceTogetherNote').textContent = text.danceTogether;
@@ -7246,7 +7347,7 @@
             const text = interfaceText[bodyDisplayLanguage];
             document.getElementById('bodyFlag').textContent = languageSettings[bodyDisplayLanguage].flag;
             document.getElementById('bodyPromptText').textContent = text.bodyPrompt;
-            document.getElementById('bodyTapHint').textContent = `👆 ${text.bodyHint}`;
+            document.getElementById('bodyTapHint').textContent = '👆';
             document.querySelectorAll('.body-hotspot').forEach(button => {
                 const part = bodyParts[button.dataset.bodyPart];
                 button.setAttribute('aria-label', part[bodyDisplayLanguage]);
@@ -8469,7 +8570,7 @@
             beatInputIndex = 0;
             const startButton = document.getElementById('beatStart');
             startButton.disabled = false;
-            startButton.innerHTML = '<span aria-hidden="true">🐻</span>';
+            startButton.innerHTML = '<img class="boutique-bear" src="assets/toddler-arcade-bear.png" alt="" aria-hidden="true" draggable="false">';
             startButton.classList.remove('playing');
             startButton.classList.add('ready-to-play');
             document.getElementById('game-beat').classList.add('beat-awaiting');
@@ -8615,13 +8716,20 @@
             clearInterval(danceBeatTimer);
             danceBeatTimer = setInterval(() => { tone(110,.12,'sine',.24); noiseBurst(.05,.08); }, milliseconds);
         }
+        function setDanceCharacterVisual(character, symbol) {
+            if (symbol === '🎅') {
+                character.innerHTML = '<img src="assets/toddler-arcade-santa.png" alt="" draggable="false">';
+                return;
+            }
+            character.textContent = symbol;
+        }
         function runDanceMove() {
             if (!dancePartyActive) return;
             danceMoveCount++;
             const character = document.getElementById('danceCharacter');
             if (danceMoveCount % 4 === 0) {
                 clearInterval(danceBeatTimer);
-                character.textContent = '🌟';
+                setDanceCharacterVisual(character, '🌟');
                 character.className = 'dance-character frozen';
                 document.getElementById('danceCue').textContent = leaderMoves[danceRoundLanguage];
                 speakSingle(languageSettings[danceRoundLanguage].code, leaderMoves[danceRoundLanguage]);
@@ -8630,7 +8738,7 @@
             }
             const move = danceMoves[Math.floor(Math.random()*danceMoves.length)];
             const pace = dancePaces[Math.floor(Math.random()*dancePaces.length)];
-            character.textContent = Math.random() > .35 ? '🎅' : move.emoji;
+            setDanceCharacterVisual(character, Math.random() > .35 ? '🎅' : move.emoji);
             character.className = 'dance-character moving';
             const cue = move[danceRoundLanguage];
             document.getElementById('danceCue').textContent = `${move.emoji} ${cue}`;
@@ -8639,7 +8747,7 @@
             danceStepTimer = setTimeout(() => {
                 if (!dancePartyActive) return;
                 clearInterval(danceBeatTimer);
-                character.textContent = freezeCue.emoji;
+                setDanceCharacterVisual(character, freezeCue.emoji);
                 character.className = 'dance-character frozen';
                 document.getElementById('danceCue').textContent = `${freezeCue.emoji} ${freezeCue[danceRoundLanguage]}`;
                 speakSingle(languageSettings[danceRoundLanguage].code, freezeCue[danceRoundLanguage]);
@@ -8662,7 +8770,7 @@
             clearInterval(danceBeatTimer);
             const language = currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode;
             document.getElementById('danceCharacter').className = 'dance-character';
-            document.getElementById('danceCharacter').textContent = '🎅';
+            setDanceCharacterVisual(document.getElementById('danceCharacter'), '🎅');
             document.getElementById('danceCue').textContent = interfaceText[language].danceReady;
             document.getElementById('danceButton').textContent = interfaceText[language].danceStart;
         }

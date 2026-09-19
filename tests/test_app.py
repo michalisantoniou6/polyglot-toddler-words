@@ -177,6 +177,24 @@ class AppRegressionTests(unittest.TestCase):
         )
         self.assertIn("profileName === 'santaLaugh' ? 1 : 0.58", HTML)
 
+    def test_boutique_mascots_replace_prominent_generic_emoji(self) -> None:
+        for asset in ("toddler-arcade-bear.png", "toddler-arcade-santa.png"):
+            path = ROOT / "assets" / asset
+            self.assertTrue(path.is_file())
+            self.assertGreater(path.stat().st_size, 100_000)
+            self.assertIn(f'href="assets/{asset}" as="image"', HTML)
+
+        self.assertIn("/* Boutique storybook system:", HTML)
+        self.assertIn('id="monsterAvatar" type="button" onclick="tickleMonster()" aria-label="Santa Claus"><img src="assets/toddler-arcade-santa.png"', HTML)
+        self.assertIn('<image href="assets/toddler-arcade-bear.png"', HTML)
+        self.assertIn('class="runner-character" id="runnerCharacter" aria-hidden="true"><img class="boutique-bear"', HTML)
+        self.assertIn('function setDanceCharacterVisual(character, symbol)', HTML)
+
+    def test_body_explorer_invitation_is_visual_instead_of_reading_dependent(self) -> None:
+        self.assertIn('id="bodyTapHint" aria-hidden="true">👆</div>', HTML)
+        self.assertIn("document.getElementById('bodyTapHint').textContent = '👆';", HTML)
+        self.assertNotIn('👆 Tap the character', HTML)
+
     def test_dance_and_freeze_has_time_for_real_dancing(self) -> None:
         self.assertGreaterEqual(constant_number("danceMoveDurationMilliseconds"), 7_000)
         self.assertGreaterEqual(constant_number("danceFreezeDurationMilliseconds"), 4_500)
