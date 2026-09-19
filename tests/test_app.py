@@ -175,7 +175,7 @@ class AppRegressionTests(unittest.TestCase):
             HTML,
             r"clip\('assets/santa-ho-ho-ho\.mp3\?v=2'.*?'CC0'.*?,\s*0,\s*2\.7\)",
         )
-        self.assertIn("profileName === 'santaLaugh' ? 1 : 0.58", HTML)
+        self.assertIn("profileName === 'santaLaugh' || profileName === 'runnerOuch' ? 1 : 0.58", HTML)
 
     def test_boutique_mascots_replace_prominent_generic_emoji(self) -> None:
         for asset in ("toddler-arcade-bear.png", "toddler-arcade-santa.png"):
@@ -378,31 +378,32 @@ class AppRegressionTests(unittest.TestCase):
             "runnerThrusting = true",
             "runnerThrusting = false",
             "runnerCharacter.classList.add('flying')",
-            "shrinkRunner(reaction);",
-            "runnerCrashed = false;",
+            "animateRunnerCrash(reaction);",
             "scheduleRunnerObject(260);",
         ):
             self.assertIn(phrase, HTML)
         crash_source = HTML[HTML.index("function crashRunner()") : HTML.index("function startRunnerFlight")]
         self.assertNotIn("runnerRunning = false", crash_source)
         self.assertNotIn("cancelAnimationFrame", crash_source)
-        self.assertRegex(crash_source, re.compile(r"runnerRestartTimer\s*=\s*setTimeout\(\(\)\s*=>\s*\{.*?\},\s*1050\);", re.S))
+        self.assertNotIn("runnerCrashed", crash_source)
+        self.assertNotIn("setTimeout", crash_source)
+        self.assertIn("scheduleRunnerObject(260);", crash_source)
         frame_source = HTML[HTML.index("function runnerFrame") : HTML.index("function playRunnerChime")]
         self.assertIn("if (!runnerRunning) return", frame_source)
         self.assertIn("if (runnerRunning) runnerAnimationFrame = requestAnimationFrame(runnerFrame)", frame_source)
 
-    def test_runner_grows_every_five_foods_caps_at_seventy_percent_and_shrinks_on_rocks(self) -> None:
-        self.assertEqual(5, constant_number("runnerFoodsPerGrowthStep"))
-        self.assertEqual(.70, constant_number("runnerMaximumHeightRatio"))
-        self.assertEqual(.70, constant_number("runnerMinimumScale"))
-        self.assertIn("runnerScore % runnerFoodsPerGrowthStep", HTML)
-        self.assertIn("runnerStage.clientHeight * runnerMaximumHeightRatio / runnerBaseCharacterHeight", HTML)
-        self.assertIn("runnerGrowthLevel++", HTML)
-        self.assertIn("runnerGrowthLevel = Math.max(-2, runnerGrowthLevel - 1)", HTML)
-        self.assertIn("setRunnerScale(runnerScaleForLevel(runnerGrowthLevel), animationClass)", HTML)
-        self.assertIn("playRunnerGrowthSound();", HTML)
-        self.assertIn(".runner-character.growing", HTML)
-        self.assertIn("content:'✨ ⬆️ ✨'", HTML)
+    def test_runner_stays_one_consistent_size(self) -> None:
+        for removed_mechanic in (
+            "runnerFoodsPerGrowthStep",
+            "runnerMaximumHeightRatio",
+            "runnerMinimumScale",
+            "runnerGrowthLevel",
+            "growRunner",
+            "shrinkRunner",
+            ".runner-character.growing",
+        ):
+            self.assertNotIn(removed_mechanic, HTML)
+        self.assertIn("const altitudeCeiling = Math.max(0, runnerStage.clientHeight * .80 - runnerBaseCharacterHeight - 12)", HTML)
 
     def test_broccoli_bounce_rewards_food_and_treats_rocks_as_obstacles(self) -> None:
         self.assertIn("runnerObject.innerHTML = `<span>${type === 'food' ? activeRunnerFood.emoji : '🪨'}</span>`", HTML)
@@ -453,8 +454,11 @@ class AppRegressionTests(unittest.TestCase):
         ):
             self.assertIn(animation, HTML)
         self.assertIn(".runner-character.crash-bandage::after { content:'🩹'", HTML)
-        self.assertIn("playRealSoundProfile('runnerOuch')", HTML)
-        self.assertIn("assets/runner-ouch.mp3", HTML)
+        self.assertIn("playRealSound('runnerOuch')", HTML)
+        self.assertIn("assets/runner-ouch.mp3?v=2", HTML)
+        self.assertIn("'Ow.wav', 'balloonhead', 'CC0'", HTML)
+        self.assertIn("profileName === 'santaLaugh' || profileName === 'runnerOuch' ? 1 : 0.58", HTML)
+        self.assertGreater((ROOT / "assets" / "runner-ouch.mp3").stat().st_size, 15_000)
         self.assertIn("runnerCrashReactionIndex++ % runnerCrashReactions.length", HTML)
         self.assertIn("document.getElementById('runnerCrashText').textContent = phrase", HTML)
 

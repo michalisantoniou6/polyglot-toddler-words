@@ -14,6 +14,7 @@
     <link rel="icon" href="icons/icon-192.png" sizes="192x192" type="image/png">
     <link rel="apple-touch-icon" href="icons/icon-180.png">
     <link rel="preload" href="assets/santa-ho-ho-ho.mp3?v=2" as="audio" type="audio/mpeg">
+    <link rel="preload" href="assets/runner-ouch.mp3?v=2" as="audio" type="audio/mpeg">
     <link rel="preload" href="assets/santa-sleigh.png" as="image" type="image/png">
     <link rel="preload" href="assets/toddler-arcade-bear.png" as="image" type="image/png">
     <link rel="preload" href="assets/toddler-arcade-santa.png" as="image" type="image/png">
@@ -2427,9 +2428,6 @@
             border-top:9px solid #48bb78;
         }
         .runner-character {
-            --runner-scale:1;
-            --runner-previous-scale:1;
-            --runner-burst-scale:1.12;
             position:absolute;
             left:17%;
             bottom:20%;
@@ -2441,15 +2439,12 @@
             justify-content:center;
             filter:drop-shadow(0 8px 3px rgba(45,55,72,.2));
             transform-origin:50% 100%;
-            transform:scale(var(--runner-scale));
+            transform:scale(1);
             will-change:transform;
         }
         .runner-character .boutique-bear { width:100%;height:100%;object-fit:contain;pointer-events:none; }
         .runner-stage.running .runner-character:not(.flying) { animation:runnerSteps .34s ease-in-out infinite alternate; }
         .runner-character.flying { animation:runnerFly .42s ease-in-out infinite alternate; }
-        .runner-character.growing { animation:runnerPowerUp .88s cubic-bezier(.2,.85,.3,1.2) both !important; }
-        .runner-character.growing::after { content:'✨ ⬆️ ✨';position:absolute;left:50%;top:-34px;transform:translateX(-50%);font-size:1.55rem;white-space:nowrap;animation:runnerSparkle .88s ease-out both; }
-        .runner-character.bumped { animation:runnerBump .72s ease-out both !important; }
         .runner-character.crash-dizzy { animation:runnerCrashDizzy 1.35s ease-out both !important; }
         .runner-character.crash-tumble { animation:runnerCrashTumble 1.35s cubic-bezier(.2,.8,.25,1) both !important; }
         .runner-character.crash-bandage { animation:runnerCrashBandage 1.35s ease-out both !important; }
@@ -2459,15 +2454,12 @@
         .runner-character.crash-tumble::after { content:'⭐'; }
         .runner-character.crash-bandage::after { content:'🩹';font-size:1.7rem;top:-22px; }
         .runner-character.crash-wobble::after { content:'🫧'; }
-        @keyframes runnerSteps { from{transform:scale(var(--runner-scale))} to{transform:translateY(-5px) rotate(4deg) scale(var(--runner-scale))} }
-        @keyframes runnerFly { from{transform:scale(var(--runner-scale))} to{transform:rotate(-7deg) scale(var(--runner-scale))} }
-        @keyframes runnerPowerUp { 0%{transform:scale(var(--runner-previous-scale))} 45%{transform:translateY(-15px) scale(var(--runner-burst-scale));filter:drop-shadow(0 0 18px #ffd43b)} 72%{transform:translateY(2px) scale(var(--runner-scale))} 100%{transform:scale(var(--runner-scale))} }
-        @keyframes runnerSparkle { 0%{opacity:0;transform:translate(-50%,16px) scale(.5)} 35%{opacity:1} 100%{opacity:0;transform:translate(-50%,-24px) scale(1.25)} }
-        @keyframes runnerBump { 0%{transform:scale(var(--runner-previous-scale))} 25%{transform:translate(-16px,-18px) rotate(-12deg) scale(var(--runner-previous-scale))} 55%{transform:translate(9px,0) rotate(8deg) scale(var(--runner-scale))} 100%{transform:scale(var(--runner-scale))} }
-        @keyframes runnerCrashDizzy { 0%{transform:scale(var(--runner-previous-scale))} 30%{transform:translate(-8px,-5px) rotate(-9deg) scale(var(--runner-scale))} 58%{transform:rotate(12deg) scale(var(--runner-scale))} 78%{transform:rotate(-4deg) scale(var(--runner-scale))} 100%{transform:scale(var(--runner-scale))} }
-        @keyframes runnerCrashTumble { 0%{transform:scale(var(--runner-previous-scale))} 32%{transform:translate(-12px,-9px) rotate(-18deg) scale(var(--runner-scale))} 62%{transform:translate(7px,1px) rotate(9deg) scale(var(--runner-scale))} 100%{transform:scale(var(--runner-scale))} }
-        @keyframes runnerCrashBandage { 0%{transform:scale(var(--runner-previous-scale))} 28%{transform:translateX(-7px) rotate(-5deg) scale(var(--runner-scale))} 58%{transform:translateY(-5px) rotate(3deg) scale(var(--runner-scale))} 100%{transform:scale(var(--runner-scale))} }
-        @keyframes runnerCrashWobble { 0%{transform:scale(var(--runner-previous-scale))} 25%{transform:translateX(-8px) rotate(-7deg) scale(var(--runner-scale))} 48%{transform:translateX(7px) rotate(6deg) scale(var(--runner-scale))} 70%{transform:translateX(-3px) rotate(-2deg) scale(var(--runner-scale))} 100%{transform:scale(var(--runner-scale))} }
+        @keyframes runnerSteps { from{transform:scale(1)} to{transform:translateY(-5px) rotate(4deg) scale(1)} }
+        @keyframes runnerFly { from{transform:scale(1)} to{transform:rotate(-7deg) scale(1)} }
+        @keyframes runnerCrashDizzy { 0%{transform:scale(1)} 30%{transform:translate(-8px,-5px) rotate(-9deg) scale(1)} 58%{transform:rotate(12deg) scale(1)} 78%{transform:rotate(-4deg) scale(1)} 100%{transform:scale(1)} }
+        @keyframes runnerCrashTumble { 0%{transform:scale(1)} 32%{transform:translate(-12px,-9px) rotate(-18deg) scale(1)} 62%{transform:translate(7px,1px) rotate(9deg) scale(1)} 100%{transform:scale(1)} }
+        @keyframes runnerCrashBandage { 0%{transform:scale(1)} 28%{transform:translateX(-7px) rotate(-5deg) scale(1)} 58%{transform:translateY(-5px) rotate(3deg) scale(1)} 100%{transform:scale(1)} }
+        @keyframes runnerCrashWobble { 0%{transform:scale(1)} 25%{transform:translateX(-8px) rotate(-7deg) scale(1)} 48%{transform:translateX(7px) rotate(6deg) scale(1)} 70%{transform:translateX(-3px) rotate(-2deg) scale(1)} 100%{transform:scale(1)} }
         @keyframes runnerCrashStars { 0%{opacity:0;transform:translate(-50%,8px) scale(.7)} 30%,65%{opacity:.9;transform:translate(-50%,-2px) scale(1)} 100%{opacity:0;transform:translate(-50%,-12px) scale(.8)} }
         .runner-object {
             position:absolute;
@@ -3750,7 +3742,7 @@
                 clip('assets/santa-ho-ho-ho.mp3?v=2', 'Santa ho ho ho #1', 'canucklovingbrit', 'CC0', freesoundPage(110641), 0, 2.7)
             ],
             runnerOuch: [
-                clip('assets/runner-ouch.mp3', 'Retro video game sfx - Ouch', 'OwlStorm', 'CC0', freesoundPage(404747), 0, .4)
+                clip('assets/runner-ouch.mp3?v=2', 'Ow.wav', 'balloonhead', 'CC0', freesoundPage(362335), 0, .64)
             ],
             dog: [
                 clip('https://upload.wikimedia.org/wikipedia/commons/5/58/Barking_of_a_dog_2.ogg', 'Barking of a dog 2', 'Amada44', 'CC BY-SA 3.0', 'https://commons.wikimedia.org/wiki/File:Barking_of_a_dog_2.ogg'),
@@ -4480,6 +4472,10 @@
 
         function playOfflineSoundFallback(profileName) {
             if (profileName === 'santaLaugh') return;
+            if (profileName === 'runnerOuch') {
+                SoundFX.animal('default');
+                return;
+            }
             if (animalSoundProfiles.has(profileName)) {
                 SoundFX.animal(profileName);
             } else if (sirenSoundProfiles.has(profileName)) {
@@ -4556,7 +4552,7 @@
 
                 const sound = cachedRealSound(selectedClip.src);
                 activeRealSound = sound;
-                sound.volume = profileName === 'santaLaugh' ? 1 : 0.58;
+                sound.volume = profileName === 'santaLaugh' || profileName === 'runnerOuch' ? 1 : 0.58;
                 let hasStarted = false;
                 let loadTimeout = setTimeout(() => {
                     if (!hasStarted) failAndTryNext();
@@ -7392,23 +7388,15 @@
         const runnerCharacter = document.getElementById('runnerCharacter');
         const runnerObject = document.getElementById('runnerObject');
         let runnerAnimationFrame = null;
-        let runnerRestartTimer = null;
+        let runnerCrashCleanupTimer = null;
         let runnerSpawnTimer = null;
         let runnerTutorialTimer = null;
         let runnerLastFrame = 0;
         let runnerObjectTravel = 0;
         let runnerObjectActive = false;
         let runnerRunning = false;
-        let runnerCrashed = false;
         let runnerScore = 0;
-        const runnerFoodsPerGrowthStep = 5;
-        const runnerGrowthScalePerStep = 0.15;
-        const runnerMinimumScale = 0.70;
-        const runnerMaximumHeightRatio = 0.70;
         const runnerBaseCharacterHeight = 96;
-        let runnerGrowthLevel = 0;
-        let runnerCharacterScale = 1;
-        let runnerGrowthAnimationTimer = null;
         let runnerDistance = 0;
         let runnerLastDistanceLabel = -1;
         let runnerAltitude = 0;
@@ -7468,7 +7456,7 @@
         }
 
         function spawnRunnerObject() {
-            if (!runnerRunning || runnerCrashed || activeGameId() !== 'runner') return;
+            if (!runnerRunning || activeGameId() !== 'runner') return;
             if (currentLangMode === 'all') {
                 updateRunnerLanguage(learningRoundLanguage(runnerLanguageIndex++));
             }
@@ -7513,8 +7501,7 @@
             if (!runnerRunning) return;
             const elapsedSeconds = runnerLastFrame ? Math.min(.04, (timestamp - runnerLastFrame) / 1000) : 0;
             runnerLastFrame = timestamp;
-            const scaledCharacterHeight = runnerBaseCharacterHeight * runnerCharacterScale;
-            const altitudeCeiling = Math.max(0, runnerStage.clientHeight * .80 - scaledCharacterHeight - 12);
+            const altitudeCeiling = Math.max(0, runnerStage.clientHeight * .80 - runnerBaseCharacterHeight - 12);
             const lift = runnerThrusting ? 760 : -670;
             runnerVerticalVelocity = Math.max(-315, Math.min(285, runnerVerticalVelocity + lift * elapsedSeconds));
             runnerAltitude = Math.max(0, Math.min(altitudeCeiling, runnerAltitude + runnerVerticalVelocity * elapsedSeconds));
@@ -7557,77 +7544,27 @@
             });
         }
 
-        function playRunnerGrowthSound() {
-            const ctx = getAudioContext();
-            [392,523,659,784,1047].forEach((frequency,index) => {
-                const oscillator = ctx.createOscillator();
-                const gain = ctx.createGain();
-                const startsAt = ctx.currentTime + index * .065;
-                oscillator.type = index < 3 ? 'square' : 'triangle';
-                oscillator.frequency.value = frequency;
-                gain.gain.setValueAtTime(.0001, startsAt);
-                gain.gain.exponentialRampToValueAtTime(.12, startsAt + .012);
-                gain.gain.exponentialRampToValueAtTime(.0001, startsAt + .20);
-                oscillator.connect(gain);
-                gain.connect(ctx.destination);
-                oscillator.start(startsAt);
-                oscillator.stop(startsAt + .22);
-            });
-        }
-
-        function runnerScaleForLevel(level) {
-            const requestedScale = Math.max(runnerMinimumScale, 1 + level * runnerGrowthScalePerStep);
-            const maximumScale = Math.max(runnerMinimumScale, runnerStage.clientHeight * runnerMaximumHeightRatio / runnerBaseCharacterHeight);
-            return Math.min(requestedScale, maximumScale);
-        }
-
-        function setRunnerScale(nextScale, animationClass = null) {
-            const previousScale = runnerCharacterScale;
-            runnerCharacterScale = nextScale;
-            const maximumScale = runnerStage.clientHeight * runnerMaximumHeightRatio / runnerBaseCharacterHeight;
-            runnerCharacter.style.setProperty('--runner-previous-scale', previousScale.toFixed(3));
-            runnerCharacter.style.setProperty('--runner-scale', nextScale.toFixed(3));
-            runnerCharacter.style.setProperty('--runner-burst-scale', Math.min(nextScale * 1.12, maximumScale).toFixed(3));
-            clearTimeout(runnerGrowthAnimationTimer);
-            runnerCharacter.classList.remove('growing', 'bumped', ...runnerCrashReactions);
-            if (!animationClass) return;
+        function animateRunnerCrash(animationClass) {
+            clearTimeout(runnerCrashCleanupTimer);
+            runnerCharacter.classList.remove(...runnerCrashReactions);
             void runnerCharacter.offsetWidth;
             runnerCharacter.classList.add(animationClass);
-            runnerGrowthAnimationTimer = setTimeout(() => runnerCharacter.classList.remove(animationClass), 900);
-        }
-
-        function growRunner() {
-            const previousLevel = runnerGrowthLevel;
-            const previousScale = runnerCharacterScale;
-            runnerGrowthLevel++;
-            const nextScale = runnerScaleForLevel(runnerGrowthLevel);
-            if (nextScale <= previousScale + .001) {
-                runnerGrowthLevel = previousLevel;
-                return false;
-            }
-            setRunnerScale(nextScale, 'growing');
-            playRunnerGrowthSound();
-            return true;
-        }
-
-        function shrinkRunner(animationClass = 'bumped') {
-            runnerGrowthLevel = Math.max(-2, runnerGrowthLevel - 1);
-            setRunnerScale(runnerScaleForLevel(runnerGrowthLevel), animationClass);
+            runnerCrashCleanupTimer = setTimeout(() => {
+                runnerCharacter.classList.remove(...runnerCrashReactions);
+                document.getElementById('runnerCrash').classList.remove('active');
+            }, 1350);
         }
 
         function playRunnerCrashSound() {
             const variant = (runnerCrashReactionIndex - 1) % runnerCrashReactions.length;
-            if (variant === 0 || variant === 2) {
-                playRealSoundProfile('runnerOuch');
-                return;
-            }
+            playRealSound('runnerOuch');
             const ctx = getAudioContext();
             const oscillator = ctx.createOscillator();
             const gain = ctx.createGain();
             oscillator.type = variant === 1 ? 'triangle' : 'square';
             oscillator.frequency.setValueAtTime(variant === 1 ? 260 : 185, ctx.currentTime);
             oscillator.frequency.exponentialRampToValueAtTime(variant === 1 ? 92 : 310, ctx.currentTime + .28);
-            gain.gain.setValueAtTime(.13, ctx.currentTime);
+            gain.gain.setValueAtTime(.055, ctx.currentTime);
             gain.gain.exponentialRampToValueAtTime(.0001, ctx.currentTime + .34);
             oscillator.connect(gain);
             gain.connect(ctx.destination);
@@ -7646,7 +7583,7 @@
             celebration.classList.remove('active');
             void celebration.offsetWidth;
             celebration.classList.add('active');
-            if (runnerScore % runnerFoodsPerGrowthStep !== 0 || !growRunner()) playRunnerChime();
+            playRunnerChime();
             const foodName = activeRunnerFood[runnerDisplayLanguage];
             speakSingle(languageSettings[runnerDisplayLanguage].code, foodName, () => {
                 speakSingle(languageSettings[runnerDisplayLanguage].code, runnerScorePhrases[runnerDisplayLanguage](runnerScore), null, { volume: .38 });
@@ -7655,24 +7592,16 @@
         }
 
         function crashRunner() {
-            if (runnerCrashed) return;
-            runnerCrashed = true;
             runnerObjectActive = false;
             runnerObject.classList.add('collected');
             const reaction = runnerCrashReactions[runnerCrashReactionIndex++ % runnerCrashReactions.length];
-            shrinkRunner(reaction);
+            animateRunnerCrash(reaction);
             document.getElementById('runnerCrash').classList.add('active');
             playRunnerCrashSound();
             const phrases = runnerCrashPhrases[runnerDisplayLanguage] || runnerCrashPhrases.enUS;
             const phrase = phrases[(runnerCrashReactionIndex - 1) % phrases.length];
             document.getElementById('runnerCrashText').textContent = phrase;
-            runnerRestartTimer = setTimeout(() => {
-                if (activeGameId() !== 'runner' || !document.body.classList.contains('controls-collapsed')) return;
-                document.getElementById('runnerCrash').classList.remove('active');
-                runnerCharacter.classList.remove('bumped', ...runnerCrashReactions);
-                runnerCrashed = false;
-                scheduleRunnerObject(260);
-            }, 1050);
+            scheduleRunnerObject(260);
         }
 
         function startRunnerFlight(event = null) {
@@ -7715,12 +7644,9 @@
         }
 
         function resetRunnerRound() {
-            clearTimeout(runnerRestartTimer);
+            clearTimeout(runnerCrashCleanupTimer);
             clearTimeout(runnerSpawnTimer);
-            runnerCrashed = false;
             runnerScore = 0;
-            runnerGrowthLevel = 0;
-            runnerCharacterScale = 1;
             runnerDistance = 0;
             runnerLastDistanceLabel = -1;
             runnerAltitude = 0;
@@ -7734,9 +7660,6 @@
             runnerObject.style.bottom = '20%';
             runnerObject.style.transform = 'translateX(0)';
             runnerCharacter.className = 'runner-character';
-            runnerCharacter.style.setProperty('--runner-scale', '1');
-            runnerCharacter.style.setProperty('--runner-previous-scale', '1');
-            runnerCharacter.style.setProperty('--runner-burst-scale', '1.12');
             runnerCharacter.style.bottom = '20%';
             document.getElementById('runnerCrash').classList.remove('active');
             document.getElementById('runnerCelebration').classList.remove('active');
@@ -7748,7 +7671,6 @@
             if (runnerRunning || activeGameId() !== 'runner') return;
             if (!runnerIsLandscape()) return;
             runnerRunning = true;
-            runnerCrashed = false;
             runnerLastFrame = 0;
             runnerStage.classList.add('running');
             updateRunnerLanguage();
@@ -7761,17 +7683,16 @@
             runnerRunning = false;
             cancelAnimationFrame(runnerAnimationFrame);
             runnerAnimationFrame = null;
-            clearTimeout(runnerRestartTimer);
+            clearTimeout(runnerCrashCleanupTimer);
             clearTimeout(runnerSpawnTimer);
             clearTimeout(runnerTutorialTimer);
-            clearTimeout(runnerGrowthAnimationTimer);
             runnerThrusting = false;
             runnerObjectActive = false;
             runnerObject.innerHTML = '';
-            runnerCharacter.classList.remove('flying');
+            runnerCharacter.classList.remove('flying', ...runnerCrashReactions);
+            document.getElementById('runnerCrash').classList.remove('active');
             document.getElementById('runnerTutorial').classList.remove('active');
             runnerStage.classList.remove('running');
-            if (runnerCrashed) resetRunnerRound();
         }
 
         runnerStage.addEventListener('pointerdown', startRunnerFlight);
@@ -7788,7 +7709,6 @@
         });
         window.addEventListener('resize', () => {
             if (activeGameId() !== 'runner' || !document.body.classList.contains('controls-collapsed')) return;
-            setRunnerScale(runnerScaleForLevel(runnerGrowthLevel));
             if (runnerIsLandscape()) startRunnerGame();
             else stopRunnerGame();
         });

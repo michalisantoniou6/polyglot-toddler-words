@@ -66,7 +66,7 @@ class ProgressiveWebAppTests(unittest.TestCase):
             "./icons/icon-192.png",
             "./icons/icon-512.png",
             "./assets/santa-ho-ho-ho.mp3?v=2",
-            "./assets/runner-ouch.mp3",
+            "./assets/runner-ouch.mp3?v=2",
             "./assets/santa-sleigh.png",
             "./assets/toddler-arcade-bear.png",
             "./assets/toddler-arcade-santa.png",
