@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.view.View;
@@ -56,6 +58,7 @@ public final class MainActivity extends Activity implements TextToSpeech.OnInitL
         webView.setWebViewClient(new LocalGameWebViewClient());
         webView.addJavascriptInterface(new AndroidSpeechBridge(), "AndroidSpeech");
         webView.addJavascriptInterface(new AndroidChildLockBridge(), "AndroidChildLock");
+        webView.addJavascriptInterface(new AndroidHapticsBridge(), "AndroidHaptics");
         WebView.setWebContentsDebuggingEnabled(BuildConfig.DEBUG);
 
         setContentView(webView);
@@ -128,6 +131,7 @@ public final class MainActivity extends Activity implements TextToSpeech.OnInitL
         }
         webView.removeJavascriptInterface("AndroidSpeech");
         webView.removeJavascriptInterface("AndroidChildLock");
+        webView.removeJavascriptInterface("AndroidHaptics");
         webView.destroy();
         super.onDestroy();
     }
@@ -273,6 +277,31 @@ public final class MainActivity extends Activity implements TextToSpeech.OnInitL
         @JavascriptInterface
         public boolean isActive() {
             return isChildLockActive();
+        }
+    }
+
+    private final class AndroidHapticsBridge {
+        @JavascriptInterface
+        public void crash() {
+            runOnUiThread(() -> {
+                Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                if (vibrator == null || !vibrator.hasVibrator()) {
+                    return;
+                }
+
+                long[] pattern = {0, 70, 45, 90};
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    vibrator.vibrate(VibrationEffect.createWaveform(pattern, -1));
+                    return;
+                }
+
+                vibrateLegacy(vibrator, pattern);
+            });
+        }
+
+        @SuppressWarnings("deprecation")
+        private void vibrateLegacy(Vibrator vibrator, long[] pattern) {
+            vibrator.vibrate(pattern, -1);
         }
     }
 

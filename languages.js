@@ -14,7 +14,7 @@
             instruments:['Schlagzeug','Gitarre','Keyboard','Glocken','Maracas','Handtrommel','Trompete','Mikrofon','Geige','Saxofon','Flöte','Akkordeon','Banjo'],
             colors:['rot','blau','gelb','grün'], shapes:['Kreis','Quadrat','Dreieck','Stern','Herz'],
             body:['Kopf','Ohren','Augen','Nase','Mund','Bauch','Arm','Hand · Finger','Finger','Knie','Bein','Fuß · Zehen','Zehen'],
-            runnerFoods:['Brokkoli','Tomate','Karotte','Apfel','Banane','Erdbeere','Orange','Mais','Birne','Trauben','Wassermelone','Ananas','Avocado','Kirschen','Zitrone','Kartoffel'],
+            runnerFoods:['Brokkoli','Tomate','Karotte','Apfel','Banane','Erdbeere','Orange','Mais','Birne','Trauben','Wassermelone','Ananas','Avocado','Kirschen','Zitrone','Kartoffel','Pfirsich','Mango','Paprika','Gurke','Aubergine','Süßkartoffel','Kiwi','Blaubeeren'],
             bellNotes:['C','D','E','F','G'],
             letters:letterSet([
                 ['A','A','Apfel','🍎'],['B','Be','Ball','⚽'],['C','Ce','Clown','🤡'],['D','De','Dino','🦖'],['E','E','Elefant','🐘'],['F','Ef','Fisch','🐟'],['G','Ge','Gitarre','🎸'],['H','Ha','Haus','🏠'],['I','I','Igel','🦔'],['J','Jot','Jacke','🧥'],['K','Ka','Katze','🐱'],['L','El','Löwe','🦁'],['M','Em','Mond','🌙'],['N','En','Nest','🪺'],['O','O','Orange','🍊'],['P','Pe','Pinguin','🐧'],['Q','Ku','Qualle','🪼'],['R','Er','Regenbogen','🌈'],['S','Es','Sonne','☀️'],['T','Te','Tiger','🐯'],['U','U','Uhr','🕐'],['V','Vau','Vogel','🐦'],['W','We','Wal','🐋'],['X','Ix','Xylophon','🎶'],['Y','Ypsilon','Yoga','🧘'],['Z','Zett','Zebra','🦓'],['Ä','Ä','Äpfel','🍎'],['Ö','Ö','Öl','🫗'],['Ü','Ü','Überraschung','🎁'],['ß','Eszett','Fuß','🦶']
@@ -47,7 +47,7 @@
             instruments:['Batteria','Chitarra','Tastiera','Campane','Maracas','Tamburo','Tromba','Microfono','Violino','Sassofono','Flauto','Fisarmonica','Banjo'],
             colors:['rosso','blu','giallo','verde'], shapes:['cerchio','quadrato','triangolo','stella','cuore'],
             body:['Testa','Orecchie','Occhi','Naso','Bocca','Pancia','Braccio','Mano · Dita','Dita','Ginocchio','Gamba','Piede · Dita dei piedi','Dita dei piedi'],
-            runnerFoods:['Broccolo','Pomodoro','Carota','Mela','Banana','Fragola','Arancia','Mais','Pera','Uva','Anguria','Ananas','Avocado','Ciliegie','Limone','Patata'], bellNotes:['Do','Re','Mi','Fa','Sol'],
+            runnerFoods:['Broccolo','Pomodoro','Carota','Mela','Banana','Fragola','Arancia','Mais','Pera','Uva','Anguria','Ananas','Avocado','Ciliegie','Limone','Patata','Pesca','Mango','Peperone','Cetriolo','Melanzana','Patata dolce','Kiwi','Mirtilli'], bellNotes:['Do','Re','Mi','Fa','Sol'],
             letters:letterSet([
                 ['A','A','albero','🌳'],['B','Bi','banana','🍌'],['C','Ci','cane','🐶'],['D','Di','dinosauro','🦖'],['E','E','elefante','🐘'],['F','Effe','fiore','🌸'],['G','Gi','gatto','🐱'],['H','Acca','hotel','🏨'],['I','I','isola','🏝️'],['L','Elle','luna','🌙'],['M','Emme','mela','🍎'],['N','Enne','nuvola','☁️'],['O','O','orso','🐻'],['P','Pi','palla','⚽'],['Q','Cu','quadro','🖼️'],['R','Erre','rana','🐸'],['S','Esse','sole','☀️'],['T','Ti','treno','🚂'],['U','U','uva','🍇'],['V','Vi','violino','🎻'],['Z','Zeta','zebra','🦓']
             ]),
@@ -77,7 +77,7 @@
             instruments:['Davul seti','Gitar','Klavye','Çanlar','Marakas','El davulu','Trompet','Mikrofon','Keman','Saksofon','Flüt','Akordeon','Banjo'],
             colors:['kırmızı','mavi','sarı','yeşil'],shapes:['daire','kare','üçgen','yıldız','kalp'],
             body:['Baş','Kulaklar','Gözler','Burun','Ağız','Karın','Kol','El · Parmaklar','Parmaklar','Diz','Bacak','Ayak · Ayak parmakları','Ayak parmakları'],
-            runnerFoods:['Brokoli','Domates','Havuç','Elma','Muz','Çilek','Portakal','Mısır','Armut','Üzüm','Karpuz','Ananas','Avokado','Kiraz','Limon','Patates'],bellNotes:['Do','Re','Mi','Fa','Sol'],
+            runnerFoods:['Brokoli','Domates','Havuç','Elma','Muz','Çilek','Portakal','Mısır','Armut','Üzüm','Karpuz','Ananas','Avokado','Kiraz','Limon','Patates','Şeftali','Mango','Dolmalık biber','Salatalık','Patlıcan','Tatlı patates','Kivi','Yaban mersini'],bellNotes:['Do','Re','Mi','Fa','Sol'],
             letters:letterSet([
                 ['A','A','araba','🚗'],['B','Be','balon','🎈'],['C','Ce','ceviz','🌰'],['Ç','Çe','çilek','🍓'],['D','De','dinozor','🦖'],['E','E','elma','🍎'],['F','Fe','fil','🐘'],['G','Ge','gitar','🎸'],['Ğ','Yumuşak ge','yağmur','🌧️'],['H','He','havuç','🥕'],['I','I','ıspanak','🥬'],['İ','İ','inek','🐮'],['J','Je','jet','✈️'],['K','Ke','kedi','🐱'],['L','Le','limon','🍋'],['M','Me','muz','🍌'],['N','Ne','nar','🍎'],['O','O','otobüs','🚌'],['Ö','Ö','ördek','🦆'],['P','Pe','penguen','🐧'],['R','Re','roket','🚀'],['S','Se','su','💧'],['Ş','Şe','şapka','🧢'],['T','Te','tren','🚂'],['U','U','uçak','✈️'],['Ü','Ü','üzüm','🍇'],['V','Ve','vişne','🍒'],['Y','Ye','yıldız','⭐'],['Z','Ze','zebra','🦓']
             ]),
@@ -106,7 +106,7 @@
             ,colors:['vermelho','azul','amarelo','verde']
             ,shapes:['círculo','quadrado','triângulo','estrela','coração']
             ,body:['Cabeça','Orelhas','Olhos','Nariz','Boca','Barriga','Braço','Mão · Dedos','Dedos','Joelho','Perna','Pé · Dedos do pé','Dedos do pé']
-            ,runnerFoods:['Brócolis','Tomate','Cenoura','Maçã','Banana','Morango','Laranja','Milho','Pera','Uvas','Melancia','Abacaxi','Abacate','Cerejas','Limão','Batata']
+            ,runnerFoods:['Brócolis','Tomate','Cenoura','Maçã','Banana','Morango','Laranja','Milho','Pera','Uvas','Melancia','Abacaxi','Abacate','Cerejas','Limão','Batata','Pêssego','Manga','Pimentão','Pepino','Berinjela','Batata-doce','Kiwi','Mirtilos']
             ,bellNotes:['Dó','Ré','Mi','Fá','Sol']
             ,letters:letterSet([
                 ['A','A','abelha','🐝'],['B','Bê','bola','⚽'],['C','Cê','cachorro','🐶'],['D','Dê','dinossauro','🦖'],['E','E','elefante','🐘'],['F','Efe','flor','🌸'],['G','Gê','gato','🐱'],['H','Agá','helicóptero','🚁'],['I','I','ilha','🏝️'],['J','Jota','jacaré','🐊'],['K','Cá','kiwi','🥝'],['L','Ele','lua','🌙'],['M','Eme','maçã','🍎'],['N','Ene','nuvem','☁️'],['O','O','ovelha','🐑'],['P','Pê','pato','🦆'],['Q','Quê','queijo','🧀'],['R','Erre','robô','🤖'],['S','Esse','sol','☀️'],['T','Tê','trem','🚂'],['U','U','uva','🍇'],['V','Vê','violino','🎻'],['W','Dáblio','waffle','🧇'],['X','Xis','xilofone','🎶'],['Y','Ípsilon','yoga','🧘'],['Z','Zê','zebra','🦓']
@@ -136,7 +136,7 @@
             everydayPrompts:['het rietje','het glas melk','het bord','de kom','de lepel','de vork','het servet','de babyfles','de koekenpan','de pan','het ijsblokje','de stoel','de tandenborstel','de zeep','de sok','de schoen','het bed','het bad','de deur','de sleutels'],
             instruments:['Drumstel','Gitaar','Keyboard','Bellen','Maracas','Handtrommel','Trompet','Microfoon','Viool','Saxofoon','Fluit','Accordeon','Banjo'],
             colors:['rood','blauw','geel','groen'],shapes:['cirkel','vierkant','driehoek','ster','hart'],
-            body:['Hoofd','Oren','Ogen','Neus','Mond','Buik','Arm','Hand · Vingers','Vingers','Knie','Been','Voet · Tenen','Tenen'],runnerFoods:['Broccoli','Tomaat','Wortel','Appel','Banaan','Aardbei','Sinaasappel','Maïs','Peer','Druiven','Watermeloen','Ananas','Avocado','Kersen','Citroen','Aardappel'],bellNotes:['C','D','E','F','G'],
+            body:['Hoofd','Oren','Ogen','Neus','Mond','Buik','Arm','Hand · Vingers','Vingers','Knie','Been','Voet · Tenen','Tenen'],runnerFoods:['Broccoli','Tomaat','Wortel','Appel','Banaan','Aardbei','Sinaasappel','Maïs','Peer','Druiven','Watermeloen','Ananas','Avocado','Kersen','Citroen','Aardappel','Perzik','Mango','Paprika','Komkommer','Aubergine','Zoete aardappel','Kiwi','Blauwe bessen'],bellNotes:['C','D','E','F','G'],
             letters:letterSet([
                 ['A','A','appel','🍎'],['B','Bee','bal','⚽'],['C','Cee','clown','🤡'],['D','Dee','dino','🦖'],['E','E','eend','🦆'],['F','Ef','fiets','🚲'],['G','Gee','gitaar','🎸'],['H','Haa','huis','🏠'],['I','Ie','ijsje','🍦'],['J','Jee','jas','🧥'],['K','Kaa','kat','🐱'],['L','El','leeuw','🦁'],['M','Em','maan','🌙'],['N','En','nest','🪺'],['O','O','olifant','🐘'],['P','Pee','peer','🍐'],['Q','Kuu','quiz','❓'],['R','Er','regenboog','🌈'],['S','Es','ster','⭐'],['T','Tee','trein','🚂'],['U','U','uil','🦉'],['V','Vee','vis','🐟'],['W','Wee','walvis','🐋'],['X','Iks','xylofoon','🎶'],['Y','Ypsilon','yoghurt','🥣'],['Z','Zet','zebra','🦓']
             ])
@@ -167,7 +167,7 @@
             ,colors:['czerwony','niebieski','żółty','zielony']
             ,shapes:['koło','kwadrat','trójkąt','gwiazda','serce']
             ,body:['Głowa','Uszy','Oczy','Nos','Usta','Brzuch','Ramię','Dłoń · Palce','Palce','Kolano','Noga','Stopa · Palce u stóp','Palce u stóp']
-            ,runnerFoods:['Brokuł','Pomidor','Marchewka','Jabłko','Banan','Truskawka','Pomarańcza','Kukurydza','Gruszka','Winogrona','Arbuz','Ananas','Awokado','Wiśnie','Cytryna','Ziemniak']
+            ,runnerFoods:['Brokuł','Pomidor','Marchewka','Jabłko','Banan','Truskawka','Pomarańcza','Kukurydza','Gruszka','Winogrona','Arbuz','Ananas','Awokado','Wiśnie','Cytryna','Ziemniak','Brzoskwinia','Mango','Papryka','Ogórek','Bakłażan','Batat','Kiwi','Borówki']
             ,bellNotes:['C','D','E','F','G']
         },
     };

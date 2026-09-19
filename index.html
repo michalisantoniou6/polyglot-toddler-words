@@ -2437,12 +2437,23 @@
             display:flex;
             align-items:center;
             justify-content:center;
+            overflow:visible;
             filter:drop-shadow(0 8px 3px rgba(45,55,72,.2));
             transform-origin:50% 100%;
             transform:scale(1);
             will-change:transform;
         }
-        .runner-character .boutique-bear { width:100%;height:100%;object-fit:contain;pointer-events:none; }
+        .runner-bear-emoji { display:block;font-size:5.8rem;line-height:1;pointer-events:none; }
+        .runner-impact-stars { position:absolute;inset:-38px;z-index:6;pointer-events:none;opacity:0; }
+        .runner-impact-stars.active { opacity:1; }
+        .runner-impact-stars span { position:absolute;left:50%;top:48%;font-size:1.25rem;opacity:0;--star-x:0px;--star-y:-42px;--star-rotate:20deg; }
+        .runner-impact-stars.active span { animation:runnerImpactStar 1.05s cubic-bezier(.18,.72,.25,1) both;animation-delay:var(--star-delay,0ms); }
+        .runner-impact-stars span:nth-child(1) { --star-x:-54px;--star-y:-38px;--star-rotate:-75deg; }
+        .runner-impact-stars span:nth-child(2) { --star-x:-26px;--star-y:-64px;--star-rotate:-30deg;--star-delay:40ms; }
+        .runner-impact-stars span:nth-child(3) { --star-x:8px;--star-y:-72px;--star-rotate:25deg;--star-delay:75ms; }
+        .runner-impact-stars span:nth-child(4) { --star-x:48px;--star-y:-50px;--star-rotate:75deg;--star-delay:30ms; }
+        .runner-impact-stars span:nth-child(5) { --star-x:60px;--star-y:-12px;--star-rotate:120deg;--star-delay:95ms; }
+        .runner-impact-stars span:nth-child(6) { --star-x:-58px;--star-y:2px;--star-rotate:-120deg;--star-delay:110ms; }
         .runner-stage.running .runner-character:not(.flying) { animation:runnerSteps .34s ease-in-out infinite alternate; }
         .runner-character.flying { animation:runnerFly .42s ease-in-out infinite alternate; }
         .runner-character.crash-dizzy { animation:runnerCrashDizzy 1.35s ease-out both !important; }
@@ -2461,6 +2472,7 @@
         @keyframes runnerCrashBandage { 0%{transform:scale(1)} 28%{transform:translateX(-7px) rotate(-5deg) scale(1)} 58%{transform:translateY(-5px) rotate(3deg) scale(1)} 100%{transform:scale(1)} }
         @keyframes runnerCrashWobble { 0%{transform:scale(1)} 25%{transform:translateX(-8px) rotate(-7deg) scale(1)} 48%{transform:translateX(7px) rotate(6deg) scale(1)} 70%{transform:translateX(-3px) rotate(-2deg) scale(1)} 100%{transform:scale(1)} }
         @keyframes runnerCrashStars { 0%{opacity:0;transform:translate(-50%,8px) scale(.7)} 30%,65%{opacity:.9;transform:translate(-50%,-2px) scale(1)} 100%{opacity:0;transform:translate(-50%,-12px) scale(.8)} }
+        @keyframes runnerImpactStar { 0%{opacity:0;transform:translate(-50%,-50%) scale(.25)} 22%{opacity:1} 72%{opacity:1;transform:translate(calc(-50% + var(--star-x)),calc(-50% + var(--star-y))) rotate(var(--star-rotate)) scale(1.15)} 100%{opacity:0;transform:translate(calc(-50% + var(--star-x)),calc(-50% + var(--star-y) - 12px)) rotate(var(--star-rotate)) scale(.7)} }
         .runner-object {
             position:absolute;
             right:-100px;
@@ -2683,7 +2695,7 @@
             animation:runnerTutorialFade 3.4s ease both;
         }
         .runner-tutorial-demo { position:relative;width:170px;height:120px; }
-        .runner-tutorial-bear { position:absolute;left:72px;bottom:2px;width:80px;height:92px;object-fit:contain;animation:runnerTutorialFly 1.5s ease-in-out infinite;filter:drop-shadow(0 6px 3px rgba(45,55,72,.18)); }
+        .runner-tutorial-bear { position:absolute;left:72px;bottom:2px;font-size:5.2rem;line-height:1;animation:runnerTutorialFly 1.5s ease-in-out infinite;filter:drop-shadow(0 6px 3px rgba(45,55,72,.18)); }
         .runner-tutorial-hand { position:absolute;left:5px;bottom:4px;font-size:3.5rem;animation:runnerTutorialPress 1.5s ease-in-out infinite; }
         .runner-tutorial-text { padding:8px 16px;border-radius:999px;background:white;color:#2b6cb0;font-size:clamp(1rem,4vw,1.35rem);font-weight:950; }
         @keyframes runnerTutorialFly { 0%,100%{transform:translateY(0)} 45%,72%{transform:translateY(-58px)} }
@@ -3477,11 +3489,11 @@
                     <div class="academic-prompt runner-prompt" id="runnerPrompt" aria-live="polite"><span class="academic-flag" id="runnerFlag" aria-hidden="true">🇬🇧</span><span id="runnerPromptText">Hold to fly · Let go to land</span></div>
                     <div class="runner-score" id="runnerScore" aria-live="polite">⭐ 0</div>
                 </div>
-                <div class="runner-character" id="runnerCharacter" aria-hidden="true"><img class="boutique-bear" src="assets/toddler-arcade-bear.png" alt="" draggable="false"></div>
+                <div class="runner-character" id="runnerCharacter" aria-hidden="true"><span class="runner-bear-emoji">🧸</span><div class="runner-impact-stars" id="runnerImpactStars"><span>⭐</span><span>✨</span><span>⭐</span><span>💫</span><span>⭐</span><span>✨</span></div></div>
                 <div class="runner-object" id="runnerObject" aria-hidden="true"></div>
                 <div class="runner-celebration" id="runnerCelebration" aria-hidden="true"><span id="runnerCelebrationText">🥦 +1</span></div>
                 <div class="runner-crash" id="runnerCrash" aria-hidden="true"><div class="runner-crash-ow" id="runnerCrashText">OW!</div><div class="runner-crash-dust">💥 💫</div></div>
-                <div class="runner-tutorial" id="runnerTutorial" aria-hidden="true"><div class="runner-tutorial-demo"><span class="runner-tutorial-hand">👇</span><img class="runner-tutorial-bear" src="assets/toddler-arcade-bear.png" alt="" draggable="false"></div><div class="runner-tutorial-text" id="runnerTutorialText">Hold to fly · Let go to land</div></div>
+                <div class="runner-tutorial" id="runnerTutorial" aria-hidden="true"><div class="runner-tutorial-demo"><span class="runner-tutorial-hand">👇</span><span class="runner-tutorial-bear">🧸</span></div><div class="runner-tutorial-text" id="runnerTutorialText">Hold to fly · Let go to land</div></div>
                 <div class="runner-tap-hint" id="runnerTapHint" aria-hidden="true">👆 Hold to fly</div>
                 <div class="runner-rotate-overlay" id="runnerRotateOverlay" aria-hidden="true"><span class="runner-rotate-phone">📱</span><span id="runnerRotateText">Turn the phone sideways</span></div>
             </div>
@@ -3587,7 +3599,7 @@
         </main>
     </div>
 
-    <script src="languages.js?v=2"></script>
+    <script src="languages.js?v=3"></script>
     <script>
         /* -------------------------------------------------------------
            1. CORE DATASETS (4 Languages: EN, Mexican ES, FR, EL)
@@ -4107,7 +4119,15 @@
             {emoji:'🥑',en:'Avocado',es:'Aguacate',esES:'Aguacate',fr:'Avocat',el:'Αβοκάντο'},
             {emoji:'🍒',en:'Cherries',es:'Cerezas',esES:'Cerezas',fr:'Cerises',el:'Κεράσια'},
             {emoji:'🍋',en:'Lemon',es:'Limón',esES:'Limón',fr:'Citron',el:'Λεμόνι'},
-            {emoji:'🥔',en:'Potato',es:'Papa',esES:'Patata',fr:'Pomme de terre',el:'Πατάτα'}
+            {emoji:'🥔',en:'Potato',es:'Papa',esES:'Patata',fr:'Pomme de terre',el:'Πατάτα'},
+            {emoji:'🍑',en:'Peach',es:'Durazno',esES:'Melocotón',fr:'Pêche',el:'Ροδάκινο'},
+            {emoji:'🥭',en:'Mango',es:'Mango',esES:'Mango',fr:'Mangue',el:'Μάνγκο'},
+            {emoji:'🫑',en:'Bell pepper',es:'Pimiento morrón',esES:'Pimiento',fr:'Poivron',el:'Πιπεριά'},
+            {emoji:'🥒',en:'Cucumber',es:'Pepino',esES:'Pepino',fr:'Concombre',el:'Αγγούρι'},
+            {emoji:'🍆',en:'Eggplant',es:'Berenjena',esES:'Berenjena',fr:'Aubergine',el:'Μελιτζάνα'},
+            {emoji:'🍠',en:'Sweet potato',es:'Camote',esES:'Boniato',fr:'Patate douce',el:'Γλυκοπατάτα'},
+            {emoji:'🥝',en:'Kiwi',es:'Kiwi',esES:'Kiwi',fr:'Kiwi',el:'Ακτινίδιο'},
+            {emoji:'🫐',en:'Blueberries',es:'Arándanos',esES:'Arándanos',fr:'Myrtilles',el:'Μύρτιλα'}
         ];
         runnerFoods.forEach(food => { food.enUS = food.en; });
 
@@ -7409,6 +7429,14 @@
         let activeRunnerFood = runnerFoods[0];
         let runnerTutorialSeen = false;
         let runnerCrashReactionIndex = 0;
+        let runnerOuchAudioIndex = 0;
+        const runnerOuchAudioPool = Array.from({ length: 4 }, () => {
+            const sound = new Audio('assets/runner-ouch.mp3?v=2');
+            sound.preload = 'auto';
+            sound.playsInline = true;
+            sound.volume = 1;
+            return sound;
+        });
         const runnerCrashReactions = ['crash-bandage', 'crash-dizzy', 'crash-tumble', 'crash-wobble'];
         const runnerCrashPhrases = {
             en:['Oh no!','Bonk!','Oops!','Silly bear!'], enUS:['Oh no!','Bonk!','Oops!','Silly bear!'],
@@ -7547,23 +7575,56 @@
         function animateRunnerCrash(animationClass) {
             clearTimeout(runnerCrashCleanupTimer);
             runnerCharacter.classList.remove(...runnerCrashReactions);
+            const stars = document.getElementById('runnerImpactStars');
+            stars.classList.remove('active');
             void runnerCharacter.offsetWidth;
+            void stars.offsetWidth;
             runnerCharacter.classList.add(animationClass);
+            stars.classList.add('active');
             runnerCrashCleanupTimer = setTimeout(() => {
                 runnerCharacter.classList.remove(...runnerCrashReactions);
+                stars.classList.remove('active');
                 document.getElementById('runnerCrash').classList.remove('active');
             }, 1350);
         }
 
+        function playRunnerOuch() {
+            const sound = runnerOuchAudioPool[runnerOuchAudioIndex++ % runnerOuchAudioPool.length];
+            sound.pause();
+            sound.currentTime = 0;
+            sound.volume = 1;
+            const playPromise = sound.play();
+            if (playPromise) playPromise.catch(() => playOfflineSoundFallback('runnerOuch'));
+        }
+
+        function playRunnerCrashHaptics() {
+            try {
+                if (window.AndroidHaptics?.crash) {
+                    window.AndroidHaptics.crash();
+                    return;
+                }
+                if (navigator.vibrate) navigator.vibrate([70, 45, 90]);
+            } catch (error) {
+                // Haptics are an enhancement; gameplay must continue on unsupported devices.
+            }
+        }
+
         function playRunnerCrashSound() {
             const variant = (runnerCrashReactionIndex - 1) % runnerCrashReactions.length;
-            playRealSound('runnerOuch');
+            playRunnerOuch();
             const ctx = getAudioContext();
             const oscillator = ctx.createOscillator();
             const gain = ctx.createGain();
-            oscillator.type = variant === 1 ? 'triangle' : 'square';
-            oscillator.frequency.setValueAtTime(variant === 1 ? 260 : 185, ctx.currentTime);
-            oscillator.frequency.exponentialRampToValueAtTime(variant === 1 ? 92 : 310, ctx.currentTime + .28);
+            const impactSounds = [
+                { type:'sine', start:420, end:180 },
+                { type:'triangle', start:270, end:95 },
+                { type:'square', start:180, end:340 },
+                { type:'sine', start:520, end:150 }
+            ];
+            const impact = impactSounds[variant];
+            oscillator.type = impact.type;
+            oscillator.frequency.setValueAtTime(impact.start, ctx.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(impact.end, ctx.currentTime + .28);
             gain.gain.setValueAtTime(.055, ctx.currentTime);
             gain.gain.exponentialRampToValueAtTime(.0001, ctx.currentTime + .34);
             oscillator.connect(gain);
@@ -7598,6 +7659,7 @@
             animateRunnerCrash(reaction);
             document.getElementById('runnerCrash').classList.add('active');
             playRunnerCrashSound();
+            playRunnerCrashHaptics();
             const phrases = runnerCrashPhrases[runnerDisplayLanguage] || runnerCrashPhrases.enUS;
             const phrase = phrases[(runnerCrashReactionIndex - 1) % phrases.length];
             document.getElementById('runnerCrashText').textContent = phrase;
@@ -7661,6 +7723,7 @@
             runnerObject.style.transform = 'translateX(0)';
             runnerCharacter.className = 'runner-character';
             runnerCharacter.style.bottom = '20%';
+            document.getElementById('runnerImpactStars').classList.remove('active');
             document.getElementById('runnerCrash').classList.remove('active');
             document.getElementById('runnerCelebration').classList.remove('active');
             updateRunnerScore();
@@ -7689,7 +7752,12 @@
             runnerThrusting = false;
             runnerObjectActive = false;
             runnerObject.innerHTML = '';
+            runnerOuchAudioPool.forEach(sound => {
+                sound.pause();
+                sound.currentTime = 0;
+            });
             runnerCharacter.classList.remove('flying', ...runnerCrashReactions);
+            document.getElementById('runnerImpactStars').classList.remove('active');
             document.getElementById('runnerCrash').classList.remove('active');
             document.getElementById('runnerTutorial').classList.remove('active');
             runnerStage.classList.remove('running');

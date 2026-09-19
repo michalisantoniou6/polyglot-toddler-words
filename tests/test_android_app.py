@@ -20,8 +20,8 @@ class AndroidAppRegressionTests(unittest.TestCase):
         self.assertIn("compileSdk 36", BUILD)
         self.assertIn("targetSdk 36", BUILD)
         self.assertIn("minSdk 24", BUILD)
-        self.assertRegex(BUILD, r'versionCode\s+15\b')
-        self.assertRegex(BUILD, r'versionName\s+"1\.0\.14"')
+        self.assertRegex(BUILD, r'versionCode\s+16\b')
+        self.assertRegex(BUILD, r'versionName\s+"1\.0\.15"')
 
     def test_android_can_apply_an_explicit_per_device_language(self) -> None:
         self.assertIn('EXTRA_PRIMARY_LANGUAGE = "primaryLanguage"', ACTIVITY)
@@ -80,6 +80,13 @@ class AndroidAppRegressionTests(unittest.TestCase):
         self.assertIn('id="parentGateQuestion"', HTML)
         self.assertIn("parentGateExpectedAnswer = first + second", HTML)
         self.assertIn("window.AndroidChildLock.stop()", HTML)
+
+    def test_runner_crashes_use_native_android_haptics(self) -> None:
+        self.assertIn('<uses-permission android:name="android.permission.VIBRATE" />', MANIFEST)
+        self.assertIn('addJavascriptInterface(new AndroidHapticsBridge(), "AndroidHaptics")', ACTIVITY)
+        self.assertIn("VibrationEffect.createWaveform(pattern, -1)", ACTIVITY)
+        self.assertIn("vibrator.vibrate(pattern, -1)", ACTIVITY)
+        self.assertIn("window.AndroidHaptics.crash()", HTML)
 
     def test_app_stays_inside_the_local_child_safe_game(self) -> None:
         self.assertIn('android:allowBackup="false"', MANIFEST)

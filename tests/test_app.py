@@ -187,7 +187,7 @@ class AppRegressionTests(unittest.TestCase):
         self.assertIn("/* Boutique storybook system:", HTML)
         self.assertIn('id="monsterAvatar" type="button" onclick="tickleMonster()" aria-label="Santa Claus"><img src="assets/toddler-arcade-santa.png"', HTML)
         self.assertIn('<image href="assets/toddler-arcade-bear.png"', HTML)
-        self.assertIn('class="runner-character" id="runnerCharacter" aria-hidden="true"><img class="boutique-bear"', HTML)
+        self.assertIn('class="runner-character" id="runnerCharacter" aria-hidden="true"><span class="runner-bear-emoji">🧸</span>', HTML)
         self.assertIn('function setDanceCharacterVisual(character, symbol)', HTML)
 
     def test_body_explorer_invitation_is_visual_instead_of_reading_dependent(self) -> None:
@@ -404,6 +404,7 @@ class AppRegressionTests(unittest.TestCase):
         ):
             self.assertNotIn(removed_mechanic, HTML)
         self.assertIn("const altitudeCeiling = Math.max(0, runnerStage.clientHeight * .80 - runnerBaseCharacterHeight - 12)", HTML)
+        self.assertIn(".runner-bear-emoji { display:block;font-size:5.8rem", HTML)
 
     def test_broccoli_bounce_rewards_food_and_treats_rocks_as_obstacles(self) -> None:
         self.assertIn("runnerObject.innerHTML = `<span>${type === 'food' ? activeRunnerFood.emoji : '🪨'}</span>`", HTML)
@@ -417,8 +418,8 @@ class AppRegressionTests(unittest.TestCase):
 
     def test_runner_rotates_through_fruits_and_vegetables_and_tallies_catches(self) -> None:
         food_source = array_source("runnerFoods")
-        self.assertEqual(16, food_source.count("{emoji:"))
-        for emoji in ("🥦", "🍅", "🥕", "🍎", "🍌", "🍓", "🍊", "🌽", "🍐", "🍇", "🍉", "🍍", "🥑", "🍒", "🍋", "🥔"):
+        self.assertEqual(24, food_source.count("{emoji:"))
+        for emoji in ("🥦", "🍅", "🥕", "🍎", "🍌", "🍓", "🍊", "🌽", "🍐", "🍇", "🍉", "🍍", "🥑", "🍒", "🍋", "🥔", "🍑", "🥭", "🫑", "🥒", "🍆", "🍠", "🥝", "🫐"):
             self.assertIn(emoji, food_source)
         self.assertIn("runnerFoods[runnerFoodIndex++ % runnerFoods.length]", HTML)
         self.assertIn("runnerScore++", HTML)
@@ -454,13 +455,19 @@ class AppRegressionTests(unittest.TestCase):
         ):
             self.assertIn(animation, HTML)
         self.assertIn(".runner-character.crash-bandage::after { content:'🩹'", HTML)
-        self.assertIn("playRealSound('runnerOuch')", HTML)
+        self.assertIn("const runnerOuchAudioPool = Array.from({ length: 4 }", HTML)
+        self.assertIn("playRunnerOuch();", HTML)
         self.assertIn("assets/runner-ouch.mp3?v=2", HTML)
         self.assertIn("'Ow.wav', 'balloonhead', 'CC0'", HTML)
         self.assertIn("profileName === 'santaLaugh' || profileName === 'runnerOuch' ? 1 : 0.58", HTML)
         self.assertGreater((ROOT / "assets" / "runner-ouch.mp3").stat().st_size, 15_000)
         self.assertIn("runnerCrashReactionIndex++ % runnerCrashReactions.length", HTML)
         self.assertIn("document.getElementById('runnerCrashText').textContent = phrase", HTML)
+        self.assertIn("playRunnerCrashHaptics();", HTML)
+        self.assertIn("window.AndroidHaptics.crash();", HTML)
+        self.assertIn("navigator.vibrate([70, 45, 90])", HTML)
+        self.assertIn('id="runnerImpactStars"', HTML)
+        self.assertIn("stars.classList.add('active')", HTML)
 
     def test_ice_cream_maker_is_one_tap_guided_and_has_no_failure_state(self) -> None:
         self.assertIn('id="game-icecream"', HTML)

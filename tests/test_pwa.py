@@ -61,7 +61,7 @@ class ProgressiveWebAppTests(unittest.TestCase):
     def test_complete_game_shell_is_precached_for_offline_play(self) -> None:
         for path in (
             "./index.html",
-            "./languages.js?v=2",
+            "./languages.js?v=3",
             "./manifest.webmanifest",
             "./icons/icon-192.png",
             "./icons/icon-512.png",
