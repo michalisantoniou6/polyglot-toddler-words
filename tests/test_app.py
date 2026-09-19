@@ -94,8 +94,8 @@ class AppRegressionTests(unittest.TestCase):
         self.assertIn("openOnboarding(false);", HTML)
 
     def test_saved_profile_versions_are_loaded_after_refresh(self) -> None:
-        self.assertIn("[1, 2, 3, 4, 5].includes(savedProfile?.schemaVersion)", HTML)
-        self.assertIn("schemaVersion: 5", HTML)
+        self.assertIn("[1, 2, 3, 4, 5, 6].includes(savedProfile?.schemaVersion)", HTML)
+        self.assertIn("schemaVersion: 6", HTML)
         self.assertIn("return normalizedProfile;", HTML)
         self.assertIn("localStorage.setItem(appProfileStorageKey, JSON.stringify(appProfile))", HTML)
         self.assertIn("onboardingComplete: true", HTML)
@@ -162,9 +162,28 @@ class AppRegressionTests(unittest.TestCase):
             "beat", "dance", "bells",
         ):
             self.assertRegex(age_map, rf"\b{game}:[2345]\b")
+        self.assertIn("appProfile.allowOtherAges", HTML)
         self.assertIn("minimumAge <= appProfile.childAge", HTML)
+        self.assertIn("minimumAge === appProfile.childAge", HTML)
         self.assertIn("minimumAge === appProfile.childAge ? 4 : 1", HTML)
-        self.assertIn("ageAppropriateChoices.length ? ageAppropriateChoices", HTML)
+        self.assertIn("choicesWithoutCurrent.length ? choicesWithoutCurrent : ageAppropriateTabs", HTML)
+
+    def test_parents_can_choose_an_age_mix_or_exact_age_only(self) -> None:
+        self.assertIn('name="onboardingAgeRange" value="mixed" checked', HTML)
+        self.assertIn('name="onboardingAgeRange" value="exact"', HTML)
+        self.assertIn('name="settingsAgeRange" value="mixed"', HTML)
+        self.assertIn('name="settingsAgeRange" value="exact"', HTML)
+        self.assertIn("const allowOtherAges = rawProfile?.allowOtherAges !== false", HTML)
+        self.assertIn("allowOtherAges: document.querySelector", HTML)
+        self.assertIn("function chooseOnboardingAgeRange(allowOtherAges)", HTML)
+        self.assertIn("appProfile.allowOtherAges", HTML)
+        for phrase in (
+            "Include younger age groups",
+            "Και μικρότερες ηλικίες",
+            "Incluir edades menores",
+            "Inclure les âges plus jeunes",
+        ):
+            self.assertIn(phrase, HTML)
 
     def test_primary_language_is_first_in_all_languages_mode(self) -> None:
         ordering_pattern = re.compile(
@@ -327,7 +346,7 @@ class AppRegressionTests(unittest.TestCase):
 
     def test_surprise_game_button_never_reselects_the_current_game(self) -> None:
         self.assertIn('id="randomGameButton"', HTML)
-        self.assertIn("const ageAppropriateChoices = tabs.filter", HTML)
+        self.assertIn("const ageAppropriateTabs = tabs.filter", HTML)
         self.assertIn("const weightedChoices = choices.flatMap", HTML)
         self.assertIn("switchGame(gameId, nextTab)", HTML)
         self.assertIn("randomGame:'Surprise game'", HTML)

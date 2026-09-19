@@ -207,12 +207,12 @@
     });
 
     const onboardingAgeOverrides = {
-        de:{step:n=>`Schritt ${n} von 4`,ageTitle:'Wie alt ist dein Kind?',ageLead:'Wir empfehlen die am besten passenden Spiele.',yearsOld:'Jahre'},
-        it:{step:n=>`Passaggio ${n} di 4`,ageTitle:'Quanti anni ha il tuo bambino?',ageLead:'Suggeriremo i giochi più adatti.',yearsOld:'anni'},
-        tr:{step:n=>`4 adımın ${n}. adımı`,ageTitle:'Çocuğun kaç yaşında?',ageLead:'En uygun oyunları önereceğiz.',yearsOld:'yaş'},
-        ptBR:{step:n=>`Etapa ${n} de 4`,ageTitle:'Quantos anos seu filho tem?',ageLead:'Vamos sugerir os jogos mais adequados.',yearsOld:'anos'},
-        nl:{step:n=>`Stap ${n} van 4`,ageTitle:'Hoe oud is je kind?',ageLead:'We stellen de meest geschikte spellen voor.',yearsOld:'jaar'},
-        pl:{step:n=>'Krok '+n+' z 4',ageTitle:'Ile lat ma twoje dziecko?',ageLead:'Zaproponujemy najlepiej dopasowane gry.',yearsOld:'lat'}
+        de:{step:n=>`Schritt ${n} von 4`,ageTitle:'Wie alt ist dein Kind?',ageLead:'Wir empfehlen die am besten passenden Spiele.',yearsOld:'Jahre',ageRangeTitle:'🎲 Auswahl für das Überraschungsspiel',ageRangeMixed:'Jüngere Altersgruppen einbeziehen',ageRangeExact:'Nur dieses Alter'},
+        it:{step:n=>`Passaggio ${n} di 4`,ageTitle:'Quanti anni ha il tuo bambino?',ageLead:'Suggeriremo i giochi più adatti.',yearsOld:'anni',ageRangeTitle:'🎲 Scelte del gioco a sorpresa',ageRangeMixed:'Includi fasce di età più giovani',ageRangeExact:'Solo questa età'},
+        tr:{step:n=>`4 adımın ${n}. adımı`,ageTitle:'Çocuğun kaç yaşında?',ageLead:'En uygun oyunları önereceğiz.',yearsOld:'yaş',ageRangeTitle:'🎲 Sürpriz oyun seçenekleri',ageRangeMixed:'Daha küçük yaş gruplarını dahil et',ageRangeExact:'Yalnızca bu yaş'},
+        ptBR:{step:n=>`Etapa ${n} de 4`,ageTitle:'Quantos anos seu filho tem?',ageLead:'Vamos sugerir os jogos mais adequados.',yearsOld:'anos',ageRangeTitle:'🎲 Opções do jogo surpresa',ageRangeMixed:'Incluir faixas etárias menores',ageRangeExact:'Somente esta idade'},
+        nl:{step:n=>`Stap ${n} van 4`,ageTitle:'Hoe oud is je kind?',ageLead:'We stellen de meest geschikte spellen voor.',yearsOld:'jaar',ageRangeTitle:'🎲 Keuzes voor het verrassingsspel',ageRangeMixed:'Jongere leeftijdsgroepen meenemen',ageRangeExact:'Alleen deze leeftijd'},
+        pl:{step:n=>'Krok '+n+' z 4',ageTitle:'Ile lat ma twoje dziecko?',ageLead:'Zaproponujemy najlepiej dopasowane gry.',yearsOld:'lat',ageRangeTitle:'🎲 Wybór gry-niespodzianki',ageRangeMixed:'Uwzględnij młodsze grupy wiekowe',ageRangeExact:'Tylko ten wiek'}
     };
     Object.entries(onboardingAgeOverrides).forEach(([language,copy]) => {
         Object.assign(window.extraLanguagePacks[language].onboarding, copy);
@@ -224,6 +224,17 @@
     };
     Object.entries(ageSettingsLabels).forEach(([language,setup]) => {
         window.extraLanguagePacks[language].settings.setup = setup;
+    });
+    const ageRangeSettingsOverrides = {
+        de:{ageRangeTitle:'🎂 Welche Altersgruppen?',ageRangeMixed:'Jüngere Altersgruppen einbeziehen',ageRangeExact:'Nur dieses Alter'},
+        it:{ageRangeTitle:'🎂 Quali fasce d’età?',ageRangeMixed:'Includi fasce più giovani',ageRangeExact:'Solo questa età'},
+        tr:{ageRangeTitle:'🎂 Hangi yaşlar?',ageRangeMixed:'Daha küçük yaşları dahil et',ageRangeExact:'Yalnızca bu yaş'},
+        ptBR:{ageRangeTitle:'🎂 Quais idades?',ageRangeMixed:'Incluir idades menores',ageRangeExact:'Somente esta idade'},
+        nl:{ageRangeTitle:'🎂 Welke leeftijden?',ageRangeMixed:'Jongere leeftijden meenemen',ageRangeExact:'Alleen deze leeftijd'},
+        pl:{ageRangeTitle:'🎂 Jakie grupy wiekowe?',ageRangeMixed:'Uwzględnij młodsze grupy',ageRangeExact:'Tylko ten wiek'}
+    };
+    Object.entries(ageRangeSettingsOverrides).forEach(([language,copy]) => {
+        Object.assign(window.extraLanguagePacks[language].settings, copy);
     });
 
     const runnerInterfaceOverrides = {

@@ -66,6 +66,17 @@ class ExpandedLanguageRegressionTests(unittest.TestCase):
         self.assertIn("Object.assign(window.extraLanguagePacks.pl", LANGUAGES)
         self.assertIn("window.extraLanguagePacks.pl.numbers.push", LANGUAGES)
 
+    def test_new_languages_localize_the_age_range_setting(self) -> None:
+        for phrase in (
+            "Jüngere Altersgruppen einbeziehen",
+            "Includi fasce di età più giovani",
+            "Daha küçük yaş gruplarını dahil et",
+            "Incluir faixas etárias menores",
+            "Jongere leeftijdsgroepen meenemen",
+            "Uwzględnij młodsze grupy wiekowe",
+        ):
+            self.assertIn(phrase, LANGUAGES)
+
     def test_dutch_letter_set_is_closed_before_its_interface_copy(self) -> None:
         dutch = LANGUAGES[LANGUAGES.index("nl: {") : LANGUAGES.index("pl: {")]
         self.assertIn("])\n            ,interface:{", dutch)
