@@ -2,6 +2,7 @@ package com.michalisantoniou.polyglotplayroom;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
@@ -54,6 +55,7 @@ public final class MainActivity extends Activity implements TextToSpeech.OnInitL
         webView.setWebChromeClient(new WebChromeClient());
         webView.setWebViewClient(new LocalGameWebViewClient());
         webView.addJavascriptInterface(new AndroidSpeechBridge(), "AndroidSpeech");
+        webView.addJavascriptInterface(new AndroidChildLockBridge(), "AndroidChildLock");
         WebView.setWebContentsDebuggingEnabled(BuildConfig.DEBUG);
 
         setContentView(webView);
@@ -103,6 +105,7 @@ public final class MainActivity extends Activity implements TextToSpeech.OnInitL
         super.onResume();
         showImmersivePlayArea();
         webView.onResume();
+        notifyChildLockState();
     }
 
     @Override
@@ -124,6 +127,7 @@ public final class MainActivity extends Activity implements TextToSpeech.OnInitL
             textToSpeech.shutdown();
         }
         webView.removeJavascriptInterface("AndroidSpeech");
+        webView.removeJavascriptInterface("AndroidChildLock");
         webView.destroy();
         super.onDestroy();
     }
@@ -137,6 +141,10 @@ public final class MainActivity extends Activity implements TextToSpeech.OnInitL
     private void handleBack() {
         if (webView.canGoBack()) {
             webView.goBack();
+            return;
+        }
+
+        if (isChildLockActive()) {
             return;
         }
 
@@ -178,6 +186,24 @@ public final class MainActivity extends Activity implements TextToSpeech.OnInitL
         );
     }
 
+    private boolean isChildLockActive() {
+        ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        return activityManager != null
+            && activityManager.getLockTaskModeState() != ActivityManager.LOCK_TASK_MODE_NONE;
+    }
+
+    private void notifyChildLockState() {
+        if (webView == null) {
+            return;
+        }
+
+        boolean isActive = isChildLockActive();
+        webView.post(() -> webView.evaluateJavascript(
+            "window.updateAndroidChildLock && window.updateAndroidChildLock(" + isActive + ")",
+            null
+        ));
+    }
+
     private final class AndroidSpeechBridge {
         @JavascriptInterface
         public void speak(String text, String languageTag, int generation, float rate, float volume) {
@@ -217,11 +243,45 @@ public final class MainActivity extends Activity implements TextToSpeech.OnInitL
         }
     }
 
+    private final class AndroidChildLockBridge {
+        @JavascriptInterface
+        public void start() {
+            runOnUiThread(() -> {
+                try {
+                    startLockTask();
+                } catch (IllegalArgumentException | IllegalStateException | SecurityException ignored) {
+                    // Android or the device policy may decline pinning; the UI receives the real state below.
+                }
+                showImmersivePlayArea();
+                notifyChildLockState();
+            });
+        }
+
+        @JavascriptInterface
+        public void stop() {
+            runOnUiThread(() -> {
+                try {
+                    stopLockTask();
+                } catch (IllegalArgumentException | IllegalStateException | SecurityException ignored) {
+                    // Already unlocked or controlled by the device owner.
+                }
+                showImmersivePlayArea();
+                notifyChildLockState();
+            });
+        }
+
+        @JavascriptInterface
+        public boolean isActive() {
+            return isChildLockActive();
+        }
+    }
+
     private final class LocalGameWebViewClient extends WebViewClient {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
             applyPrimaryLanguageOverride(view);
+            notifyChildLockState();
         }
 
         @Override

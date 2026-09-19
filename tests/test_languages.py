@@ -66,6 +66,10 @@ class ExpandedLanguageRegressionTests(unittest.TestCase):
         self.assertIn("Object.assign(window.extraLanguagePacks.pl", LANGUAGES)
         self.assertIn("window.extraLanguagePacks.pl.numbers.push", LANGUAGES)
 
+    def test_dutch_letter_set_is_closed_before_its_interface_copy(self) -> None:
+        dutch = LANGUAGES[LANGUAGES.index("nl: {") : LANGUAGES.index("pl: {")]
+        self.assertIn("])\n            ,interface:{", dutch)
+
 
 if __name__ == "__main__":
     unittest.main()

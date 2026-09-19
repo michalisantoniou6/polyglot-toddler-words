@@ -55,11 +55,12 @@ class ProgressiveWebAppTests(unittest.TestCase):
     def test_complete_game_shell_is_precached_for_offline_play(self) -> None:
         for path in (
             "./index.html",
-            "./languages.js",
+            "./languages.js?v=2",
             "./manifest.webmanifest",
             "./icons/icon-192.png",
             "./icons/icon-512.png",
             "./assets/santa-ho-ho-ho.mp3?v=2",
+            "./assets/runner-ouch.mp3",
             "./assets/santa-sleigh.png",
         ):
             self.assertIn(f"'{path}'", SERVICE_WORKER)

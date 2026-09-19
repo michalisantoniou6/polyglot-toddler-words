@@ -20,8 +20,8 @@ class AndroidAppRegressionTests(unittest.TestCase):
         self.assertIn("compileSdk 36", BUILD)
         self.assertIn("targetSdk 36", BUILD)
         self.assertIn("minSdk 24", BUILD)
-        self.assertRegex(BUILD, r'versionCode\s+8\b')
-        self.assertRegex(BUILD, r'versionName\s+"1\.0\.7"')
+        self.assertRegex(BUILD, r'versionCode\s+9\b')
+        self.assertRegex(BUILD, r'versionName\s+"1\.0\.8"')
 
     def test_android_can_apply_an_explicit_per_device_language(self) -> None:
         self.assertIn('EXTRA_PRIMARY_LANGUAGE = "primaryLanguage"', ACTIVITY)
@@ -70,6 +70,16 @@ class AndroidAppRegressionTests(unittest.TestCase):
         self.assertIn("const androidSpeechCallbacks = new Map()", HTML)
         self.assertIn("TextToSpeech.Engine.KEY_PARAM_VOLUME", ACTIVITY)
         self.assertIn("float rate, float volume", ACTIVITY)
+
+    def test_parent_can_use_native_screen_pinning_with_a_grown_up_gate(self) -> None:
+        self.assertIn('addJavascriptInterface(new AndroidChildLockBridge(), "AndroidChildLock")', ACTIVITY)
+        self.assertIn("startLockTask()", ACTIVITY)
+        self.assertIn("stopLockTask()", ACTIVITY)
+        self.assertIn("getLockTaskModeState()", ACTIVITY)
+        self.assertIn("if (isChildLockActive())", ACTIVITY)
+        self.assertIn('id="parentGateQuestion"', HTML)
+        self.assertIn("parentGateExpectedAnswer = first + second", HTML)
+        self.assertIn("window.AndroidChildLock.stop()", HTML)
 
     def test_app_stays_inside_the_local_child_safe_game(self) -> None:
         self.assertIn('android:allowBackup="false"', MANIFEST)

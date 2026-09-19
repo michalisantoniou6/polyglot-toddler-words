@@ -1334,6 +1334,72 @@
             font-weight:900;
         }
         .settings-timer.running { border-color:#9ae6b4; background:#f0fff4; color:#276749; }
+        .settings-child-lock {
+            margin-top:14px;
+            padding:13px;
+            border:2px solid #dbe8f4;
+            border-radius:16px;
+            background:#f8fbff;
+        }
+        .settings-child-lock-title { color:#2d4f73;font-weight:950; }
+        .settings-child-lock-help { margin:7px 0 11px;color:#627d98;font-size:.86rem;line-height:1.35;font-weight:700; }
+        .settings-child-lock-button {
+            width:100%;
+            min-height:52px;
+            padding:10px 14px;
+            border:0;
+            border-radius:14px;
+            background:#2f855a;
+            color:white;
+            font:inherit;
+            font-weight:950;
+            box-shadow:0 4px 0 #276749;
+        }
+        .settings-child-lock-button.active { background:#c53030;box-shadow:0 4px 0 #9b2c2c; }
+        .settings-child-lock-button:disabled { background:#a0aec0;box-shadow:none;color:#f7fafc; }
+        #parentGateModal {
+            position:fixed;
+            inset:0;
+            z-index:4800;
+            display:none;
+            place-items:center;
+            padding:18px;
+            background:rgba(26,32,44,.78);
+            backdrop-filter:blur(10px);
+        }
+        #parentGateModal.active { display:grid; }
+        .parent-gate-card {
+            width:min(92vw,390px);
+            padding:25px;
+            border:4px solid #cbd5e0;
+            border-radius:26px;
+            background:white;
+            color:#2d3748;
+            box-shadow:0 24px 60px rgba(0,0,0,.34);
+            text-align:center;
+        }
+        .parent-gate-card h2 { margin:0 0 8px;font-size:1.55rem; }
+        .parent-gate-question { margin:12px 0;font-size:2rem;font-weight:1000;color:#2b6cb0; }
+        .parent-gate-card input {
+            width:100%;
+            min-height:58px;
+            padding:10px;
+            border:3px solid #90cdf4;
+            border-radius:15px;
+            background:#f8fbff;
+            color:#1a202c;
+            font-size:1.45rem;
+            font-weight:900;
+            text-align:center;
+            user-select:text;
+            touch-action:auto;
+            -webkit-user-select:text;
+        }
+        .parent-gate-error { min-height:1.4em;margin:8px 0;color:#c53030;font-weight:850; }
+        .parent-gate-actions { display:grid;grid-template-columns:1fr 1fr;gap:10px; }
+        .parent-gate-actions button { min-height:52px;border:0;border-radius:14px;font:inherit;font-weight:950; }
+        .parent-gate-cancel { background:#edf2f7;color:#4a5568; }
+        .parent-gate-unlock { background:#3182ce;color:white; }
         .settings-help {
             margin: 14px 0 0;
             color: #718096;
@@ -2377,9 +2443,13 @@
         .runner-character.bumped { animation:runnerBump .72s ease-out both !important; }
         .runner-character.crash-dizzy { animation:runnerCrashDizzy 1.35s ease-out both !important; }
         .runner-character.crash-tumble { animation:runnerCrashTumble 1.35s cubic-bezier(.2,.8,.25,1) both !important; }
-        .runner-character.crash-squash { animation:runnerCrashSquash 1.35s ease-out both !important; }
+        .runner-character.crash-bandage { animation:runnerCrashBandage 1.35s ease-out both !important; }
         .runner-character.crash-wobble { animation:runnerCrashWobble 1.35s ease-out both !important; }
-        .runner-character[class*="crash-"]::after { content:'💫';position:absolute;left:50%;top:-30px;transform:translateX(-50%);font-size:1.2rem;white-space:nowrap;animation:runnerCrashStars 1.35s ease-out both; }
+        .runner-character[class*="crash-"]::after { position:absolute;left:50%;top:-30px;transform:translateX(-50%);font-size:1.35rem;white-space:nowrap;animation:runnerCrashStars 1.35s ease-out both; }
+        .runner-character.crash-dizzy::after { content:'💫'; }
+        .runner-character.crash-tumble::after { content:'⭐'; }
+        .runner-character.crash-bandage::after { content:'🩹';font-size:1.7rem;top:-22px; }
+        .runner-character.crash-wobble::after { content:'🫧'; }
         @keyframes runnerSteps { from{transform:scale(var(--runner-scale))} to{transform:translateY(-5px) rotate(4deg) scale(var(--runner-scale))} }
         @keyframes runnerFly { from{transform:scale(var(--runner-scale))} to{transform:rotate(-7deg) scale(var(--runner-scale))} }
         @keyframes runnerPowerUp { 0%{transform:scale(var(--runner-previous-scale))} 45%{transform:translateY(-15px) scale(var(--runner-burst-scale));filter:drop-shadow(0 0 18px #ffd43b)} 72%{transform:translateY(2px) scale(var(--runner-scale))} 100%{transform:scale(var(--runner-scale))} }
@@ -2387,7 +2457,7 @@
         @keyframes runnerBump { 0%{transform:scale(var(--runner-previous-scale))} 25%{transform:translate(-16px,-18px) rotate(-12deg) scale(var(--runner-previous-scale))} 55%{transform:translate(9px,0) rotate(8deg) scale(var(--runner-scale))} 100%{transform:scale(var(--runner-scale))} }
         @keyframes runnerCrashDizzy { 0%{transform:scale(var(--runner-previous-scale))} 30%{transform:translate(-8px,-5px) rotate(-9deg) scale(var(--runner-scale))} 58%{transform:rotate(12deg) scale(var(--runner-scale))} 78%{transform:rotate(-4deg) scale(var(--runner-scale))} 100%{transform:scale(var(--runner-scale))} }
         @keyframes runnerCrashTumble { 0%{transform:scale(var(--runner-previous-scale))} 32%{transform:translate(-12px,-9px) rotate(-18deg) scale(var(--runner-scale))} 62%{transform:translate(7px,1px) rotate(9deg) scale(var(--runner-scale))} 100%{transform:scale(var(--runner-scale))} }
-        @keyframes runnerCrashSquash { 0%{transform:scale(var(--runner-previous-scale))} 28%{transform:translateX(-7px) scaleX(1.06) scaleY(.92)} 58%{transform:translateY(-9px) scaleX(.96) scaleY(1.06)} 100%{transform:scale(var(--runner-scale))} }
+        @keyframes runnerCrashBandage { 0%{transform:scale(var(--runner-previous-scale))} 28%{transform:translateX(-7px) rotate(-5deg) scale(var(--runner-scale))} 58%{transform:translateY(-5px) rotate(3deg) scale(var(--runner-scale))} 100%{transform:scale(var(--runner-scale))} }
         @keyframes runnerCrashWobble { 0%{transform:scale(var(--runner-previous-scale))} 25%{transform:translateX(-8px) rotate(-7deg) scale(var(--runner-scale))} 48%{transform:translateX(7px) rotate(6deg) scale(var(--runner-scale))} 70%{transform:translateX(-3px) rotate(-2deg) scale(var(--runner-scale))} 100%{transform:scale(var(--runner-scale))} }
         @keyframes runnerCrashStars { 0%{opacity:0;transform:translate(-50%,8px) scale(.7)} 30%,65%{opacity:.9;transform:translate(-50%,-2px) scale(1)} 100%{opacity:0;transform:translate(-50%,-12px) scale(.8)} }
         .runner-object {
@@ -2411,8 +2481,7 @@
         @keyframes flyingRockSpin { to { transform:rotate(360deg); } }
         .runner-object.collected { animation:runnerCollect .48s ease-out both; }
         @keyframes runnerCollect { to { transform:scale(2) rotate(35deg);opacity:0; } }
-        .runner-celebration,
-        .runner-crash {
+        .runner-celebration {
             position:absolute;
             inset:0;
             z-index:8;
@@ -2425,10 +2494,115 @@
         .runner-celebration.active { display:flex;animation:runnerCollectMessage .72s ease-out both; }
         .runner-celebration span { font-size:clamp(3rem,17vw,6rem);font-weight:950;color:#2f855a;text-shadow:0 4px white; }
         @keyframes runnerCollectMessage { 0%{transform:scale(.3);opacity:0} 45%{transform:scale(1.18);opacity:1} 100%{transform:scale(1);opacity:0} }
-        .runner-crash.active { display:flex;background:rgba(255,255,255,.72);animation:runnerCrashFade 1.35s ease both; }
-        .runner-crash-ow { font-size:clamp(5rem,28vw,10rem);font-weight:1000;color:#e53e3e;text-shadow:0 7px #fff;transform:rotate(-8deg); }
-        .runner-crash-dust { font-size:clamp(4rem,20vw,8rem);letter-spacing:-18px; }
+        .runner-crash {
+            position:absolute;
+            left:clamp(86px,18%,180px);
+            bottom:45%;
+            z-index:8;
+            display:none;
+            align-items:center;
+            gap:5px;
+            pointer-events:none;
+        }
+        .runner-crash.active { display:flex;animation:runnerCrashFade 1.05s ease both; }
+        .runner-crash-ow { padding:7px 11px;border-radius:999px;background:rgba(255,255,255,.94);font-size:clamp(1.1rem,4vw,1.7rem);font-weight:1000;color:#c53030;box-shadow:0 4px 13px rgba(45,55,72,.16);transform:rotate(-5deg); }
+        .runner-crash-dust { font-size:clamp(1.4rem,5vw,2rem); }
         @keyframes runnerCrashFade { 0%{opacity:0} 18%,78%{opacity:1} 100%{opacity:0} }
+
+        /* Guided creative games: large targets, no failure states, and no reading required. */
+        #game-icecream,
+        #game-birthday,
+        #game-cooking { overflow-y:auto;overscroll-behavior:contain; }
+        .ice-cream-game,
+        .birthday-game,
+        .cooking-game { width:min(100%,760px);min-height:calc(100svh - 18px);margin:auto;display:flex;flex-direction:column;align-items:center;gap:10px;padding:8px 8px 90px; }
+        .creative-prompt { min-height:48px;padding:8px 16px;display:flex;align-items:center;justify-content:center;gap:8px;border:3px solid rgba(144,205,244,.85);border-radius:999px;background:rgba(255,255,255,.92);color:#2d4f73;font-size:clamp(1rem,4.2vw,1.25rem);font-weight:950;text-align:center;box-shadow:0 4px 12px rgba(45,55,72,.1); }
+        .creative-prompt .academic-flag { font-size:1.45em; }
+
+        .ice-cream-stage { position:relative;width:min(96vw,620px);height:clamp(250px,40svh,370px);border-radius:28px;background:linear-gradient(#d9f4ff,#fff8e8);box-shadow:inset 0 0 0 4px #bee3f8;overflow:hidden; }
+        .ice-cream-machine { position:absolute;left:50%;top:12px;width:200px;height:106px;transform:translateX(-50%);border-radius:24px 24px 16px 16px;background:linear-gradient(135deg,#f8fafc,#cbd5e0);box-shadow:0 8px 0 #9fb3c8; }
+        .ice-cream-machine::before { content:'🍦';position:absolute;left:17px;top:16px;font-size:2.8rem; }
+        .ice-cream-machine-window { position:absolute;right:24px;top:22px;width:73px;height:42px;border:5px solid #718096;border-radius:10px;background:#b9efff; }
+        .ice-cream-nozzle { position:absolute;left:50%;top:103px;width:34px;height:48px;transform:translateX(-50%);border-radius:0 0 12px 12px;background:#718096;z-index:2; }
+        .ice-cream-stream { position:absolute;left:50%;top:139px;width:22px;height:0;transform:translateX(-50%);border-radius:12px;opacity:0;z-index:3; }
+        .ice-cream-stream.pouring { animation:iceCreamPour .72s ease-in-out both; }
+        @keyframes iceCreamPour { 0%{height:0;opacity:0} 18%{height:100px;opacity:1} 70%{height:100px;opacity:1} 100%{height:12px;opacity:0} }
+        .ice-cream-result { position:absolute;left:50%;bottom:8px;width:190px;height:215px;transform:translateX(-50%); }
+        .ice-cream-cone { position:absolute;left:50%;bottom:0;width:92px;height:118px;transform:translateX(-50%);clip-path:polygon(0 0,100% 0,50% 100%);background:repeating-linear-gradient(45deg,transparent 0 13px,rgba(139,94,52,.25) 13px 16px),repeating-linear-gradient(-45deg,#e9ad57 0 13px,#cf893c 13px 16px);filter:drop-shadow(0 5px 3px rgba(73,53,32,.2)); }
+        .ice-cream-scoops { position:absolute;left:50%;bottom:92px;z-index:2;display:flex;flex-direction:column-reverse;align-items:center;transform:translateX(-50%); }
+        .ice-cream-scoop { width:112px;height:68px;margin-top:-25px;border-radius:56px 56px 30px 30px;border:3px solid rgba(255,255,255,.72);box-shadow:inset -9px -8px 0 rgba(70,50,70,.1),0 4px 6px rgba(60,45,50,.16);animation:iceCreamScoopIn .78s cubic-bezier(.2,.9,.35,1.18) both; }
+        @keyframes iceCreamScoopIn { 0%{transform:translateY(-130px) scale(.35) rotate(-16deg);opacity:0} 65%{transform:translateY(4px) scale(1.08) rotate(3deg);opacity:1} 100%{transform:none;opacity:1} }
+        .ice-cream-toppings { position:absolute;inset:25px 22px 76px;z-index:4;pointer-events:none; }
+        .ice-cream-topping { position:absolute;font-size:1.35rem;animation:toppingDrop .58s cubic-bezier(.2,.9,.35,1.2) both;filter:drop-shadow(0 2px 1px rgba(0,0,0,.15)); }
+        @keyframes toppingDrop { from{transform:translateY(-95px) rotate(-160deg) scale(.3);opacity:0} to{transform:none;opacity:1} }
+        .ice-cream-result.celebrate { animation:iceCreamDance 1.35s ease-in-out both; }
+        @keyframes iceCreamDance { 0%,100%{transform:translateX(-50%) rotate(0) scale(1)} 25%{transform:translateX(-50%) rotate(-8deg) scale(1.08)} 55%{transform:translateX(-50%) rotate(8deg) scale(1.12)} 78%{transform:translateX(-50%) rotate(-4deg) scale(1.06)} }
+        .ice-cream-flavors,.ice-cream-topping-buttons { width:min(96vw,620px);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px; }
+        .ice-cream-choice { min-height:70px;border:3px solid rgba(255,255,255,.9);border-radius:20px;background:var(--choice-color,#f7fafc);color:#243b53;font:inherit;font-weight:950;box-shadow:0 5px 0 rgba(74,85,104,.2);display:grid;place-items:center;gap:2px;padding:6px; }
+        .ice-cream-choice:active { transform:translateY(4px);box-shadow:0 1px 0 rgba(74,85,104,.2); }
+        .ice-cream-choice span:first-child { font-size:1.7rem; }
+        .ice-cream-choice-label { font-size:.72rem;line-height:1; }
+        .flavor-lever { position:relative;margin-top:10px; }
+        .flavor-lever::before { content:'';position:absolute;left:50%;top:-15px;width:12px;height:22px;transform:translateX(-50%);border-radius:8px;background:#718096;box-shadow:inset -3px 0 rgba(0,0,0,.12); }
+        .flavor-lever::after { content:'';position:absolute;left:50%;top:-22px;width:28px;height:18px;transform:translateX(-50%);border:3px solid white;border-radius:50%;background:var(--choice-color);box-shadow:0 3px 3px rgba(45,55,72,.18); }
+        .ice-cream-topping-buttons[hidden] { display:none; }
+        .ice-cream-finish { min-width:150px;min-height:58px;border:0;border-radius:999px;background:linear-gradient(135deg,#805ad5,#d53f8c);color:white;font:inherit;font-size:1.45rem;font-weight:950;box-shadow:0 6px 0 #6b46c1; }
+        .ice-cream-finish[hidden] { display:none; }
+
+        .birthday-stage { position:relative;width:min(96vw,640px);height:min(72svh,520px);min-height:350px;border-radius:32px;background:radial-gradient(circle at 50% 18%,#fff 0 5%,transparent 5.5%),linear-gradient(150deg,#d9f4ff,#fce7f3 56%,#fff5c2);box-shadow:inset 0 0 0 4px #fff;overflow:hidden;cursor:pointer; }
+        .birthday-countdown { position:absolute;inset:22px 0 auto;z-index:8;color:#6b46c1;font-size:clamp(3.8rem,19vw,8rem);font-weight:1000;text-align:center;text-shadow:0 5px white;pointer-events:none; }
+        .birthday-cake { position:absolute;left:50%;bottom:38px;width:min(72vw,390px);height:245px;transform:translateX(-50%); }
+        .cake-layer { position:absolute;left:50%;transform:translateX(-50%);border:5px solid rgba(255,255,255,.8);box-shadow:0 9px 0 rgba(128,90,80,.16); }
+        .cake-layer.bottom { bottom:0;width:100%;height:105px;border-radius:25px;background:linear-gradient(#ff9fc8,#f687b3); }
+        .cake-layer.top { bottom:94px;width:72%;height:78px;border-radius:22px;background:linear-gradient(#fff0b2,#fbd38d); }
+        .cake-layer::after { content:'● ● ● ● ●';position:absolute;left:0;right:0;bottom:13px;color:#fff;font-size:1.25rem;letter-spacing:8px;text-align:center; }
+        .birthday-candles { position:absolute;left:50%;bottom:164px;z-index:4;width:68%;height:88px;transform:translateX(-50%);display:flex;align-items:flex-end;justify-content:space-around; }
+        .birthday-candle { position:relative;width:15px;height:58px;border-radius:5px;background:repeating-linear-gradient(45deg,#63b3ed 0 7px,#fff 7px 12px);box-shadow:0 3px 3px rgba(0,0,0,.12); }
+        .birthday-flame { position:absolute;left:50%;bottom:51px;width:23px;height:35px;transform:translateX(-50%);border-radius:50% 50% 48% 48% / 68% 68% 35% 35%;background:radial-gradient(circle at 50% 70%,#fff 0 17%,#ffd43b 19% 48%,#ff7b00 51% 100%);filter:drop-shadow(0 0 8px #ffb000);animation:candleFlicker .55s ease-in-out infinite alternate;transform-origin:bottom; }
+        @keyframes candleFlicker { to{transform:translateX(-50%) rotate(5deg) scale(.91,1.08)} }
+        .birthday-candle.out .birthday-flame { animation:candleOut .58s ease-out both; }
+        @keyframes candleOut { to{transform:translate(-50%,-18px) scale(.15);opacity:0;filter:blur(5px)} }
+        .birthday-candle.out::after { content:'💨';position:absolute;left:50%;bottom:50px;font-size:1.5rem;animation:smokeAway 1s ease-out both; }
+        @keyframes smokeAway { from{transform:translateX(-50%) scale(.4);opacity:0} 35%{opacity:.8} to{transform:translate(24px,-34px) scale(1);opacity:0} }
+        .birthday-stage.celebrate .birthday-cake { animation:cakeCelebrate 1.3s ease-in-out both; }
+        @keyframes cakeCelebrate { 0%,100%{transform:translateX(-50%) scale(1)} 35%{transform:translateX(-50%) scale(1.08) rotate(-3deg)} 68%{transform:translateX(-50%) scale(1.08) rotate(3deg)} }
+        .birthday-confetti { position:absolute;inset:0;pointer-events:none;overflow:hidden; }
+        .birthday-confetti span { position:absolute;top:-20px;font-size:1.4rem;animation:confettiFall 1.8s ease-in both; }
+        @keyframes confettiFall { to{transform:translateY(520px) rotate(420deg);opacity:.2} }
+        .birthday-start { min-width:min(82vw,380px);min-height:68px;border:0;border-radius:999px;background:linear-gradient(135deg,#ed64a6,#805ad5);color:white;font:inherit;font-size:clamp(1.15rem,5vw,1.5rem);font-weight:1000;box-shadow:0 7px 0 #6b46c1; }
+
+        .cooking-stage { position:relative;width:min(96vw,660px);min-height:310px;border-radius:30px;background:linear-gradient(#eef9ff,#fffaf0);box-shadow:inset 0 0 0 4px #bee3f8;overflow:hidden; }
+        .meal-choices { position:absolute;inset:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;align-items:center; }
+        .meal-choice { min-height:190px;border:4px solid white;border-radius:26px;background:linear-gradient(#fff,#edf2f7);font:inherit;font-size:clamp(3.5rem,14vw,6rem);box-shadow:0 7px 0 #cbd5e0; }
+        .meal-choice small { display:block;margin-top:8px;color:#2d4f73;font-size:.9rem;font-weight:950; }
+        .cooking-workspace { position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center; }
+        .cooking-pot { position:relative;width:210px;height:135px;margin-bottom:28px;border-radius:18px 18px 55px 55px;background:linear-gradient(110deg,#a0aec0,#edf2f7 48%,#718096);border:5px solid #4a5568;box-shadow:0 10px 0 rgba(45,55,72,.18); }
+        .cooking-pot::before,.cooking-pot::after { content:'';position:absolute;top:24px;width:55px;height:22px;border:9px solid #4a5568; }
+        .cooking-pot::before { right:100%;border-radius:18px 0 0 18px;border-right:0; }
+        .cooking-pot::after { left:100%;border-radius:0 18px 18px 0;border-left:0; }
+        .cooking-pot-food { position:absolute;left:50%;top:-52px;transform:translateX(-50%);font-size:4.8rem; }
+        .cooking-pot.bubbling { animation:potBubble .25s ease-in-out 7 alternate; }
+        @keyframes potBubble { to{transform:translateY(-5px) rotate(1.5deg)} }
+        .ingredient-tray { position:absolute;left:10px;right:10px;top:12px;z-index:4;display:flex;justify-content:center;gap:8px;flex-wrap:wrap; }
+        .ingredient-button { width:62px;height:62px;border:3px solid white;border-radius:20px;background:#f0fff4;font-size:2.25rem;box-shadow:0 5px 0 #9ae6b4;touch-action:none; }
+        .ingredient-button.added { animation:ingredientFly .62s ease-in both;pointer-events:none; }
+        @keyframes ingredientFly { to{transform:translate(0,155px) scale(.25) rotate(240deg);opacity:0} }
+        .chopping-board { position:absolute;left:50%;top:18px;z-index:4;width:min(82%,390px);height:175px;transform:translateX(-50%);border:5px solid #9c6b30;border-radius:27px;background:linear-gradient(100deg,#efc174,#d89c4b);font-size:5rem;box-shadow:0 8px 0 #81511f; }
+        .chopping-board::after { content:'🔪';position:absolute;right:22%;top:12px;font-size:4.2rem;transform:rotate(-35deg);transform-origin:80% 80%; }
+        .chopping-board.chop::after { animation:knifeChop .34s ease-in-out; }
+        @keyframes knifeChop { 50%{transform:translate(-30px,48px) rotate(-5deg)} }
+        .cooking-action { position:absolute;left:50%;top:34px;z-index:4;transform:translateX(-50%);min-width:210px;min-height:78px;border:4px solid white;border-radius:999px;background:#4299e1;color:white;font:inherit;font-size:1.35rem;font-weight:1000;box-shadow:0 7px 0 #2b6cb0; }
+        .cooking-finished-plate { position:absolute;inset:16px;z-index:5;display:grid;place-items:center;border-radius:25px;background:radial-gradient(circle,#fff 0 45%,#bee3f8 46% 56%,#fff 57%);font-size:8rem;animation:mealReady 1s cubic-bezier(.2,.9,.35,1.2) both; }
+        @keyframes mealReady { from{transform:scale(.25) rotate(-20deg);opacity:0} to{transform:none;opacity:1} }
+        .cooking-next { width:min(92vw,620px);min-height:64px;border:0;border-radius:999px;background:linear-gradient(135deg,#38a169,#2b6cb0);color:white;font:inherit;font-size:1.2rem;font-weight:1000;box-shadow:0 6px 0 #276749; }
+        .cooking-next[hidden],[hidden] { display:none !important; }
+
+        @media (max-width:520px) {
+            .ice-cream-flavors,.ice-cream-topping-buttons { grid-template-columns:repeat(4,minmax(0,1fr)); }
+            .ice-cream-choice { min-height:62px;padding:4px; }
+            .ice-cream-choice-label { display:none; }
+            .meal-choice { min-height:155px; }
+        }
         .runner-tap-hint {
             position:absolute;
             left:50%;
@@ -2723,6 +2897,11 @@
                 </div>
             </fieldset>
             <button class="settings-timer" id="playTimerButton" type="button" onclick="openPlayTimer()" aria-label="Ρύθμιση χρόνου παιχνιδιού"><span id="playTimerButtonText" aria-hidden="true">⏱️</span><span id="settingsTimerLabel">Χρόνος παιχνιδιού</span></button>
+            <section class="settings-child-lock" aria-labelledby="childLockTitle">
+                <div class="settings-child-lock-title" id="childLockTitle">🔒 Κλείδωμα παιδιού</div>
+                <p class="settings-child-lock-help" id="childLockHelp">Κρατά το Android σε αυτό το παιχνίδι. Ενεργοποίησε και τον κωδικό για ξεκαρφίτσωμα στις ρυθμίσεις του κινητού.</p>
+                <button class="settings-child-lock-button" id="childLockButton" type="button" onclick="toggleChildLock()">🔒 Κλείδωμα στο παιχνίδι</button>
+            </section>
             <button class="settings-setup" id="settingsSetup" type="button" onclick="editOnboarding()">🌍 Γλώσσες και αρχική ρύθμιση</button>
             <div class="settings-actions">
                 <button class="settings-cancel" id="settingsCancel" type="button" onclick="closeSettings()">Ακύρωση</button>
@@ -2733,6 +2912,20 @@
                 <summary id="soundCreditsTitle">🔊 Πηγές πραγματικών ήχων</summary>
                 <ol class="sound-credits-list" id="soundCreditsList"></ol>
             </details>
+        </form>
+    </div>
+
+    <div id="parentGateModal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="parentGateTitle" translate="no" class="notranslate">
+        <form class="parent-gate-card" onsubmit="confirmChildUnlock(event)">
+            <h2 id="parentGateTitle">Για γονείς</h2>
+            <p id="parentGateLead">Λύσε το για να ξεκλειδώσεις</p>
+            <div class="parent-gate-question" id="parentGateQuestion">7 + 5 = ?</div>
+            <input id="parentGateAnswer" type="number" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-describedby="parentGateError">
+            <p class="parent-gate-error" id="parentGateError" role="alert" aria-live="polite"></p>
+            <div class="parent-gate-actions">
+                <button class="parent-gate-cancel" id="parentGateCancel" type="button" onclick="closeParentGate()">Ακύρωση</button>
+                <button class="parent-gate-unlock" id="parentGateUnlock" type="submit">Ξεκλείδωμα</button>
+            </div>
         </form>
     </div>
 
@@ -2811,6 +3004,18 @@
                     <button class="nav-tab" role="tab" aria-selected="false" onclick="switchGame('runner', this)">
                         <span class="nav-icon">🥦</span>
                         <span id="navRunner">Catch the Broccoli</span>
+                    </button>
+                    <button class="nav-tab" role="tab" aria-selected="false" onclick="switchGame('icecream', this)">
+                        <span class="nav-icon">🍦</span>
+                        <span id="navIceCream">Ice Cream Maker</span>
+                    </button>
+                    <button class="nav-tab" role="tab" aria-selected="false" onclick="switchGame('birthday', this)">
+                        <span class="nav-icon">🎂</span>
+                        <span id="navBirthday">Birthday Cake</span>
+                    </button>
+                    <button class="nav-tab" role="tab" aria-selected="false" onclick="switchGame('cooking', this)">
+                        <span class="nav-icon">🍳</span>
+                        <span id="navCooking">Little Chef</span>
                     </button>
                     <button class="nav-tab" role="tab" aria-selected="false" onclick="switchGame('music', this)">
                         <span class="nav-icon">🥁</span>
@@ -3052,14 +3257,69 @@
         </main>
     </div>
 
-    <!-- 11. MUSIC STUDIO -->
+    <!-- 11. ICE CREAM MAKER -->
+    <div id="game-icecream" class="game-view">
+        <main class="ice-cream-game">
+            <div class="creative-prompt" aria-live="polite"><span class="academic-flag" id="iceCreamFlag" aria-hidden="true">🇺🇸</span><span id="iceCreamPrompt">Pick a flavor</span></div>
+            <div class="ice-cream-stage">
+                <div class="ice-cream-machine" aria-hidden="true"><div class="ice-cream-machine-window"></div></div>
+                <div class="ice-cream-nozzle" aria-hidden="true"></div>
+                <div class="ice-cream-stream" id="iceCreamStream" aria-hidden="true"></div>
+                <div class="ice-cream-result" id="iceCreamResult" aria-label="Ice cream cone">
+                    <div class="ice-cream-scoops" id="iceCreamScoops"></div>
+                    <div class="ice-cream-toppings" id="iceCreamToppings"></div>
+                    <div class="ice-cream-cone" aria-hidden="true"></div>
+                </div>
+            </div>
+            <div class="ice-cream-flavors" id="iceCreamFlavorButtons"></div>
+            <div class="ice-cream-topping-buttons" id="iceCreamToppingButtons" hidden></div>
+            <button class="ice-cream-finish" id="iceCreamFinish" type="button" onclick="finishIceCream()" hidden aria-label="Finish the ice cream">🍦 ✨</button>
+        </main>
+    </div>
+
+    <!-- 12. BIRTHDAY CAKE -->
+    <div id="game-birthday" class="game-view">
+        <main class="birthday-game">
+            <div class="creative-prompt" aria-live="polite"><span class="academic-flag" id="birthdayFlag" aria-hidden="true">🇺🇸</span><span id="birthdayPrompt">Tap the cake when you are ready</span></div>
+            <div class="birthday-stage" id="birthdayStage" role="button" tabindex="0" onclick="birthdayStagePressed()" aria-label="Birthday cake">
+                <div class="birthday-countdown" id="birthdayCountdown" aria-live="polite">🎈</div>
+                <div class="birthday-confetti" id="birthdayConfetti" aria-hidden="true"></div>
+                <div class="birthday-cake" aria-hidden="true">
+                    <div class="birthday-candles" id="birthdayCandles"></div>
+                    <div class="cake-layer top"></div>
+                    <div class="cake-layer bottom"></div>
+                </div>
+            </div>
+            <button class="birthday-start" id="birthdayStart" type="button" onclick="startBirthdayRound()">🎂 Start</button>
+        </main>
+    </div>
+
+    <!-- 13. LITTLE CHEF -->
+    <div id="game-cooking" class="game-view">
+        <main class="cooking-game">
+            <div class="creative-prompt" aria-live="polite"><span class="academic-flag" id="cookingFlag" aria-hidden="true">🇺🇸</span><span id="cookingPrompt">Choose what to cook</span></div>
+            <div class="cooking-stage" id="cookingStage">
+                <div class="meal-choices" id="mealChoices"></div>
+                <div class="cooking-workspace" id="cookingWorkspace" hidden>
+                    <div class="ingredient-tray" id="ingredientTray"></div>
+                    <button class="chopping-board" id="choppingBoard" type="button" onclick="chopIngredient()" hidden aria-label="Chop the onions">🧅</button>
+                    <button class="cooking-action" id="cookingAction" type="button" onclick="stirCookingPot()" hidden>🥄 Stir</button>
+                    <div class="cooking-pot" id="cookingPot" aria-hidden="true"><span class="cooking-pot-food" id="cookingPotFood">🍝</span></div>
+                    <div class="cooking-finished-plate" id="cookingFinishedPlate" hidden aria-hidden="true">🍝</div>
+                </div>
+            </div>
+            <button class="cooking-next" id="cookingNext" type="button" onclick="advanceCookingGame()" hidden>Next</button>
+        </main>
+    </div>
+
+    <!-- 14. MUSIC STUDIO -->
     <div id="game-music" class="game-view">
         <main class="learning-game">
             <div class="music-pad-grid" id="musicGrid"></div>
         </main>
     </div>
 
-    <!-- 11. COPY THE BEAT -->
+    <!-- 15. COPY THE BEAT -->
     <div id="game-beat" class="game-view">
         <main class="learning-game">
             <h2 class="learning-title visually-hidden" id="beatTitle">Αντέγραψε το μοτίβο</h2>
@@ -3069,7 +3329,7 @@
         </main>
     </div>
 
-    <!-- 12. DANCE AND FREEZE -->
+    <!-- 16. DANCE AND FREEZE -->
     <div id="game-dance" class="game-view">
         <main class="learning-game">
             <h2 class="learning-title visually-hidden" id="danceTitle">Χόρεψε και πάγωσε</h2>
@@ -3082,7 +3342,7 @@
         </main>
     </div>
 
-    <!-- 13. SANTA'S JINGLE BELLS -->
+    <!-- 17. SANTA'S JINGLE BELLS -->
     <div id="game-bells" class="game-view">
         <main class="learning-game">
             <h2 class="learning-title visually-hidden" id="bellsTitle">Τα κουδουνάκια του Άγιου Βασίλη</h2>
@@ -3099,7 +3359,7 @@
         </main>
     </div>
 
-    <script src="languages.js"></script>
+    <script src="languages.js?v=2"></script>
     <script>
         /* -------------------------------------------------------------
            1. CORE DATASETS (4 Languages: EN, Mexican ES, FR, EL)
@@ -3252,6 +3512,9 @@
         const realSoundProfiles = {
             santaLaugh: [
                 clip('assets/santa-ho-ho-ho.mp3?v=2', 'Santa ho ho ho #1', 'canucklovingbrit', 'CC0', freesoundPage(110641), 0, 2.7)
+            ],
+            runnerOuch: [
+                clip('assets/runner-ouch.mp3', 'Retro video game sfx - Ouch', 'OwlStorm', 'CC0', freesoundPage(404747), 0, .4)
             ],
             dog: [
                 clip('https://upload.wikimedia.org/wikipedia/commons/5/58/Barking_of_a_dog_2.ogg', 'Barking of a dog 2', 'Amada44', 'CC BY-SA 3.0', 'https://commons.wikimedia.org/wiki/File:Barking_of_a_dog_2.ogg'),
@@ -3705,10 +3968,11 @@
                 santaPrompt: 'Ari can you feed Santa? 🎅', morePlease: 'What should Santa eat next Ari? 🎅',
                 tickle: 'Ho ho ho! That tickles Ari! 😆', santaLaugh: 'Ho! Ho! Ho!', dragFood: 'Drag or tap some food', popBalloons: 'Pop the balloons! 🎈',
                 popped: number => `Popped #${number}! ⭐`, balloonLevelUp: number => `Amazing! Now 1 to ${number}! 🚀`, santaLabel: 'Santa Claus',
-                everyday:'Everyday Things', letters:'Letter Garden', shapes:'Colors & Shapes', counting:'Count & Match', body:'Body Explorer', runner:'Catch the Broccoli', music:'Music Studio', beat:'Copy the Pattern', dance:'Dance & Freeze', bells:"Santa's Bells",
+                everyday:'Everyday Things', letters:'Letter Garden', shapes:'Colors & Shapes', counting:'Count & Match', body:'Body Explorer', runner:'Catch the Broccoli', iceCream:'Ice Cream Maker', birthday:'Birthday Cake', cooking:'Little Chef', music:'Music Studio', beat:'Copy the Pattern', dance:'Dance & Freeze', bells:"Santa's Bells",
                 everydayPrompt:'Explore six things at a time', everydayExplore:'👀 Explore', everydayFind:'👆 Press', everydayMore:'More things →', findQuestion:item=>`Press ${item}`, findTry:'Look again', findFound:()=>`That’s the one!`, findNext:'▶ Next one', findReal:()=>`Can you find one like this nearby and show a grown-up?`,
                 letterPrompt:'Tap a letter', letterPhrase:item=>`${item.name}. ${item.name} is for ${item.word}.`, shapePrompt:(color,shape)=>`Tap. Color ${color}. Shape ${shape}.`, shapeTry:'Look again', shapeGreat:'You found it!', countPrompt:'How many?', countTry:'Count again', countGreat:number=>`${number}! Great counting!`, bodyPrompt:'Tap a body part', bodyHint:'Tap the character', runnerPrompt:'Hold to fly · Let go to land', runnerHint:'Hold to fly', runnerRotate:'Turn the phone sideways', runnerTutorial:'Hold to fly · Let go to land', runnerCaught:(food,score)=>`${food}! ${score === 1 ? 'One point' : `${score} points`}!`, runnerOw:'Ow!',
                 musicPrompt:'Make your own music', musicTogether:'Take turns and copy each other', beatPrompt:'Watch the pattern', beatStart:'Press the dancing bear', beatNext:'▶ New pattern', beatReady:'Are you ready to play? Press the dancing bear.', beatExplain:'Watch the pattern. Then play it back. Ready?', beatYourTurn:'Your turn!', beatGreat:'You remembered it!', beatPraise:['Great job!','Well done!','You did it!','Amazing!'], beatAgain:'Watch the same pattern again',
+                iceCreamPick:'Pick a flavor', iceCreamTop:'Add toppings', iceCreamReady:'Your ice cream is ready!', birthdayReady:'Tap the cake when you are ready', birthdayStart:'🎂 Start', birthdayBlow:'Blow out the candles!', birthdayAgain:'🎂 Again', birthdayCheer:'Happy birthday!', cookingChoose:'Choose what to cook', cookingAddOnions:'Add five onions', cookingChop:'Tap the board to chop', cookingStir:'Stir the pot', cookingReady:'The food is ready!', cookingNext:'Next',
                 danceReady:'Ready?', danceStart:'▶ Start dancing', danceStop:'■ Stop', danceTogether:'Make a clear space and dance together', bellsPrompt:'Play along with Santa', bellsSantaAction:'Hear Santa laugh', bellsBellAction:'Ring the big bell', jingleStart:'🎶 Play Jingle Bells', jingleStop:'■ Stop the song'
             },
             es: {
@@ -3721,10 +3985,11 @@
                 santaPrompt: 'Ari ¿qué le damos de comer a Santa ahora? 🎅', morePlease: '¿Qué va a comer Santa ahora Ari? 🎅',
                 tickle: '¡Jo jo jo! ¡Eso me da cosquillas Ari! 😆', santaLaugh: '¡Jo! ¡Jo! ¡Jo!', dragFood: 'Arrastra o toca la comida', popBalloons: '¡Revienta los globos! 🎈',
                 popped: number => `¡Reventaste el globo número ${number}! ⭐`, balloonLevelUp: number => `¡Genial! ¡Ahora del 1 al ${number}! 🚀`, santaLabel: 'Santa Claus',
-                everyday:'Cosas de cada día', letters:'Jardín de letras', shapes:'Colores y formas', counting:'Cuenta y elige', body:'El cuerpo', runner:'Atrapa el brócoli', music:'Estudio musical', beat:'Copia el patrón', dance:'Baila y congélate', bells:'Campanas de Santa',
+                everyday:'Cosas de cada día', letters:'Jardín de letras', shapes:'Colores y formas', counting:'Cuenta y elige', body:'El cuerpo', runner:'Atrapa el brócoli', iceCream:'Haz un helado', birthday:'Pastel de cumpleaños', cooking:'Pequeño chef', music:'Estudio musical', beat:'Copia el patrón', dance:'Baila y congélate', bells:'Campanas de Santa',
                 everydayPrompt:'Explora seis cosas a la vez', everydayExplore:'👀 Explora', everydayFind:'👆 Presiona', everydayMore:'Más cosas →', findQuestion:item=>`Presiona ${item}`, findTry:'Mira otra vez', findFound:()=>`¡Ese es!`, findNext:'▶ Otro', findReal:()=>`¿Puedes encontrar uno igual cerca y mostrárselo a un adulto?`,
                 letterPrompt:'Presiona una letra', letterPhrase:item=>`${item.name}. ${item.name} de ${item.word}.`, shapePrompt:(color,shape)=>`Presiona. Color ${color}. Forma ${shape}.`, shapeTry:'Mira otra vez', shapeGreat:'¡Lo encontraste!', countPrompt:'¿Cuántos hay?', countTry:'Cuenta otra vez', countGreat:number=>`¡${number}! ¡Muy bien contado!`, bodyPrompt:'Presiona una parte del cuerpo', bodyHint:'Toca al personaje', runnerPrompt:'Mantén presionado para volar · Suelta para bajar', runnerHint:'Mantén presionado para volar', runnerRotate:'Gira el teléfono de lado', runnerTutorial:'Mantén presionado para volar · Suelta para bajar', runnerCaught:(food,score)=>`¡${food}! ${score === 1 ? '¡Un punto!' : `¡${score} puntos!`}`, runnerOw:'¡Ay!',
                 musicPrompt:'Haz tu propia música', musicTogether:'Tomen turnos e imítense', beatPrompt:'Mira el patrón', beatStart:'Presiona el osito que baila', beatNext:'▶ Nuevo patrón', beatReady:'¿Listo para jugar? Presiona el osito que baila.', beatExplain:'Mira el patrón. Después repítelo. ¿Listo?', beatYourTurn:'¡Tu turno!', beatGreat:'¡Lo recordaste!', beatPraise:['¡Muy bien!','¡Bravo!','¡Lo hiciste!','¡Excelente!'], beatAgain:'Mira el mismo patrón otra vez',
+                iceCreamPick:'Elige un sabor', iceCreamTop:'Ponle cosas ricas', iceCreamReady:'¡Tu helado está listo!', birthdayReady:'Toca el pastel cuando estés listo', birthdayStart:'🎂 Empezar', birthdayBlow:'¡Sopla las velitas!', birthdayAgain:'🎂 Otra vez', birthdayCheer:'¡Feliz cumpleaños!', cookingChoose:'Elige qué cocinar', cookingAddOnions:'Pon cinco cebollitas', cookingChop:'Toca la tabla para picar', cookingStir:'Revuelve la olla', cookingReady:'¡La comida está lista!', cookingNext:'Siguiente',
                 danceReady:'¿Listo?', danceStart:'▶ Empieza a bailar', danceStop:'■ Detener', danceTogether:'Dejen espacio y bailen juntos', bellsPrompt:'Toca con Santa', bellsSantaAction:'Escucha a Santa', bellsBellAction:'Toca la campana grande', jingleStart:'🎶 Toca Jingle Bells', jingleStop:'■ Detén la canción'
             },
             fr: {
@@ -3737,10 +4002,11 @@
                 santaPrompt: 'Ari que va manger le Père Noël maintenant ? 🎅', morePlease: 'Que va manger le Père Noël maintenant Ari ? 🎅',
                 tickle: 'Ho ho ho ! Ça me chatouille Ari ! 😆', santaLaugh: 'Ho ! Ho ! Ho !', dragFood: 'Fais glisser ou touche un aliment', popBalloons: 'Éclate les ballons ! 🎈',
                 popped: number => `Tu as éclaté le ballon numéro ${number} ! ⭐`, balloonLevelUp: number => `Bravo ! Maintenant de 1 à ${number} ! 🚀`, santaLabel: 'Père Noël',
-                everyday:'Objets du quotidien', letters:'Jardin des lettres', shapes:'Couleurs et formes', counting:'Compte et choisis', body:'Le corps', runner:'Attrape le brocoli', music:'Studio de musique', beat:'Copie la suite', dance:'Danse et ne bouge plus', bells:'Cloches du Père Noël',
+                everyday:'Objets du quotidien', letters:'Jardin des lettres', shapes:'Couleurs et formes', counting:'Compte et choisis', body:'Le corps', runner:'Attrape le brocoli', iceCream:'Crée une glace', birthday:'Gâteau d’anniversaire', cooking:'Petit chef', music:'Studio de musique', beat:'Copie la suite', dance:'Danse et ne bouge plus', bells:'Cloches du Père Noël',
                 everydayPrompt:'Explore six objets à la fois', everydayExplore:'👀 Explore', everydayFind:'👆 Appuie', everydayMore:'Autres objets →', findQuestion:item=>`Appuie sur ${item}`, findTry:'Regarde encore', findFound:()=>`C’est celui-là !`, findNext:'▶ Le suivant', findReal:()=>`Peux-tu en trouver un pareil près de toi et le montrer à un adulte ?`,
                 letterPrompt:'Appuie sur une lettre', letterPhrase:item=>`${item.name}. ${item.name} comme ${item.word}.`, shapePrompt:(color,shape)=>`Appuie. Couleur ${color}. Forme ${shape}.`, shapeTry:'Regarde encore', shapeGreat:'Tu l’as trouvé !', countPrompt:'Combien y en a-t-il ?', countTry:'Compte encore', countGreat:number=>`${number} ! Bravo !`, bodyPrompt:'Appuie sur une partie du corps', bodyHint:'Touche le personnage', runnerPrompt:'Maintiens appuyé pour voler · Relâche pour descendre', runnerHint:'Maintiens appuyé pour voler', runnerRotate:'Tourne le téléphone sur le côté', runnerTutorial:'Maintiens appuyé pour voler · Relâche pour descendre', runnerCaught:(food,score)=>`${food} ! ${score === 1 ? 'Un point' : `${score} points`} !`, runnerOw:'Aïe !',
                 musicPrompt:'Crée ta propre musique', musicTogether:'Jouez chacun votre tour et imitez-vous', beatPrompt:'Regarde la suite', beatStart:'Appuie sur l’ours qui danse', beatNext:'▶ Nouvelle suite', beatReady:'Prêt à jouer ? Appuie sur l’ours qui danse.', beatExplain:'Regarde la suite. Puis refais-la. Prêt ?', beatYourTurn:'À toi !', beatGreat:'Tu t’en es souvenu !', beatPraise:['Bravo !','Très bien !','Tu as réussi !','Super !'], beatAgain:'Regarde encore la même suite',
+                iceCreamPick:'Choisis un parfum', iceCreamTop:'Ajoute des garnitures', iceCreamReady:'Ta glace est prête !', birthdayReady:'Touche le gâteau quand tu es prêt', birthdayStart:'🎂 Commencer', birthdayBlow:'Souffle les bougies !', birthdayAgain:'🎂 Encore', birthdayCheer:'Joyeux anniversaire !', cookingChoose:'Choisis quoi cuisiner', cookingAddOnions:'Ajoute cinq oignons', cookingChop:'Touche la planche pour couper', cookingStir:'Mélange la marmite', cookingReady:'Le repas est prêt !', cookingNext:'Suivant',
                 danceReady:'Prêt ?', danceStart:'▶ Commence à danser', danceStop:'■ Arrêter', danceTogether:'Faites de la place et dansez ensemble', bellsPrompt:'Joue avec le Père Noël', bellsSantaAction:'Écoute le Père Noël', bellsBellAction:'Fais sonner la grande cloche', jingleStart:'🎶 Joue Jingle Bells', jingleStop:'■ Arrête la chanson'
             },
             el: {
@@ -3753,10 +4019,11 @@
                 santaPrompt: 'Άρι τι θα φάει τώρα ο Άγιος Βασίλης; 🎅', morePlease: 'Τι θα φάει τώρα ο Άγιος Βασίλης Άρι; 🎅',
                 tickle: 'Χο χο χο! Με γαργαλάς Άρι! 😆', santaLaugh: 'Χο! Χο! Χο!', dragFood: 'Σύρε ή πάτησε ένα φαγητό', popBalloons: 'Σκάσε τα μπαλόνια! 🎈',
                 popped: number => `Έσκασες το μπαλόνι με τον αριθμό ${number}! ⭐`, balloonLevelUp: number => `Μπράβο! Τώρα από το 1 ως το ${number}! 🚀`, santaLabel: 'Άγιος Βασίλης',
-                everyday:'Πράγματα κάθε μέρας', letters:'Ο κήπος των γραμμάτων', shapes:'Χρώματα και σχήματα', counting:'Μέτρα και διάλεξε', body:'Το σώμα', runner:'Πιάσε το μπρόκολο', music:'Μουσικό στούντιο', beat:'Αντέγραψε το μοτίβο', dance:'Χόρεψε και πάγωσε', bells:'Τα κουδουνάκια του Άγιου Βασίλη',
+                everyday:'Πράγματα κάθε μέρας', letters:'Ο κήπος των γραμμάτων', shapes:'Χρώματα και σχήματα', counting:'Μέτρα και διάλεξε', body:'Το σώμα', runner:'Πιάσε το μπρόκολο', iceCream:'Φτιάξε παγωτό', birthday:'Τούρτα γενεθλίων', cooking:'Μικρός μάγειρας', music:'Μουσικό στούντιο', beat:'Αντέγραψε το μοτίβο', dance:'Χόρεψε και πάγωσε', bells:'Τα κουδουνάκια του Άγιου Βασίλη',
                 everydayPrompt:'Εξερεύνησε έξι πράγματα κάθε φορά', everydayExplore:'👀 Εξερεύνησε', everydayFind:'👆 Πάτησε', everydayMore:'Άλλα πράγματα →', findQuestion:item=>`Πάτησε ${item}`, findTry:'Κοίτα ξανά', findFound:()=>`Αυτό είναι!`, findNext:'▶ Επόμενο', findReal:()=>`Μπορείς να βρεις κάτι ίδιο κοντά σου και να το δείξεις σε έναν μεγάλο;`,
                 letterPrompt:'Πάτησε ένα γράμμα', letterPhrase:item=>`${item.name}. ${item.letter} όπως ${item.word}.`, shapePrompt:(color,shape)=>`Πάτησε. Χρώμα ${color}. Σχήμα ${shape}.`, shapeTry:'Κοίτα ξανά', shapeGreat:'Το βρήκες!', countPrompt:'Πόσα είναι;', countTry:'Μέτρα ξανά', countGreat:number=>`${number}! Μπράβο!`, bodyPrompt:'Πάτησε ένα μέρος του σώματος', bodyHint:'Πάτησε το ανθρωπάκι', runnerPrompt:'Κράτα πατημένο για να πετάξεις · Άφησε για να κατέβεις', runnerHint:'Κράτα πατημένο για να πετάξεις', runnerRotate:'Γύρισε το κινητό στο πλάι', runnerTutorial:'Κράτα πατημένο για να πετάξεις · Άφησε για να κατέβεις', runnerCaught:(food,score)=>`${food}! ${greekPointScore(score)}!`, runnerOw:'Άουτς!',
                 musicPrompt:'Φτιάξε τη δική σου μουσική', musicTogether:'Παίξτε με τη σειρά και αντιγράψτε ο ένας τον άλλον', beatPrompt:'Κοίτα το μοτίβο', beatStart:'Πάτησε το αρκουδάκι που χορεύει', beatNext:'▶ Νέο μοτίβο', beatReady:'Έτοιμος να παίξεις; Πάτησε το αρκουδάκι που χορεύει.', beatExplain:'Κοίτα το μοτίβο. Μετά παίξ’ το κι εσύ. Έτοιμος;', beatYourTurn:'Η σειρά σου!', beatGreat:'Το θυμήθηκες!', beatPraise:['Μπράβο!','Πολύ καλά!','Τα κατάφερες!','Το βρήκες!'], beatAgain:'Κοίτα ξανά το ίδιο μοτίβο',
+                iceCreamPick:'Διάλεξε γεύση', iceCreamTop:'Βάλε λιχουδιές', iceCreamReady:'Το παγωτό σου είναι έτοιμο!', birthdayReady:'Πάτησε την τούρτα όταν είσαι έτοιμος', birthdayStart:'🎂 Ξεκίνα', birthdayBlow:'Φύσηξε τα κεράκια!', birthdayAgain:'🎂 Ξανά', birthdayCheer:'Χρόνια πολλά!', cookingChoose:'Διάλεξε τι θα μαγειρέψεις', cookingAddOnions:'Βάλε πέντε κρεμμυδάκια', cookingChop:'Πάτησε το ξύλο για να κόψεις', cookingStir:'Ανακάτεψε την κατσαρόλα', cookingReady:'Το φαγητό είναι έτοιμο!', cookingNext:'Επόμενο',
                 danceReady:'Έτοιμος;', danceStart:'▶ Ξεκίνα τον χορό', danceStop:'■ Σταμάτα', danceTogether:'Αδειάστε λίγο χώρο και χορέψτε μαζί', bellsPrompt:'Παίξε μαζί με τον Άγιο Βασίλη', bellsSantaAction:'Άκου τον Άγιο Βασίλη', bellsBellAction:'Χτύπα το μεγάλο κουδούνι', jingleStart:'🎶 Παίξε το Jingle Bells', jingleStop:'■ Σταμάτα το τραγούδι'
             }
         };
@@ -3766,6 +4033,15 @@
         Object.entries(extraLanguagePacks).forEach(([language,pack]) => {
             interfaceText[language] = { ...interfaceText.en, ...pack.interface };
         });
+        const creativeLanguageCopy = {
+            de:{iceCream:'Eisdiele',birthday:'Geburtstagstorte',cooking:'Kleine Küche',iceCreamPick:'Wähle eine Sorte',iceCreamTop:'Füge Toppings hinzu',iceCreamReady:'Dein Eis ist fertig!',birthdayReady:'Tippe auf die Torte wenn du bereit bist',birthdayStart:'🎂 Start',birthdayBlow:'Puste die Kerzen aus!',birthdayAgain:'🎂 Noch einmal',birthdayCheer:'Alles Gute zum Geburtstag!',cookingChoose:'Wähle was du kochen möchtest',cookingAddOnions:'Füge fünf Zwiebeln hinzu',cookingChop:'Tippe zum Schneiden auf das Brett',cookingStir:'Rühre im Topf',cookingReady:'Das Essen ist fertig!',cookingNext:'Weiter'},
+            it:{iceCream:'Gelateria',birthday:'Torta di compleanno',cooking:'Piccolo chef',iceCreamPick:'Scegli un gusto',iceCreamTop:'Aggiungi le decorazioni',iceCreamReady:'Il tuo gelato è pronto!',birthdayReady:'Tocca la torta quando sei pronto',birthdayStart:'🎂 Inizia',birthdayBlow:'Soffia sulle candeline!',birthdayAgain:'🎂 Ancora',birthdayCheer:'Buon compleanno!',cookingChoose:'Scegli cosa cucinare',cookingAddOnions:'Aggiungi cinque cipolline',cookingChop:'Tocca il tagliere per tagliare',cookingStir:'Mescola la pentola',cookingReady:'Il cibo è pronto!',cookingNext:'Avanti'},
+            tr:{iceCream:'Dondurma yap',birthday:'Doğum günü pastası',cooking:'Küçük şef',iceCreamPick:'Bir tat seç',iceCreamTop:'Üstüne süs ekle',iceCreamReady:'Dondurman hazır!',birthdayReady:'Hazır olunca pastaya dokun',birthdayStart:'🎂 Başla',birthdayBlow:'Mumları üfle!',birthdayAgain:'🎂 Yine',birthdayCheer:'İyi ki doğdun!',cookingChoose:'Ne pişireceğini seç',cookingAddOnions:'Beş soğan ekle',cookingChop:'Doğramak için tahtaya dokun',cookingStir:'Tencereyi karıştır',cookingReady:'Yemek hazır!',cookingNext:'İleri'},
+            ptBR:{iceCream:'Faça um sorvete',birthday:'Bolo de aniversário',cooking:'Pequeno chef',iceCreamPick:'Escolha um sabor',iceCreamTop:'Coloque coberturas',iceCreamReady:'Seu sorvete está pronto!',birthdayReady:'Toque no bolo quando estiver pronto',birthdayStart:'🎂 Começar',birthdayBlow:'Sopre as velinhas!',birthdayAgain:'🎂 De novo',birthdayCheer:'Feliz aniversário!',cookingChoose:'Escolha o que cozinhar',cookingAddOnions:'Coloque cinco cebolinhas',cookingChop:'Toque na tábua para cortar',cookingStir:'Mexa a panela',cookingReady:'A comida está pronta!',cookingNext:'Próximo'},
+            nl:{iceCream:'Maak een ijsje',birthday:'Verjaardagstaart',cooking:'Kleine kok',iceCreamPick:'Kies een smaak',iceCreamTop:'Voeg versiering toe',iceCreamReady:'Je ijsje is klaar!',birthdayReady:'Tik op de taart als je klaar bent',birthdayStart:'🎂 Start',birthdayBlow:'Blaas de kaarsjes uit!',birthdayAgain:'🎂 Nog een keer',birthdayCheer:'Fijne verjaardag!',cookingChoose:'Kies wat je gaat koken',cookingAddOnions:'Doe vijf uitjes in de pan',cookingChop:'Tik op de plank om te snijden',cookingStir:'Roer in de pan',cookingReady:'Het eten is klaar!',cookingNext:'Volgende'},
+            pl:{iceCream:'Zrób lody',birthday:'Tort urodzinowy',cooking:'Mały kucharz',iceCreamPick:'Wybierz smak',iceCreamTop:'Dodaj posypki',iceCreamReady:'Twoje lody są gotowe!',birthdayReady:'Dotknij tortu gdy będziesz gotowy',birthdayStart:'🎂 Start',birthdayBlow:'Zdmuchnij świeczki!',birthdayAgain:'🎂 Jeszcze raz',birthdayCheer:'Wszystkiego najlepszego!',cookingChoose:'Wybierz co ugotować',cookingAddOnions:'Dodaj pięć cebulek',cookingChop:'Dotknij deski aby kroić',cookingStir:'Zamieszaj w garnku',cookingReady:'Jedzenie jest gotowe!',cookingNext:'Dalej'}
+        };
+        Object.entries(creativeLanguageCopy).forEach(([language,copy]) => Object.assign(interfaceText[language], copy));
 
         const santaFoodNames = {
             '🍎': { es: 'la manzana', fr: 'la pomme', el: 'το μήλο' },
@@ -4177,6 +4453,9 @@
                 error: 'Οι δύο λίστες πρέπει να έχουν τον ίδιο αριθμό ονομάτων.',
                 close: 'Κλείσιμο', cancel: 'Ακύρωση', save: 'Αποθήκευση', restore: 'Επαναφορά αρχικών', setup: '🌍 Γλώσσες και αρχική ρύθμιση',
                 diceTitle: '🎲 Τι κάνει το ζάρι;', diceSingle: 'Μία γλώσσα', diceMultilingual: 'Όλες οι γλώσσες', diceRandom: 'Τυχαία γλώσσα', timer: 'Χρόνος παιχνιδιού',
+                childLockTitle: '🔒 Κλείδωμα παιδιού', childLockStart: '🔒 Κλείδωμα στο παιχνίδι', childLockStop: '🔓 Ξεκλείδωμα παιχνιδιού',
+                childLockHelp: 'Κρατά το Android σε αυτό το παιχνίδι. Για πλήρη προστασία ενεργοποίησε κωδικό για ξεκαρφίτσωμα στις ρυθμίσεις του κινητού.', childLockWeb: 'Το κλείδωμα είναι διαθέσιμο στην εφαρμογή Android.',
+                parentTitle: 'Για γονείς', parentLead: 'Λύσε το για να ξεκλειδώσεις', parentWrong: 'Δοκίμασε ξανά.', parentCancel: 'Ακύρωση', parentUnlock: 'Ξεκλείδωμα',
                 soundCredits: '🔊 Πηγές πραγματικών ήχων'
             },
             en: {
@@ -4187,6 +4466,9 @@
                 error: 'Both lists need the same number of names.',
                 close: 'Close', cancel: 'Cancel', save: 'Save', restore: 'Restore defaults', setup: '🌍 Languages and setup',
                 diceTitle: '🎲 What does the dice do?', diceSingle: 'One language', diceMultilingual: 'All languages', diceRandom: 'Random language', timer: 'Play timer',
+                childLockTitle: '🔒 Child lock', childLockStart: '🔒 Lock into the game', childLockStop: '🔓 Unlock the game',
+                childLockHelp: 'Keeps Android pinned to this game. For full protection enable Require PIN to unpin in the phone settings.', childLockWeb: 'Child lock is available in the Android app.',
+                parentTitle: 'Grown-ups only', parentLead: 'Solve this to unlock', parentWrong: 'Try again.', parentCancel: 'Cancel', parentUnlock: 'Unlock',
                 soundCredits: '🔊 Real sound credits'
             },
             es: {
@@ -4197,6 +4479,9 @@
                 error: 'Las dos listas deben tener la misma cantidad de nombres.',
                 close: 'Cerrar', cancel: 'Cancelar', save: 'Guardar', restore: 'Restaurar valores', setup: '🌍 Idiomas y configuración',
                 diceTitle: '🎲 ¿Qué hace el dado?', diceSingle: 'Un idioma', diceMultilingual: 'Todos los idiomas', diceRandom: 'Idioma al azar', timer: 'Tiempo de juego',
+                childLockTitle: '🔒 Bloqueo infantil', childLockStart: '🔒 Bloquear en el juego', childLockStop: '🔓 Desbloquear el juego',
+                childLockHelp: 'Mantiene Android fijado en este juego. Para mayor protección activa Solicitar PIN para desanclar en los ajustes del teléfono.', childLockWeb: 'El bloqueo infantil está disponible en la app para Android.',
+                parentTitle: 'Solo para adultos', parentLead: 'Resuelve esto para desbloquear', parentWrong: 'Inténtalo de nuevo.', parentCancel: 'Cancelar', parentUnlock: 'Desbloquear',
                 soundCredits: '🔊 Créditos de sonidos reales'
             },
             fr: {
@@ -4207,6 +4492,9 @@
                 error: 'Les deux listes doivent contenir le même nombre de prénoms.',
                 close: 'Fermer', cancel: 'Annuler', save: 'Enregistrer', restore: 'Valeurs par défaut', setup: '🌍 Langues et configuration',
                 diceTitle: '🎲 Que fait le dé ?', diceSingle: 'Une langue', diceMultilingual: 'Toutes les langues', diceRandom: 'Langue au hasard', timer: 'Temps de jeu',
+                childLockTitle: '🔒 Verrou enfant', childLockStart: '🔒 Verrouiller dans le jeu', childLockStop: '🔓 Déverrouiller le jeu',
+                childLockHelp: 'Garde Android épinglé sur ce jeu. Pour une protection complète active le code requis pour désépingler dans les réglages du téléphone.', childLockWeb: 'Le verrou enfant est disponible dans l’application Android.',
+                parentTitle: 'Réservé aux adultes', parentLead: 'Résous ceci pour déverrouiller', parentWrong: 'Réessaie.', parentCancel: 'Annuler', parentUnlock: 'Déverrouiller',
                 soundCredits: '🔊 Crédits des sons réels'
             }
         };
@@ -4488,6 +4776,89 @@
             document.getElementById('settingsTimerLabel').textContent = copy.timer;
             document.getElementById('playTimerButton').setAttribute('aria-label', copy.timer);
             document.getElementById('soundCreditsTitle').textContent = copy.soundCredits;
+            document.getElementById('childLockTitle').textContent = copy.childLockTitle;
+            document.getElementById('parentGateTitle').textContent = copy.parentTitle;
+            document.getElementById('parentGateLead').textContent = copy.parentLead;
+            document.getElementById('parentGateCancel').textContent = copy.parentCancel;
+            document.getElementById('parentGateUnlock').textContent = copy.parentUnlock;
+            updateChildLockUI();
+        }
+
+        let childLockActive = false;
+        let parentGateExpectedAnswer = 0;
+
+        function androidChildLockAvailable() {
+            return Boolean(window.AndroidChildLock && typeof window.AndroidChildLock.start === 'function');
+        }
+
+        function updateChildLockUI() {
+            const copy = settingsCopy[settingsLanguage()];
+            const button = document.getElementById('childLockButton');
+            const help = document.getElementById('childLockHelp');
+            button.classList.toggle('active', childLockActive);
+            button.disabled = !androidChildLockAvailable();
+            button.textContent = childLockActive ? copy.childLockStop : copy.childLockStart;
+            help.textContent = androidChildLockAvailable() ? copy.childLockHelp : copy.childLockWeb;
+        }
+
+        window.updateAndroidChildLock = active => {
+            childLockActive = Boolean(active);
+            updateChildLockUI();
+        };
+
+        function refreshChildLockFromAndroid() {
+            if (!androidChildLockAvailable()) {
+                childLockActive = false;
+                updateChildLockUI();
+                return;
+            }
+            try {
+                window.updateAndroidChildLock(window.AndroidChildLock.isActive());
+            } catch (error) {
+                updateChildLockUI();
+            }
+        }
+
+        function toggleChildLock() {
+            if (!androidChildLockAvailable()) return;
+            if (childLockActive) {
+                openParentGate();
+                return;
+            }
+            window.AndroidChildLock.start();
+            closeSettings();
+        }
+
+        function openParentGate() {
+            const first = 6 + Math.floor(Math.random() * 7);
+            const second = 4 + Math.floor(Math.random() * 6);
+            parentGateExpectedAnswer = first + second;
+            document.getElementById('parentGateQuestion').textContent = `${first} + ${second} = ?`;
+            document.getElementById('parentGateAnswer').value = '';
+            document.getElementById('parentGateError').textContent = '';
+            const modal = document.getElementById('parentGateModal');
+            modal.classList.add('active');
+            modal.setAttribute('aria-hidden', 'false');
+            requestAnimationFrame(() => document.getElementById('parentGateAnswer').focus({ preventScroll: true }));
+        }
+
+        function closeParentGate() {
+            const modal = document.getElementById('parentGateModal');
+            modal.classList.remove('active');
+            modal.setAttribute('aria-hidden', 'true');
+            document.getElementById('childLockButton').focus({ preventScroll: true });
+        }
+
+        function confirmChildUnlock(event) {
+            event.preventDefault();
+            const answer = Number.parseInt(document.getElementById('parentGateAnswer').value, 10);
+            if (answer !== parentGateExpectedAnswer) {
+                document.getElementById('parentGateError').textContent = settingsCopy[settingsLanguage()].parentWrong;
+                document.getElementById('parentGateAnswer').select();
+                return;
+            }
+            window.AndroidChildLock.stop();
+            closeParentGate();
         }
 
         function clearSettingsError() {
@@ -4524,6 +4895,7 @@
             const diceModeInput = document.querySelector(`input[name="diceMode"][value="${appProfile.diceMode}"]`);
             if (diceModeInput) diceModeInput.checked = true;
             clearSettingsError();
+            refreshChildLockFromAndroid();
             const modal = document.getElementById('settingsModal');
             modal.classList.add('active');
             modal.setAttribute('aria-hidden', 'false');
@@ -4675,11 +5047,25 @@
             });
         }
 
+        function populateOnboardingPrimaryOptions() {
+            const select = document.getElementById('onboardingPrimarySelect');
+            const selectedLanguage = onboardingDraft?.primaryLanguage || appProfile.primaryLanguage;
+            select.replaceChildren();
+            supportedLanguageOrder.forEach(language => {
+                const option = document.createElement('option');
+                option.value = language;
+                option.textContent = languagePickerOptions[language];
+                select.appendChild(option);
+            });
+            select.value = selectedLanguage;
+        }
+
         function openOnboarding(isEditing = false) {
             pauseActivePlay();
             onboardingEditing = isEditing;
             onboardingStep = 1;
             onboardingDraft = cloneProfile(appProfile);
+            populateOnboardingPrimaryOptions();
             document.getElementById('onboardingGreekNames').value = onboardingDraft.greekNames.join(', ');
             document.getElementById('onboardingOtherNames').value = onboardingDraft.otherNames.join(', ');
             document.getElementById('onboardingClose').hidden = !isEditing;
@@ -5188,6 +5574,7 @@
             clearMusicInvites();
             clearAcademicTimers();
             stopRunnerGame();
+            stopBirthdayRoundTimers();
             clearSantaIdleTimer();
             hideSantaCelebration();
             findRoundId++;
@@ -5203,6 +5590,9 @@
             if (gameId === 'counting') startCountingRound();
             if (gameId === 'body') renderBodyExplorer();
             if (gameId === 'runner') startRunnerGame();
+            if (gameId === 'icecream') updateIceCreamLanguage();
+            if (gameId === 'birthday') prepareBirthdayGame();
+            if (gameId === 'cooking') updateCookingLanguage();
             if (gameId === 'music') inviteMusicPads();
             if (gameId === 'beat') prepareBeatIntro();
         }
@@ -5258,6 +5648,9 @@
             document.getElementById('navCounting').textContent = text.counting;
             document.getElementById('navBody').textContent = text.body;
             document.getElementById('navRunner').textContent = text.runner;
+            document.getElementById('navIceCream').textContent = text.iceCream;
+            document.getElementById('navBirthday').textContent = text.birthday;
+            document.getElementById('navCooking').textContent = text.cooking;
             document.getElementById('navMusic').textContent = text.music;
             document.getElementById('navBeat').textContent = text.beat;
             document.getElementById('navDance').textContent = text.dance;
@@ -5332,6 +5725,9 @@
             if (activeGameId() === 'counting') startCountingRound();
             renderBodyExplorer();
             updateRunnerLanguage();
+            updateIceCreamLanguage(displayLanguage);
+            updateBirthdayLanguage(displayLanguage);
+            updateCookingLanguage(displayLanguage);
             document.querySelectorAll('.music-pad').forEach((button, index) => {
                 resetCompactCardLanguage(button, instruments[index], '.music-label', displayLanguage);
             });
@@ -5733,13 +6129,16 @@
             if (gameId === 'counting') startCountingRound();
             if (gameId === 'body') renderBodyExplorer();
             if (gameId === 'runner') startRunnerGame();
+            if (gameId === 'icecream') updateIceCreamLanguage();
+            if (gameId === 'birthday') prepareBirthdayGame();
+            if (gameId === 'cooking') updateCookingLanguage();
             tabEl.classList.add('active');
             tabEl.setAttribute('aria-selected', 'true');
             const activeIndex = Array.from(document.querySelectorAll('.nav-tab')).indexOf(tabEl);
             document.querySelectorAll('.game-nav-dot').forEach((dot, index) => {
                 dot.classList.toggle('active', index === activeIndex);
             });
-            const gameIcons = { monster:'🎅', trucks:'🚜', balloons:'🎈', animals:'🦁', everyday:'🥤', letters:'🔤', shapes:'🔺', counting:'🍎', body:'🧒', runner:'🥦', music:'🥁', beat:'👏', dance:'🕺', bells:'🔔' };
+            const gameIcons = { monster:'🎅', trucks:'🚜', balloons:'🎈', animals:'🦁', everyday:'🥤', letters:'🔤', shapes:'🔺', counting:'🍎', body:'🧒', runner:'🥦', icecream:'🍦', birthday:'🎂', cooking:'🍳', music:'🥁', beat:'👏', dance:'🕺', bells:'🔔' };
             document.getElementById('collapsedGameIcon').textContent = gameIcons[gameId];
             dismissGameSwipeHint();
             revealActiveGame();
@@ -6738,7 +7137,7 @@
         let activeRunnerFood = runnerFoods[0];
         let runnerTutorialSeen = false;
         let runnerCrashReactionIndex = 0;
-        const runnerCrashReactions = ['crash-dizzy', 'crash-tumble', 'crash-squash', 'crash-wobble'];
+        const runnerCrashReactions = ['crash-bandage', 'crash-dizzy', 'crash-tumble', 'crash-wobble'];
         const runnerCrashPhrases = {
             en:['Oh no!','Bonk!','Oops!','Silly bear!'], enUS:['Oh no!','Bonk!','Oops!','Silly bear!'],
             es:['¡Ay no!','¡Pum!','¡Uy!','¡Osito travieso!'], esES:['¡Ay no!','¡Pum!','¡Uy!','¡Osito travieso!'],
@@ -6827,7 +7226,7 @@
         }
 
         function runnerFrame(timestamp) {
-            if (!runnerRunning || runnerCrashed) return;
+            if (!runnerRunning) return;
             const elapsedSeconds = runnerLastFrame ? Math.min(.04, (timestamp - runnerLastFrame) / 1000) : 0;
             runnerLastFrame = timestamp;
             const scaledCharacterHeight = runnerBaseCharacterHeight * runnerCharacterScale;
@@ -6853,7 +7252,7 @@
                     scheduleRunnerObject();
                 }
             }
-            if (runnerRunning && !runnerCrashed) runnerAnimationFrame = requestAnimationFrame(runnerFrame);
+            if (runnerRunning) runnerAnimationFrame = requestAnimationFrame(runnerFrame);
         }
 
         function playRunnerChime() {
@@ -6933,18 +7332,23 @@
         }
 
         function playRunnerCrashSound() {
+            const variant = (runnerCrashReactionIndex - 1) % runnerCrashReactions.length;
+            if (variant === 0 || variant === 2) {
+                playRealSoundProfile('runnerOuch');
+                return;
+            }
             const ctx = getAudioContext();
             const oscillator = ctx.createOscillator();
             const gain = ctx.createGain();
-            oscillator.type = 'sawtooth';
-            oscillator.frequency.setValueAtTime(180, ctx.currentTime);
-            oscillator.frequency.exponentialRampToValueAtTime(65, ctx.currentTime + .42);
-            gain.gain.setValueAtTime(.16, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(.0001, ctx.currentTime + .45);
+            oscillator.type = variant === 1 ? 'triangle' : 'square';
+            oscillator.frequency.setValueAtTime(variant === 1 ? 260 : 185, ctx.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(variant === 1 ? 92 : 310, ctx.currentTime + .28);
+            gain.gain.setValueAtTime(.13, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(.0001, ctx.currentTime + .34);
             oscillator.connect(gain);
             gain.connect(ctx.destination);
             oscillator.start();
-            oscillator.stop(ctx.currentTime + .46);
+            oscillator.stop(ctx.currentTime + .35);
         }
 
         function collectRunnerFood() {
@@ -6969,13 +7373,8 @@
         function crashRunner() {
             if (runnerCrashed) return;
             runnerCrashed = true;
-            runnerRunning = false;
             runnerObjectActive = false;
-            cancelAnimationFrame(runnerAnimationFrame);
-            runnerAnimationFrame = null;
-            runnerStage.classList.remove('running');
-            runnerThrusting = false;
-            runnerCharacter.classList.remove('flying');
+            runnerObject.classList.add('collected');
             const reaction = runnerCrashReactions[runnerCrashReactionIndex++ % runnerCrashReactions.length];
             shrinkRunner(reaction);
             document.getElementById('runnerCrash').classList.add('active');
@@ -6983,22 +7382,17 @@
             const phrases = runnerCrashPhrases[runnerDisplayLanguage] || runnerCrashPhrases.enUS;
             const phrase = phrases[(runnerCrashReactionIndex - 1) % phrases.length];
             document.getElementById('runnerCrashText').textContent = phrase;
-            speakSingle(languageSettings[runnerDisplayLanguage].code, phrase);
             runnerRestartTimer = setTimeout(() => {
                 if (activeGameId() !== 'runner' || !document.body.classList.contains('controls-collapsed')) return;
                 document.getElementById('runnerCrash').classList.remove('active');
                 runnerCharacter.classList.remove('bumped', ...runnerCrashReactions);
                 runnerCrashed = false;
-                runnerRunning = true;
-                runnerLastFrame = 0;
-                runnerStage.classList.add('running');
-                scheduleRunnerObject(620);
-                runnerAnimationFrame = requestAnimationFrame(runnerFrame);
-            }, 1650);
+                scheduleRunnerObject(260);
+            }, 1050);
         }
 
         function startRunnerFlight(event = null) {
-            if (!runnerRunning || runnerCrashed) return;
+            if (!runnerRunning) return;
             dismissRunnerTutorial();
             runnerThrusting = true;
             runnerCharacter.classList.add('flying');
@@ -7115,7 +7509,454 @@
             else stopRunnerGame();
         });
 
-        // --- Game 11: Music Studio ---
+        // --- Games 11–13: Guided creative play ---
+        const iceCreamFlavors = [
+            {emoji:'🍓',color:'#ff8fab',names:{en:'Strawberry',enUS:'Strawberry',es:'Fresita',esES:'Fresa',fr:'Fraise',el:'Φραουλίτσα',de:'Erdbeere',it:'Fragola',tr:'Çilek',ptBR:'Morango',nl:'Aardbei',pl:'Truskawka'}},
+            {emoji:'🍫',color:'#9b6b4a',names:{en:'Chocolate',enUS:'Chocolate',es:'Chocolate',esES:'Chocolate',fr:'Chocolat',el:'Σοκολάτα',de:'Schokolade',it:'Cioccolato',tr:'Çikolata',ptBR:'Chocolate',nl:'Chocolade',pl:'Czekolada'}},
+            {emoji:'🌼',color:'#ffe9a9',names:{en:'Vanilla',enUS:'Vanilla',es:'Vainilla',esES:'Vainilla',fr:'Vanille',el:'Βανίλια',de:'Vanille',it:'Vaniglia',tr:'Vanilya',ptBR:'Baunilha',nl:'Vanille',pl:'Wanilia'}},
+            {emoji:'🫐',color:'#a99ce8',names:{en:'Blueberry',enUS:'Blueberry',es:'Mora azul',esES:'Arándano',fr:'Myrtille',el:'Μύρτιλο',de:'Blaubeere',it:'Mirtillo',tr:'Yaban mersini',ptBR:'Mirtilo',nl:'Blauwe bes',pl:'Jagoda'}}
+        ];
+        const iceCreamToppingChoices = [
+            {emoji:'🌈',names:{en:'Sprinkles',enUS:'Sprinkles',es:'Chispitas',esES:'Virutas',fr:'Vermicelles',el:'Τρούφα',de:'Streusel',it:'Codette',tr:'Süsleme',ptBR:'Granulado',nl:'Spikkels',pl:'Posypka'}},
+            {emoji:'🍓',names:{en:'Berries',enUS:'Berries',es:'Frutitas',esES:'Frutas',fr:'Fruits',el:'Φρουτάκια',de:'Beeren',it:'Frutta',tr:'Meyveler',ptBR:'Frutinhas',nl:'Fruit',pl:'Owoce'}},
+            {emoji:'🍌',names:{en:'Banana',enUS:'Banana',es:'Platanito',esES:'Plátano',fr:'Banane',el:'Μπανανίτσα',de:'Banane',it:'Banana',tr:'Muz',ptBR:'Banana',nl:'Banaan',pl:'Banan'}},
+            {emoji:'🥜',names:{en:'Nuts',enUS:'Nuts',es:'Nueces',esES:'Frutos secos',fr:'Noix',el:'Ξηροί καρποί',de:'Nüsse',it:'Noci',tr:'Kuruyemiş',ptBR:'Castanhas',nl:'Nootjes',pl:'Orzechy'}},
+            {emoji:'🍫',names:{en:'Chocolate chips',enUS:'Chocolate chips',es:'Chispitas de chocolate',esES:'Pepitas de chocolate',fr:'Pépites de chocolat',el:'Σοκολατένια κομματάκια',de:'Schokostückchen',it:'Gocce di cioccolato',tr:'Çikolata parçaları',ptBR:'Gotas de chocolate',nl:'Chocoladestukjes',pl:'Kawałki czekolady'}},
+            {emoji:'🍒',names:{en:'Cherry',enUS:'Cherry',es:'Cerezita',esES:'Cereza',fr:'Cerise',el:'Κερασάκι',de:'Kirsche',it:'Ciliegina',tr:'Kiraz',ptBR:'Cereja',nl:'Kers',pl:'Wisienka'}}
+        ];
+        let iceCreamBusy = false;
+        let iceCreamScoopCount = 0;
+        let iceCreamLanguageIndex = 0;
+
+        function creativeActionLanguage(index) {
+            return currentLangMode === 'all' ? learningRoundLanguage(index) : currentLangMode;
+        }
+
+        function playCreativeSound(frequencies, duration = .18) {
+            const ctx = getAudioContext();
+            frequencies.forEach((frequency,index) => {
+                const oscillator = ctx.createOscillator();
+                const gain = ctx.createGain();
+                const startsAt = ctx.currentTime + index * .07;
+                oscillator.type = index % 2 ? 'triangle' : 'sine';
+                oscillator.frequency.value = frequency;
+                gain.gain.setValueAtTime(.0001, startsAt);
+                gain.gain.exponentialRampToValueAtTime(.12, startsAt + .015);
+                gain.gain.exponentialRampToValueAtTime(.0001, startsAt + duration);
+                oscillator.connect(gain);
+                gain.connect(ctx.destination);
+                oscillator.start(startsAt);
+                oscillator.stop(startsAt + duration + .02);
+            });
+        }
+
+        function renderIceCreamControls() {
+            const flavorContainer = document.getElementById('iceCreamFlavorButtons');
+            const toppingContainer = document.getElementById('iceCreamToppingButtons');
+            flavorContainer.innerHTML = '';
+            toppingContainer.innerHTML = '';
+            iceCreamFlavors.forEach((flavor,index) => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'ice-cream-choice flavor-lever';
+                button.style.setProperty('--choice-color', flavor.color);
+                button.innerHTML = `<span aria-hidden="true">${flavor.emoji}</span><span class="ice-cream-choice-label"></span>`;
+                button.onclick = () => chooseIceCreamFlavor(index);
+                flavorContainer.appendChild(button);
+            });
+            iceCreamToppingChoices.forEach((topping,index) => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'ice-cream-choice';
+                button.innerHTML = `<span aria-hidden="true">${topping.emoji}</span><span class="ice-cream-choice-label"></span>`;
+                button.onclick = () => addIceCreamTopping(index);
+                toppingContainer.appendChild(button);
+            });
+        }
+
+        function updateIceCreamLanguage(language = null) {
+            if (!document.getElementById('iceCreamPrompt')) return;
+            const displayLanguage = language || (currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode);
+            document.getElementById('iceCreamFlag').textContent = languageSettings[displayLanguage].flag;
+            document.getElementById('iceCreamPrompt').textContent = interfaceText[displayLanguage][iceCreamScoopCount ? 'iceCreamTop' : 'iceCreamPick'];
+            document.querySelectorAll('#iceCreamFlavorButtons .ice-cream-choice').forEach((button,index) => {
+                const name = iceCreamFlavors[index].names[displayLanguage] || iceCreamFlavors[index].names.en;
+                button.querySelector('.ice-cream-choice-label').textContent = name;
+                button.setAttribute('aria-label', name);
+            });
+            document.querySelectorAll('#iceCreamToppingButtons .ice-cream-choice').forEach((button,index) => {
+                const name = iceCreamToppingChoices[index].names[displayLanguage] || iceCreamToppingChoices[index].names.en;
+                button.querySelector('.ice-cream-choice-label').textContent = name;
+                button.setAttribute('aria-label', name);
+            });
+        }
+
+        function chooseIceCreamFlavor(index) {
+            if (iceCreamBusy) return;
+            if (iceCreamScoopCount >= 3) resetIceCream();
+            iceCreamBusy = true;
+            const flavor = iceCreamFlavors[index];
+            const language = creativeActionLanguage(iceCreamLanguageIndex++);
+            document.getElementById('iceCreamFlag').textContent = languageSettings[language].flag;
+            document.getElementById('iceCreamPrompt').textContent = flavor.names[language] || flavor.names.en;
+            const stream = document.getElementById('iceCreamStream');
+            stream.style.background = flavor.color;
+            stream.classList.remove('pouring');
+            void stream.offsetWidth;
+            stream.classList.add('pouring');
+            playCreativeSound([220,277,330]);
+            speakSingle(languageSettings[language].code, flavor.names[language] || flavor.names.en);
+            setTimeout(() => {
+                const scoop = document.createElement('span');
+                scoop.className = 'ice-cream-scoop';
+                scoop.style.background = flavor.color;
+                document.getElementById('iceCreamScoops').appendChild(scoop);
+                iceCreamScoopCount++;
+                document.getElementById('iceCreamToppingButtons').hidden = false;
+                document.getElementById('iceCreamFinish').hidden = false;
+                setTimeout(() => {
+                    iceCreamBusy = false;
+                    document.getElementById('iceCreamPrompt').textContent = interfaceText[language].iceCreamTop;
+                }, 470);
+            }, 300);
+        }
+
+        function addIceCreamTopping(index) {
+            if (!iceCreamScoopCount || iceCreamBusy) return;
+            const topping = iceCreamToppingChoices[index];
+            const language = creativeActionLanguage(iceCreamLanguageIndex++);
+            const toppings = document.getElementById('iceCreamToppings');
+            while (toppings.children.length >= 18) toppings.firstElementChild.remove();
+            const piece = document.createElement('span');
+            piece.className = 'ice-cream-topping';
+            piece.textContent = topping.emoji;
+            piece.style.left = `${8 + Math.random() * 72}%`;
+            piece.style.top = `${10 + Math.random() * 62}%`;
+            piece.style.transform = `rotate(${Math.round(Math.random() * 40 - 20)}deg)`;
+            toppings.appendChild(piece);
+            document.getElementById('iceCreamFlag').textContent = languageSettings[language].flag;
+            document.getElementById('iceCreamPrompt').textContent = topping.names[language] || topping.names.en;
+            playCreativeSound([620,820], .11);
+            speakSingle(languageSettings[language].code, topping.names[language] || topping.names.en);
+        }
+
+        function finishIceCream() {
+            if (!iceCreamScoopCount || iceCreamBusy) return;
+            iceCreamBusy = true;
+            const language = creativeActionLanguage(iceCreamLanguageIndex++);
+            const result = document.getElementById('iceCreamResult');
+            result.classList.remove('celebrate');
+            void result.offsetWidth;
+            result.classList.add('celebrate');
+            document.getElementById('iceCreamPrompt').textContent = interfaceText[language].iceCreamReady;
+            playCreativeSound([523,659,784,1047], .2);
+            speakSingle(languageSettings[language].code, interfaceText[language].iceCreamReady);
+            setTimeout(resetIceCream, 2100);
+        }
+
+        function resetIceCream() {
+            iceCreamBusy = false;
+            iceCreamScoopCount = 0;
+            document.getElementById('iceCreamScoops').innerHTML = '';
+            document.getElementById('iceCreamToppings').innerHTML = '';
+            document.getElementById('iceCreamResult').classList.remove('celebrate');
+            document.getElementById('iceCreamToppingButtons').hidden = true;
+            document.getElementById('iceCreamFinish').hidden = true;
+            updateIceCreamLanguage();
+        }
+
+        let birthdayTimers = [];
+        let birthdayRoundActive = false;
+        let birthdayLanguageIndex = 0;
+
+        function birthdayLater(callback, delay) {
+            birthdayTimers.push(setTimeout(callback, delay));
+        }
+
+        function stopBirthdayRoundTimers() {
+            birthdayTimers.forEach(clearTimeout);
+            birthdayTimers = [];
+            birthdayRoundActive = false;
+        }
+
+        function renderBirthdayCandles(count = 4) {
+            const candles = document.getElementById('birthdayCandles');
+            candles.innerHTML = '';
+            for (let index = 0; index < count; index++) {
+                const candle = document.createElement('span');
+                candle.className = 'birthday-candle';
+                candle.innerHTML = '<span class="birthday-flame"></span>';
+                candles.appendChild(candle);
+            }
+        }
+
+        function updateBirthdayLanguage(language = null) {
+            if (!document.getElementById('birthdayPrompt')) return;
+            const displayLanguage = language || (currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode);
+            document.getElementById('birthdayFlag').textContent = languageSettings[displayLanguage].flag;
+            if (!birthdayRoundActive) document.getElementById('birthdayPrompt').textContent = interfaceText[displayLanguage].birthdayReady;
+            document.getElementById('birthdayStart').textContent = interfaceText[displayLanguage].birthdayStart;
+        }
+
+        function prepareBirthdayGame() {
+            stopBirthdayRoundTimers();
+            const stage = document.getElementById('birthdayStage');
+            stage.classList.remove('celebrate');
+            document.getElementById('birthdayConfetti').innerHTML = '';
+            document.getElementById('birthdayCountdown').textContent = '🎈';
+            renderBirthdayCandles(4);
+            document.getElementById('birthdayStart').hidden = false;
+            updateBirthdayLanguage();
+        }
+
+        function startBirthdayRound() {
+            stopBirthdayRoundTimers();
+            birthdayRoundActive = true;
+            const language = creativeActionLanguage(birthdayLanguageIndex++);
+            const text = interfaceText[language];
+            renderBirthdayCandles(4);
+            document.getElementById('birthdayFlag').textContent = languageSettings[language].flag;
+            document.getElementById('birthdayPrompt').textContent = text.birthdayBlow;
+            document.getElementById('birthdayStart').hidden = true;
+            document.getElementById('birthdayStage').classList.remove('celebrate');
+            document.getElementById('birthdayConfetti').innerHTML = '';
+            const countdown = document.getElementById('birthdayCountdown');
+            countdown.textContent = '3';
+            speakSingle(languageSettings[language].code, `3 2 1. ${text.birthdayBlow}`);
+            birthdayLater(() => { countdown.textContent = '2'; playCreativeSound([440], .1); }, 900);
+            birthdayLater(() => { countdown.textContent = '1'; playCreativeSound([523], .1); }, 1800);
+            birthdayLater(() => { countdown.textContent = '💨'; playCreativeSound([659,784], .13); }, 2700);
+            Array.from(document.querySelectorAll('.birthday-candle')).forEach((candle,index) => {
+                birthdayLater(() => extinguishBirthdayCandle(candle), 3300 + index * 310);
+            });
+            birthdayLater(() => celebrateBirthday(language), 4700);
+        }
+
+        function extinguishBirthdayCandle(candle) {
+            if (candle.classList.contains('out')) return;
+            candle.classList.add('out');
+            playCreativeSound([240 + Math.random() * 90], .12);
+        }
+
+        function birthdayStagePressed() {
+            if (!birthdayRoundActive) {
+                startBirthdayRound();
+                return;
+            }
+            const remaining = Array.from(document.querySelectorAll('.birthday-candle:not(.out)'));
+            remaining.forEach((candle,index) => birthdayLater(() => extinguishBirthdayCandle(candle), index * 120));
+        }
+
+        function celebrateBirthday(language) {
+            if (!birthdayRoundActive) return;
+            birthdayRoundActive = false;
+            document.getElementById('birthdayCountdown').textContent = '🎉';
+            document.getElementById('birthdayPrompt').textContent = interfaceText[language].birthdayCheer;
+            document.getElementById('birthdayStage').classList.add('celebrate');
+            const confetti = document.getElementById('birthdayConfetti');
+            confetti.innerHTML = '';
+            for (let index = 0; index < 24; index++) {
+                const piece = document.createElement('span');
+                piece.textContent = ['⭐','🎈','🎉','✨'][index % 4];
+                piece.style.left = `${Math.random() * 94}%`;
+                piece.style.animationDelay = `${Math.random() * .35}s`;
+                confetti.appendChild(piece);
+            }
+            playCreativeSound([392,523,659,784,1047], .22);
+            speakSingle(languageSettings[language].code, interfaceText[language].birthdayCheer);
+            const button = document.getElementById('birthdayStart');
+            button.textContent = interfaceText[language].birthdayAgain;
+            button.hidden = false;
+        }
+
+        document.getElementById('birthdayStage').addEventListener('keydown', event => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                birthdayStagePressed();
+            }
+        });
+
+        const cookingMeals = [
+            {emoji:'🍝',names:{en:'Pasta',enUS:'Pasta',es:'Pastita',esES:'Pasta',fr:'Pâtes',el:'Μακαρονάκια',de:'Nudeln',it:'Pasta',tr:'Makarna',ptBR:'Macarrão',nl:'Pasta',pl:'Makaron'}},
+            {emoji:'🍗',names:{en:'Chicken',enUS:'Chicken',es:'Pollito',esES:'Pollo',fr:'Poulet',el:'Κοτοπουλάκι',de:'Hähnchen',it:'Pollo',tr:'Tavuk',ptBR:'Franguinho',nl:'Kip',pl:'Kurczak'}},
+            {emoji:'🥕',names:{en:'Veggies',enUS:'Veggies',es:'Verduritas',esES:'Verduras',fr:'Légumes',el:'Λαχανικάκια',de:'Gemüse',it:'Verdurine',tr:'Sebzeler',ptBR:'Legumes',nl:'Groentjes',pl:'Warzywa'}}
+        ];
+        const cookingCountWords = {en:['one','two','three','four','five'],enUS:['one','two','three','four','five'],es:['una','dos','tres','cuatro','cinco'],esES:['una','dos','tres','cuatro','cinco'],fr:['un','deux','trois','quatre','cinq'],el:['ένα','δύο','τρία','τέσσερα','πέντε'],de:['eins','zwei','drei','vier','fünf'],it:['uno','due','tre','quattro','cinque'],tr:['bir','iki','üç','dört','beş'],ptBR:['uma','duas','três','quatro','cinco'],nl:['één','twee','drie','vier','vijf'],pl:['jedna','dwie','trzy','cztery','pięć']};
+        let cookingStep = 'choose';
+        let cookingMealIndex = 0;
+        let cookingOnionCount = 0;
+        let cookingChopCount = 0;
+        let cookingLanguageIndex = 0;
+        let cookingIngredientDrag = null;
+
+        function renderMealChoices() {
+            const container = document.getElementById('mealChoices');
+            container.innerHTML = '';
+            cookingMeals.forEach((meal,index) => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'meal-choice';
+                button.innerHTML = `${meal.emoji}<small></small>`;
+                button.onclick = () => chooseCookingMeal(index);
+                container.appendChild(button);
+            });
+        }
+
+        function updateCookingLanguage(language = null) {
+            if (!document.getElementById('cookingPrompt')) return;
+            const displayLanguage = language || (currentLangMode === 'all' ? allLanguageOrder[0] : currentLangMode);
+            const text = interfaceText[displayLanguage];
+            document.getElementById('cookingFlag').textContent = languageSettings[displayLanguage].flag;
+            const promptKey = {choose:'cookingChoose',add:'cookingAddOnions',chop:'cookingChop',stir:'cookingStir',cooking:'cookingStir',ready:'cookingReady'}[cookingStep];
+            document.getElementById('cookingPrompt').textContent = text[promptKey];
+            document.querySelectorAll('.meal-choice').forEach((button,index) => {
+                const name = cookingMeals[index].names[displayLanguage] || cookingMeals[index].names.en;
+                button.querySelector('small').textContent = name;
+                button.setAttribute('aria-label', name);
+            });
+            document.getElementById('cookingAction').textContent = `🥄 ${text.cookingStir}`;
+            document.getElementById('cookingNext').textContent = cookingStep === 'ready' ? `↻ ${text.cookingChoose}` : text.cookingNext;
+        }
+
+        function chooseCookingMeal(index) {
+            cookingMealIndex = index;
+            cookingStep = 'add';
+            cookingOnionCount = 0;
+            cookingChopCount = 0;
+            const language = creativeActionLanguage(cookingLanguageIndex++);
+            const meal = cookingMeals[index];
+            document.getElementById('mealChoices').hidden = true;
+            document.getElementById('cookingWorkspace').hidden = false;
+            document.getElementById('cookingPotFood').textContent = meal.emoji;
+            document.getElementById('cookingFinishedPlate').hidden = true;
+            document.getElementById('choppingBoard').hidden = true;
+            document.getElementById('cookingAction').hidden = true;
+            document.getElementById('cookingNext').hidden = true;
+            const tray = document.getElementById('ingredientTray');
+            tray.hidden = false;
+            tray.innerHTML = '';
+            for (let onion = 0; onion < 5; onion++) {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'ingredient-button';
+                button.textContent = '🧅';
+                button.setAttribute('aria-label', `Onion ${onion + 1}`);
+                button.addEventListener('pointerdown', event => beginCookingIngredientDrag(event, button));
+                button.addEventListener('pointermove', moveCookingIngredientDrag);
+                button.addEventListener('pointerup', finishCookingIngredientDrag);
+                button.addEventListener('pointercancel', cancelCookingIngredientDrag);
+                button.onclick = () => addCookingOnion(button);
+                tray.appendChild(button);
+            }
+            document.getElementById('cookingFlag').textContent = languageSettings[language].flag;
+            document.getElementById('cookingPrompt').textContent = interfaceText[language].cookingAddOnions;
+            speakSingle(languageSettings[language].code, meal.names[language] || meal.names.en);
+        }
+
+        function beginCookingIngredientDrag(event, button) {
+            if (cookingStep !== 'add' || button.classList.contains('added') || event.isPrimary === false) return;
+            cookingIngredientDrag = { pointerId:event.pointerId, button, startX:event.clientX, startY:event.clientY };
+            button.setPointerCapture(event.pointerId);
+            button.style.zIndex = '9';
+        }
+
+        function moveCookingIngredientDrag(event) {
+            if (!cookingIngredientDrag || cookingIngredientDrag.pointerId !== event.pointerId) return;
+            const deltaX = event.clientX - cookingIngredientDrag.startX;
+            const deltaY = event.clientY - cookingIngredientDrag.startY;
+            cookingIngredientDrag.button.style.transform = `translate(${deltaX}px,${deltaY}px) scale(1.08)`;
+        }
+
+        function finishCookingIngredientDrag(event) {
+            if (!cookingIngredientDrag || cookingIngredientDrag.pointerId !== event.pointerId) return;
+            const button = cookingIngredientDrag.button;
+            button.style.transform = '';
+            button.style.zIndex = '';
+            cookingIngredientDrag = null;
+            event.preventDefault();
+            addCookingOnion(button);
+        }
+
+        function cancelCookingIngredientDrag() {
+            if (!cookingIngredientDrag) return;
+            cookingIngredientDrag.button.style.transform = '';
+            cookingIngredientDrag.button.style.zIndex = '';
+            cookingIngredientDrag = null;
+        }
+
+        function addCookingOnion(button) {
+            if (cookingStep !== 'add' || button.classList.contains('added')) return;
+            button.classList.add('added');
+            cookingOnionCount++;
+            const language = creativeActionLanguage(cookingLanguageIndex++);
+            document.getElementById('cookingFlag').textContent = languageSettings[language].flag;
+            const countWord = cookingCountWords[language]?.[cookingOnionCount - 1] || String(cookingOnionCount);
+            document.getElementById('cookingPrompt').textContent = `${countWord} 🧅`;
+            playCreativeSound([300 + cookingOnionCount * 60], .12);
+            speakSingle(languageSettings[language].code, countWord);
+            if (cookingOnionCount < 5) return;
+            setTimeout(() => {
+                cookingStep = 'chop';
+                document.getElementById('ingredientTray').hidden = true;
+                document.getElementById('choppingBoard').hidden = false;
+                updateCookingLanguage(language);
+                speakSingle(languageSettings[language].code, interfaceText[language].cookingChop);
+            }, 650);
+        }
+
+        function chopIngredient() {
+            if (cookingStep !== 'chop') return;
+            cookingChopCount++;
+            const board = document.getElementById('choppingBoard');
+            board.classList.remove('chop');
+            void board.offsetWidth;
+            board.classList.add('chop');
+            playCreativeSound([180 + cookingChopCount * 35], .09);
+            if (cookingChopCount < 3) return;
+            const language = creativeActionLanguage(cookingLanguageIndex++);
+            setTimeout(() => {
+                cookingStep = 'stir';
+                board.hidden = true;
+                document.getElementById('cookingAction').hidden = false;
+                updateCookingLanguage(language);
+                speakSingle(languageSettings[language].code, interfaceText[language].cookingStir);
+            }, 420);
+        }
+
+        function stirCookingPot() {
+            if (cookingStep !== 'stir') return;
+            cookingStep = 'cooking';
+            document.getElementById('cookingAction').hidden = true;
+            const pot = document.getElementById('cookingPot');
+            pot.classList.add('bubbling');
+            playCreativeSound([220,260,310,360], .18);
+            setTimeout(() => {
+                pot.classList.remove('bubbling');
+                cookingStep = 'ready';
+                const language = creativeActionLanguage(cookingLanguageIndex++);
+                const plate = document.getElementById('cookingFinishedPlate');
+                plate.textContent = cookingMeals[cookingMealIndex].emoji;
+                plate.hidden = false;
+                document.getElementById('cookingNext').hidden = false;
+                updateCookingLanguage(language);
+                playCreativeSound([523,659,784,1047], .2);
+                speakSingle(languageSettings[language].code, interfaceText[language].cookingReady);
+            }, 1500);
+        }
+
+        function advanceCookingGame() {
+            cookingStep = 'choose';
+            document.getElementById('cookingWorkspace').hidden = true;
+            document.getElementById('mealChoices').hidden = false;
+            document.getElementById('cookingNext').hidden = true;
+            updateCookingLanguage();
+        }
+
+        renderIceCreamControls();
+        renderMealChoices();
+        prepareBirthdayGame();
+
+        // --- Game 14: Music Studio ---
         const musicGrid = document.getElementById('musicGrid');
         let musicInviteTimers = [];
 

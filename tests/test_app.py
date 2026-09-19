@@ -123,6 +123,9 @@ class AppRegressionTests(unittest.TestCase):
         self.assertIn('id="onboardingAddLanguageSelect"', HTML)
         self.assertIn('id="onboardingSelectedLanguages"', HTML)
         self.assertIn("function renderOnboardingLanguagePicker(copy)", HTML)
+        self.assertIn("function populateOnboardingPrimaryOptions()", HTML)
+        self.assertIn("supportedLanguageOrder.forEach(language =>", HTML)
+        self.assertIn("populateOnboardingPrimaryOptions();", HTML)
         self.assertIn("function addOnboardingLanguage(language)", HTML)
         self.assertIn("function removeOnboardingLanguage(language)", HTML)
         self.assertNotIn('data-primary-language=', HTML)
@@ -347,7 +350,7 @@ class AppRegressionTests(unittest.TestCase):
         for phrase in ("Play timer", "Tiempo de juego", "Temps de jeu", "Χρόνος παιχνιδιού"):
             self.assertIn(phrase, HTML)
 
-    def test_broccoli_bounce_uses_hold_to_fly_and_recovers_after_a_crash(self) -> None:
+    def test_broccoli_bounce_uses_hold_to_fly_and_never_stops_after_a_crash(self) -> None:
         for phrase in (
             "runnerStage.addEventListener('pointerdown', startRunnerFlight)",
             "runnerStage.addEventListener('pointerup', stopRunnerFlight)",
@@ -358,10 +361,16 @@ class AppRegressionTests(unittest.TestCase):
             "runnerCharacter.classList.add('flying')",
             "shrinkRunner(reaction);",
             "runnerCrashed = false;",
-            "scheduleRunnerObject(620);",
+            "scheduleRunnerObject(260);",
         ):
             self.assertIn(phrase, HTML)
-        self.assertRegex(HTML, re.compile(r"runnerRestartTimer\s*=\s*setTimeout\(\(\)\s*=>\s*\{.*?\},\s*1650\);", re.S))
+        crash_source = HTML[HTML.index("function crashRunner()") : HTML.index("function startRunnerFlight")]
+        self.assertNotIn("runnerRunning = false", crash_source)
+        self.assertNotIn("cancelAnimationFrame", crash_source)
+        self.assertRegex(crash_source, re.compile(r"runnerRestartTimer\s*=\s*setTimeout\(\(\)\s*=>\s*\{.*?\},\s*1050\);", re.S))
+        frame_source = HTML[HTML.index("function runnerFrame") : HTML.index("function playRunnerChime")]
+        self.assertIn("if (!runnerRunning) return", frame_source)
+        self.assertIn("if (runnerRunning) runnerAnimationFrame = requestAnimationFrame(runnerFrame)", frame_source)
 
     def test_runner_grows_every_five_foods_caps_at_seventy_percent_and_shrinks_on_rocks(self) -> None:
         self.assertEqual(5, constant_number("runnerFoodsPerGrowthStep"))
@@ -416,16 +425,49 @@ class AppRegressionTests(unittest.TestCase):
         self.assertIn("runnerAltitude === 0 && !runnerThrusting", HTML)
 
     def test_runner_uses_four_fun_crash_reactions_and_recovers(self) -> None:
-        self.assertIn("['crash-dizzy', 'crash-tumble', 'crash-squash', 'crash-wobble']", HTML)
+        self.assertIn("['crash-bandage', 'crash-dizzy', 'crash-tumble', 'crash-wobble']", HTML)
         for animation in (
+            "@keyframes runnerCrashBandage",
             "@keyframes runnerCrashDizzy",
             "@keyframes runnerCrashTumble",
-            "@keyframes runnerCrashSquash",
             "@keyframes runnerCrashWobble",
         ):
             self.assertIn(animation, HTML)
+        self.assertIn(".runner-character.crash-bandage::after { content:'🩹'", HTML)
+        self.assertIn("playRealSoundProfile('runnerOuch')", HTML)
+        self.assertIn("assets/runner-ouch.mp3", HTML)
         self.assertIn("runnerCrashReactionIndex++ % runnerCrashReactions.length", HTML)
         self.assertIn("document.getElementById('runnerCrashText').textContent = phrase", HTML)
+
+    def test_ice_cream_maker_is_one_tap_guided_and_has_no_failure_state(self) -> None:
+        self.assertIn('id="game-icecream"', HTML)
+        self.assertIn("function chooseIceCreamFlavor(index)", HTML)
+        self.assertIn("function addIceCreamTopping(index)", HTML)
+        self.assertIn("iceCreamScoopCount >= 3", HTML)
+        self.assertIn("iceCreamToppingChoices", HTML)
+        self.assertIn("@keyframes iceCreamPour", HTML)
+        self.assertNotIn("iceCreamWrong", HTML)
+
+    def test_birthday_candles_use_a_private_reliable_countdown_and_tap_fallback(self) -> None:
+        birthday_source = HTML[HTML.index("let birthdayTimers") : HTML.index("const cookingMeals")]
+        self.assertIn("function startBirthdayRound()", birthday_source)
+        self.assertIn("birthdayStagePressed()", birthday_source)
+        self.assertIn("extinguishBirthdayCandle", birthday_source)
+        self.assertIn("3 2 1", birthday_source)
+        self.assertNotIn("getUserMedia", birthday_source)
+        self.assertNotIn("MediaRecorder", birthday_source)
+
+    def test_little_chef_guides_choice_counting_chopping_and_stirring(self) -> None:
+        self.assertIn('id="game-cooking"', HTML)
+        self.assertIn("for (let onion = 0; onion < 5; onion++)", HTML)
+        self.assertIn("function addCookingOnion(button)", HTML)
+        self.assertIn("beginCookingIngredientDrag(event, button)", HTML)
+        self.assertIn("moveCookingIngredientDrag", HTML)
+        self.assertIn("finishCookingIngredientDrag", HTML)
+        self.assertIn("function chopIngredient()", HTML)
+        self.assertIn("function stirCookingPot()", HTML)
+        self.assertIn("cookingChopCount < 3", HTML)
+        self.assertIn("cookingCountWords", HTML)
 
     def test_runner_speaks_food_before_a_quieter_score(self) -> None:
         self.assertIn("speakSingle(languageSettings[runnerDisplayLanguage].code, foodName, () =>", HTML)
