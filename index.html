@@ -2511,43 +2511,57 @@
 
         /* Guided creative games: large targets, no failure states, and no reading required. */
         #game-icecream,
-        #game-birthday,
-        #game-cooking { overflow-y:auto;overscroll-behavior:contain; }
+        #game-cooking { width:100%;max-width:none;height:100svh;overflow:hidden;padding:0 !important;overscroll-behavior:none; }
+        #game-birthday { overflow-y:auto;overscroll-behavior:contain; }
         .ice-cream-game,
         .birthday-game,
         .cooking-game { width:min(100%,760px);min-height:calc(100svh - 18px);margin:auto;display:flex;flex-direction:column;align-items:center;gap:10px;padding:8px 8px 90px; }
+        .ice-cream-game,
+        .cooking-game { position:relative;width:100%;height:100%;min-height:0;padding:0;overflow:hidden; }
         .creative-prompt { min-height:48px;padding:8px 16px;display:flex;align-items:center;justify-content:center;gap:8px;border:3px solid rgba(144,205,244,.85);border-radius:999px;background:rgba(255,255,255,.92);color:#2d4f73;font-size:clamp(1rem,4.2vw,1.25rem);font-weight:950;text-align:center;box-shadow:0 4px 12px rgba(45,55,72,.1); }
         .creative-prompt .academic-flag { font-size:1.45em; }
+        .ice-cream-game > .creative-prompt,
+        .cooking-game > .creative-prompt { position:absolute;top:max(8px,env(safe-area-inset-top));left:50%;z-index:12;max-width:calc(100% - 92px);min-height:42px;padding:5px 12px;transform:translateX(-50%);pointer-events:none; }
 
-        .ice-cream-stage { position:relative;width:min(96vw,620px);height:clamp(250px,40svh,370px);border-radius:28px;background:linear-gradient(#d9f4ff,#fff8e8);box-shadow:inset 0 0 0 4px #bee3f8;overflow:hidden; }
-        .ice-cream-machine { position:absolute;left:50%;top:12px;width:200px;height:106px;transform:translateX(-50%);border-radius:24px 24px 16px 16px;background:linear-gradient(135deg,#f8fafc,#cbd5e0);box-shadow:0 8px 0 #9fb3c8; }
+        .ice-cream-stage { position:relative;width:100%;height:100%;background:radial-gradient(circle at 17% 16%,rgba(255,255,255,.9) 0 4%,transparent 4.5%),radial-gradient(circle at 82% 25%,rgba(255,255,255,.75) 0 3%,transparent 3.5%),linear-gradient(#d9f4ff,#fff8e8);overflow:hidden; }
+        .ice-cream-machine { position:absolute;left:50%;top:clamp(76px,12svh,120px);width:200px;height:106px;transform:translateX(-50%);border-radius:24px 24px 16px 16px;background:linear-gradient(135deg,#f8fafc,#cbd5e0);box-shadow:0 8px 0 #9fb3c8; }
         .ice-cream-machine::before { content:'🍦';position:absolute;left:17px;top:16px;font-size:2.8rem; }
         .ice-cream-machine-window { position:absolute;right:24px;top:22px;width:73px;height:42px;border:5px solid #718096;border-radius:10px;background:#b9efff; }
-        .ice-cream-nozzle { position:absolute;left:50%;top:103px;width:34px;height:48px;transform:translateX(-50%);border-radius:0 0 12px 12px;background:#718096;z-index:2; }
-        .ice-cream-stream { position:absolute;left:50%;top:139px;width:22px;height:0;transform:translateX(-50%);border-radius:12px;opacity:0;z-index:3; }
+        .ice-cream-nozzle { position:absolute;left:50%;top:calc(clamp(76px,12svh,120px) + 91px);width:34px;height:48px;transform:translateX(-50%);border-radius:0 0 12px 12px;background:#718096;z-index:2; }
+        .ice-cream-stream { position:absolute;left:50%;top:calc(clamp(76px,12svh,120px) + 127px);width:22px;height:0;transform:translateX(-50%);border-radius:12px;opacity:0;z-index:3; }
         .ice-cream-stream.pouring { animation:iceCreamPour .72s ease-in-out both; }
         @keyframes iceCreamPour { 0%{height:0;opacity:0} 18%{height:100px;opacity:1} 70%{height:100px;opacity:1} 100%{height:12px;opacity:0} }
-        .ice-cream-result { position:absolute;left:50%;bottom:8px;width:190px;height:215px;transform:translateX(-50%); }
+        .ice-cream-result { position:absolute;left:50%;bottom:clamp(136px,19svh,190px);width:190px;height:215px;transform:translateX(-50%);cursor:pointer; }
+        .ice-cream-result.ready { animation:iceCreamReadyInvite 1.25s ease-in-out infinite; }
+        @keyframes iceCreamReadyInvite { 50%{transform:translateX(-50%) scale(1.045)} }
         .ice-cream-cone { position:absolute;left:50%;bottom:0;width:92px;height:118px;transform:translateX(-50%);clip-path:polygon(0 0,100% 0,50% 100%);background:repeating-linear-gradient(45deg,transparent 0 13px,rgba(139,94,52,.25) 13px 16px),repeating-linear-gradient(-45deg,#e9ad57 0 13px,#cf893c 13px 16px);filter:drop-shadow(0 5px 3px rgba(73,53,32,.2)); }
         .ice-cream-scoops { position:absolute;left:50%;bottom:92px;z-index:2;display:flex;flex-direction:column-reverse;align-items:center;transform:translateX(-50%); }
         .ice-cream-scoop { width:112px;height:68px;margin-top:-25px;border-radius:56px 56px 30px 30px;border:3px solid rgba(255,255,255,.72);box-shadow:inset -9px -8px 0 rgba(70,50,70,.1),0 4px 6px rgba(60,45,50,.16);animation:iceCreamScoopIn .78s cubic-bezier(.2,.9,.35,1.18) both; }
         @keyframes iceCreamScoopIn { 0%{transform:translateY(-130px) scale(.35) rotate(-16deg);opacity:0} 65%{transform:translateY(4px) scale(1.08) rotate(3deg);opacity:1} 100%{transform:none;opacity:1} }
-        .ice-cream-toppings { position:absolute;inset:25px 22px 76px;z-index:4;pointer-events:none; }
-        .ice-cream-topping { position:absolute;font-size:1.35rem;animation:toppingDrop .58s cubic-bezier(.2,.9,.35,1.2) both;filter:drop-shadow(0 2px 1px rgba(0,0,0,.15)); }
-        @keyframes toppingDrop { from{transform:translateY(-95px) rotate(-160deg) scale(.3);opacity:0} to{transform:none;opacity:1} }
+        .ice-cream-toppings { position:absolute;inset:22px 38px 84px;z-index:4;pointer-events:none; }
+        .ice-cream-topping { position:absolute;width:9px;height:9px;border-radius:50%;background:var(--topping-color,#f56565);animation:toppingDrop .58s cubic-bezier(.2,.9,.35,1.2) both;filter:drop-shadow(0 1px 1px rgba(0,0,0,.18)); }
+        .ice-cream-topping.sprinkle { width:13px;height:4px;border-radius:999px; }
+        .ice-cream-topping.berry { width:11px;height:11px;background:#d53f8c;box-shadow:inset -2px -2px 0 rgba(90,20,60,.18); }
+        .ice-cream-topping.banana { width:13px;height:9px;border:2px solid #e6b72f;background:#ffe57a; }
+        .ice-cream-topping.nut { width:10px;height:7px;border-radius:65% 35% 60% 40%;background:#c98b4b; }
+        .ice-cream-topping.chocolate { width:9px;height:8px;border-radius:55% 45% 35% 65%;background:#5b3425; }
+        .ice-cream-topping.cherry { width:20px;height:20px;background:#e53e3e;box-shadow:inset -4px -3px 0 rgba(128,0,0,.22); }
+        .ice-cream-topping.cherry::after { content:'';position:absolute;left:11px;bottom:16px;width:3px;height:16px;border-radius:999px;background:#2f855a;transform:rotate(28deg);transform-origin:bottom; }
+        @keyframes toppingDrop { from{translate:0 -95px;rotate:-160deg;scale:.3;opacity:0} to{translate:0 0;rotate:var(--topping-rotation,0deg);scale:1;opacity:1} }
         .ice-cream-result.celebrate { animation:iceCreamDance 1.35s ease-in-out both; }
         @keyframes iceCreamDance { 0%,100%{transform:translateX(-50%) rotate(0) scale(1)} 25%{transform:translateX(-50%) rotate(-8deg) scale(1.08)} 55%{transform:translateX(-50%) rotate(8deg) scale(1.12)} 78%{transform:translateX(-50%) rotate(-4deg) scale(1.06)} }
-        .ice-cream-flavors,.ice-cream-topping-buttons { width:min(96vw,620px);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px; }
-        .ice-cream-choice { min-height:70px;border:3px solid rgba(255,255,255,.9);border-radius:20px;background:var(--choice-color,#f7fafc);color:#243b53;font:inherit;font-weight:950;box-shadow:0 5px 0 rgba(74,85,104,.2);display:grid;place-items:center;gap:2px;padding:6px; }
-        .ice-cream-choice:active { transform:translateY(4px);box-shadow:0 1px 0 rgba(74,85,104,.2); }
-        .ice-cream-choice span:first-child { font-size:1.7rem; }
-        .ice-cream-choice-label { font-size:.72rem;line-height:1; }
-        .flavor-lever { position:relative;margin-top:10px; }
-        .flavor-lever::before { content:'';position:absolute;left:50%;top:-15px;width:12px;height:22px;transform:translateX(-50%);border-radius:8px;background:#718096;box-shadow:inset -3px 0 rgba(0,0,0,.12); }
-        .flavor-lever::after { content:'';position:absolute;left:50%;top:-22px;width:28px;height:18px;transform:translateX(-50%);border:3px solid white;border-radius:50%;background:var(--choice-color);box-shadow:0 3px 3px rgba(45,55,72,.18); }
+        .ice-cream-flavors,.ice-cream-topping-buttons { position:absolute;left:50%;bottom:max(18px,env(safe-area-inset-bottom));z-index:8;width:min(94vw,620px);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;transform:translateX(-50%); }
+        .ice-cream-topping-buttons { grid-template-columns:repeat(6,minmax(0,1fr)); }
+        .ice-cream-choice { min-height:82px;border:0;background:transparent;color:#243b53;font:inherit;font-weight:950;display:grid;place-items:center;padding:4px;filter:drop-shadow(0 5px 3px rgba(45,55,72,.18));animation:iceCreamChoiceInvite 1.8s ease-in-out infinite; }
+        .ice-cream-choice:nth-child(2n) { animation-delay:.16s; }
+        .ice-cream-choice:active { transform:scale(.88); }
+        .ice-cream-choice span:first-child { display:grid;width:68px;max-width:100%;aspect-ratio:1;place-items:center;border:4px solid rgba(255,255,255,.92);border-radius:50%;background:var(--choice-color,#fff);font-size:2.15rem;box-shadow:inset 0 -7px 0 rgba(45,55,72,.08); }
+        .ice-cream-choice-label { position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap; }
+        @keyframes iceCreamChoiceInvite { 0%,74%,100%{translate:0 0} 84%{translate:0 -7px} 92%{translate:0 2px} }
+        .flavor-lever { position:relative;margin-top:15px; }
+        .flavor-lever::before { content:'';position:absolute;left:50%;top:-10px;width:13px;height:24px;transform:translateX(-50%);border-radius:8px;background:#718096;box-shadow:inset -3px 0 rgba(0,0,0,.12); }
+        .flavor-lever::after { content:'';position:absolute;left:50%;top:-21px;width:31px;height:21px;transform:translateX(-50%);border:3px solid white;border-radius:50%;background:var(--choice-color);box-shadow:0 3px 3px rgba(45,55,72,.18); }
         .ice-cream-topping-buttons[hidden] { display:none; }
-        .ice-cream-finish { min-width:150px;min-height:58px;border:0;border-radius:999px;background:linear-gradient(135deg,#805ad5,#d53f8c);color:white;font:inherit;font-size:1.45rem;font-weight:950;box-shadow:0 6px 0 #6b46c1; }
-        .ice-cream-finish[hidden] { display:none; }
 
         .birthday-stage { position:relative;width:min(96vw,640px);height:min(72svh,520px);min-height:350px;border-radius:32px;background:radial-gradient(circle at 50% 18%,#fff 0 5%,transparent 5.5%),linear-gradient(150deg,#d9f4ff,#fce7f3 56%,#fff5c2);box-shadow:inset 0 0 0 4px #fff;overflow:hidden;cursor:pointer; }
         .birthday-countdown { position:absolute;inset:22px 0 auto;z-index:8;color:#6b46c1;font-size:clamp(3.8rem,19vw,8rem);font-weight:1000;text-align:center;text-shadow:0 5px white;pointer-events:none; }
@@ -2571,37 +2585,50 @@
         @keyframes confettiFall { to{transform:translateY(520px) rotate(420deg);opacity:.2} }
         .birthday-start { min-width:min(82vw,380px);min-height:68px;border:0;border-radius:999px;background:linear-gradient(135deg,#ed64a6,#805ad5);color:white;font:inherit;font-size:clamp(1.15rem,5vw,1.5rem);font-weight:1000;box-shadow:0 7px 0 #6b46c1; }
 
-        .cooking-stage { position:relative;width:min(96vw,660px);min-height:310px;border-radius:30px;background:linear-gradient(#eef9ff,#fffaf0);box-shadow:inset 0 0 0 4px #bee3f8;overflow:hidden; }
-        .meal-choices { position:absolute;inset:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;align-items:center; }
-        .meal-choice { min-height:190px;border:4px solid white;border-radius:26px;background:linear-gradient(#fff,#edf2f7);font:inherit;font-size:clamp(3.5rem,14vw,6rem);box-shadow:0 7px 0 #cbd5e0; }
-        .meal-choice small { display:block;margin-top:8px;color:#2d4f73;font-size:.9rem;font-weight:950; }
+        .cooking-stage { position:relative;width:100%;height:100%;min-height:0;background:radial-gradient(circle at 50% 8%,#fff 0 5%,transparent 5.5%),linear-gradient(#dff5ff 0 50%,#ffe4b7 50% 100%);overflow:hidden; }
+        .meal-choices { position:absolute;inset:76px 12px 20px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-items:center; }
+        .meal-choice { aspect-ratio:1;border:0;border-radius:50%;background:radial-gradient(circle,#fff 0 52%,#d7eef9 53% 65%,#fff 66%);font:inherit;font-size:clamp(3.4rem,15vw,7rem);filter:drop-shadow(0 8px 5px rgba(45,55,72,.2));animation:mealInvite 1.8s ease-in-out infinite; }
+        .meal-choice:nth-child(2) { animation-delay:.18s; }
+        .meal-choice:nth-child(3) { animation-delay:.36s; }
+        .meal-choice:active { transform:scale(.9); }
+        .meal-choice small { position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap; }
+        @keyframes mealInvite { 0%,72%,100%{transform:scale(1)} 82%{transform:scale(1.08)} 91%{transform:scale(.97)} }
         .cooking-workspace { position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center; }
-        .cooking-pot { position:relative;width:210px;height:135px;margin-bottom:28px;border-radius:18px 18px 55px 55px;background:linear-gradient(110deg,#a0aec0,#edf2f7 48%,#718096);border:5px solid #4a5568;box-shadow:0 10px 0 rgba(45,55,72,.18); }
+        .cooking-pot { position:relative;width:min(52vw,270px);height:min(31vw,162px);min-height:132px;margin-bottom:max(38px,env(safe-area-inset-bottom));border-radius:18px 18px 62px 62px;background:linear-gradient(110deg,#a0aec0,#edf2f7 48%,#718096);border:5px solid #4a5568;box-shadow:0 10px 0 rgba(45,55,72,.18);transition:transform .2s; }
         .cooking-pot::before,.cooking-pot::after { content:'';position:absolute;top:24px;width:55px;height:22px;border:9px solid #4a5568; }
         .cooking-pot::before { right:100%;border-radius:18px 0 0 18px;border-right:0; }
         .cooking-pot::after { left:100%;border-radius:0 18px 18px 0;border-left:0; }
         .cooking-pot-food { position:absolute;left:50%;top:-52px;transform:translateX(-50%);font-size:4.8rem; }
+        .cooking-spoon { position:absolute;left:50%;top:-92px;z-index:3;display:none;font-size:6rem;transform:translateX(-50%) rotate(-22deg);filter:drop-shadow(0 5px 3px rgba(45,55,72,.25));pointer-events:none; }
+        .cooking-pot.ready-to-stir { cursor:pointer;animation:potInvite 1.15s ease-in-out infinite; }
+        .cooking-pot.ready-to-stir .cooking-spoon { display:block;animation:spoonStir 1.05s ease-in-out infinite; }
+        @keyframes potInvite { 50%{transform:scale(1.06)} }
+        @keyframes spoonStir { 0%,100%{transform:translateX(-56%) rotate(-26deg)} 50%{transform:translateX(-36%) rotate(8deg)} }
         .cooking-pot.bubbling { animation:potBubble .25s ease-in-out 7 alternate; }
         @keyframes potBubble { to{transform:translateY(-5px) rotate(1.5deg)} }
-        .ingredient-tray { position:absolute;left:10px;right:10px;top:12px;z-index:4;display:flex;justify-content:center;gap:8px;flex-wrap:wrap; }
-        .ingredient-button { width:62px;height:62px;border:3px solid white;border-radius:20px;background:#f0fff4;font-size:2.25rem;box-shadow:0 5px 0 #9ae6b4;touch-action:none; }
+        .ingredient-tray { position:absolute;left:50%;top:clamp(82px,14svh,128px);z-index:4;width:min(94vw,620px);display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;transform:translateX(-50%); }
+        .ingredient-button { width:100%;aspect-ratio:1;border:0;background:transparent;font-size:clamp(2.5rem,12vw,4.6rem);filter:drop-shadow(0 5px 2px rgba(89,54,22,.18));touch-action:none;animation:onionInvite 1.6s ease-in-out infinite; }
+        .ingredient-button:nth-child(2n) { animation-delay:.16s; }
+        @keyframes onionInvite { 0%,70%,100%{transform:translateY(0)} 82%{transform:translateY(-9px) rotate(-5deg)} 91%{transform:translateY(0) rotate(4deg)} }
         .ingredient-button.added { animation:ingredientFly .62s ease-in both;pointer-events:none; }
-        @keyframes ingredientFly { to{transform:translate(0,155px) scale(.25) rotate(240deg);opacity:0} }
-        .chopping-board { position:absolute;left:50%;top:18px;z-index:4;width:min(82%,390px);height:175px;transform:translateX(-50%);border:5px solid #9c6b30;border-radius:27px;background:linear-gradient(100deg,#efc174,#d89c4b);font-size:5rem;box-shadow:0 8px 0 #81511f; }
+        @keyframes ingredientFly { to{transform:translate(0,46svh) scale(.2) rotate(240deg);opacity:0} }
+        .chopping-board { position:absolute;left:50%;top:clamp(98px,18svh,155px);z-index:4;width:min(82%,430px);height:min(31svh,220px);transform:translateX(-50%);border:5px solid #9c6b30;border-radius:27px;background:linear-gradient(100deg,#efc174,#d89c4b);font-size:clamp(4.5rem,19vw,7rem);box-shadow:0 8px 0 #81511f; }
         .chopping-board::after { content:'🔪';position:absolute;right:22%;top:12px;font-size:4.2rem;transform:rotate(-35deg);transform-origin:80% 80%; }
         .chopping-board.chop::after { animation:knifeChop .34s ease-in-out; }
         @keyframes knifeChop { 50%{transform:translate(-30px,48px) rotate(-5deg)} }
-        .cooking-action { position:absolute;left:50%;top:34px;z-index:4;transform:translateX(-50%);min-width:210px;min-height:78px;border:4px solid white;border-radius:999px;background:#4299e1;color:white;font:inherit;font-size:1.35rem;font-weight:1000;box-shadow:0 7px 0 #2b6cb0; }
-        .cooking-finished-plate { position:absolute;inset:16px;z-index:5;display:grid;place-items:center;border-radius:25px;background:radial-gradient(circle,#fff 0 45%,#bee3f8 46% 56%,#fff 57%);font-size:8rem;animation:mealReady 1s cubic-bezier(.2,.9,.35,1.2) both; }
+        .cooking-finished-plate { position:absolute;left:50%;top:50%;z-index:5;width:min(78vw,470px);aspect-ratio:1;display:grid;place-items:center;transform:translate(-50%,-48%);border-radius:50%;background:radial-gradient(circle,#fff 0 45%,#bee3f8 46% 56%,#fff 57%);font-size:clamp(8rem,35vw,13rem);filter:drop-shadow(0 13px 8px rgba(45,55,72,.2));animation:mealReady 1s cubic-bezier(.2,.9,.35,1.2) both;cursor:pointer; }
         @keyframes mealReady { from{transform:scale(.25) rotate(-20deg);opacity:0} to{transform:none;opacity:1} }
-        .cooking-next { width:min(92vw,620px);min-height:64px;border:0;border-radius:999px;background:linear-gradient(135deg,#38a169,#2b6cb0);color:white;font:inherit;font-size:1.2rem;font-weight:1000;box-shadow:0 6px 0 #276749; }
-        .cooking-next[hidden],[hidden] { display:none !important; }
+        .cooking-finished-plate:not([hidden]) { animation:finishedPlateIn 1s cubic-bezier(.2,.9,.35,1.2) both,finishedPlateInvite 1.6s 1.1s ease-in-out infinite; }
+        @keyframes finishedPlateIn { from{transform:translate(-50%,-48%) scale(.25) rotate(-20deg);opacity:0} to{transform:translate(-50%,-48%);opacity:1} }
+        @keyframes finishedPlateInvite { 50%{transform:translate(-50%,-48%) scale(1.05)} }
+        [hidden] { display:none !important; }
 
         @media (max-width:520px) {
             .ice-cream-flavors,.ice-cream-topping-buttons { grid-template-columns:repeat(4,minmax(0,1fr)); }
-            .ice-cream-choice { min-height:62px;padding:4px; }
-            .ice-cream-choice-label { display:none; }
-            .meal-choice { min-height:155px; }
+            .ice-cream-topping-buttons { grid-template-columns:repeat(6,minmax(0,1fr)); }
+            .ice-cream-choice { min-height:76px;padding:2px; }
+            .ice-cream-choice span:first-child { width:58px;font-size:1.9rem; }
+            .meal-choice { font-size:clamp(3.2rem,15vw,5rem); }
         }
         .runner-tap-hint {
             position:absolute;
@@ -3265,7 +3292,7 @@
                 <div class="ice-cream-machine" aria-hidden="true"><div class="ice-cream-machine-window"></div></div>
                 <div class="ice-cream-nozzle" aria-hidden="true"></div>
                 <div class="ice-cream-stream" id="iceCreamStream" aria-hidden="true"></div>
-                <div class="ice-cream-result" id="iceCreamResult" aria-label="Ice cream cone">
+                <div class="ice-cream-result" id="iceCreamResult" role="button" tabindex="0" onclick="finishIceCream()" aria-label="Ice cream cone">
                     <div class="ice-cream-scoops" id="iceCreamScoops"></div>
                     <div class="ice-cream-toppings" id="iceCreamToppings"></div>
                     <div class="ice-cream-cone" aria-hidden="true"></div>
@@ -3273,7 +3300,6 @@
             </div>
             <div class="ice-cream-flavors" id="iceCreamFlavorButtons"></div>
             <div class="ice-cream-topping-buttons" id="iceCreamToppingButtons" hidden></div>
-            <button class="ice-cream-finish" id="iceCreamFinish" type="button" onclick="finishIceCream()" hidden aria-label="Finish the ice cream">🍦 ✨</button>
         </main>
     </div>
 
@@ -3303,12 +3329,10 @@
                 <div class="cooking-workspace" id="cookingWorkspace" hidden>
                     <div class="ingredient-tray" id="ingredientTray"></div>
                     <button class="chopping-board" id="choppingBoard" type="button" onclick="chopIngredient()" hidden aria-label="Chop the onions">🧅</button>
-                    <button class="cooking-action" id="cookingAction" type="button" onclick="stirCookingPot()" hidden>🥄 Stir</button>
-                    <div class="cooking-pot" id="cookingPot" aria-hidden="true"><span class="cooking-pot-food" id="cookingPotFood">🍝</span></div>
-                    <div class="cooking-finished-plate" id="cookingFinishedPlate" hidden aria-hidden="true">🍝</div>
+                    <div class="cooking-pot" id="cookingPot" role="button" tabindex="0" onclick="stirCookingPot()" aria-label="Stir the pot"><span class="cooking-spoon" aria-hidden="true">🥄</span><span class="cooking-pot-food" id="cookingPotFood">🍝</span></div>
+                    <div class="cooking-finished-plate" id="cookingFinishedPlate" role="button" tabindex="0" onclick="advanceCookingGame()" hidden aria-label="Cook another meal">🍝</div>
                 </div>
             </div>
-            <button class="cooking-next" id="cookingNext" type="button" onclick="advanceCookingGame()" hidden>Next</button>
         </main>
     </div>
 
@@ -7517,15 +7541,16 @@
             {emoji:'🫐',color:'#a99ce8',names:{en:'Blueberry',enUS:'Blueberry',es:'Mora azul',esES:'Arándano',fr:'Myrtille',el:'Μύρτιλο',de:'Blaubeere',it:'Mirtillo',tr:'Yaban mersini',ptBR:'Mirtilo',nl:'Blauwe bes',pl:'Jagoda'}}
         ];
         const iceCreamToppingChoices = [
-            {emoji:'🌈',names:{en:'Sprinkles',enUS:'Sprinkles',es:'Chispitas',esES:'Virutas',fr:'Vermicelles',el:'Τρούφα',de:'Streusel',it:'Codette',tr:'Süsleme',ptBR:'Granulado',nl:'Spikkels',pl:'Posypka'}},
-            {emoji:'🍓',names:{en:'Berries',enUS:'Berries',es:'Frutitas',esES:'Frutas',fr:'Fruits',el:'Φρουτάκια',de:'Beeren',it:'Frutta',tr:'Meyveler',ptBR:'Frutinhas',nl:'Fruit',pl:'Owoce'}},
-            {emoji:'🍌',names:{en:'Banana',enUS:'Banana',es:'Platanito',esES:'Plátano',fr:'Banane',el:'Μπανανίτσα',de:'Banane',it:'Banana',tr:'Muz',ptBR:'Banana',nl:'Banaan',pl:'Banan'}},
-            {emoji:'🥜',names:{en:'Nuts',enUS:'Nuts',es:'Nueces',esES:'Frutos secos',fr:'Noix',el:'Ξηροί καρποί',de:'Nüsse',it:'Noci',tr:'Kuruyemiş',ptBR:'Castanhas',nl:'Nootjes',pl:'Orzechy'}},
-            {emoji:'🍫',names:{en:'Chocolate chips',enUS:'Chocolate chips',es:'Chispitas de chocolate',esES:'Pepitas de chocolate',fr:'Pépites de chocolat',el:'Σοκολατένια κομματάκια',de:'Schokostückchen',it:'Gocce di cioccolato',tr:'Çikolata parçaları',ptBR:'Gotas de chocolate',nl:'Chocoladestukjes',pl:'Kawałki czekolady'}},
-            {emoji:'🍒',names:{en:'Cherry',enUS:'Cherry',es:'Cerezita',esES:'Cereza',fr:'Cerise',el:'Κερασάκι',de:'Kirsche',it:'Ciliegina',tr:'Kiraz',ptBR:'Cereja',nl:'Kers',pl:'Wisienka'}}
+            {emoji:'🌈',kind:'sprinkle',pieces:9,color:'#f6ad55',names:{en:'Sprinkles',enUS:'Sprinkles',es:'Chispitas',esES:'Virutas',fr:'Vermicelles',el:'Τρούφα',de:'Streusel',it:'Codette',tr:'Süsleme',ptBR:'Granulado',nl:'Spikkels',pl:'Posypka'}},
+            {emoji:'🍓',kind:'berry',pieces:5,color:'#fbb6ce',names:{en:'Berries',enUS:'Berries',es:'Frutitas',esES:'Frutas',fr:'Fruits',el:'Φρουτάκια',de:'Beeren',it:'Frutta',tr:'Meyveler',ptBR:'Frutinhas',nl:'Fruit',pl:'Owoce'}},
+            {emoji:'🍌',kind:'banana',pieces:5,color:'#fff3a3',names:{en:'Banana',enUS:'Banana',es:'Platanito',esES:'Plátano',fr:'Banane',el:'Μπανανίτσα',de:'Banane',it:'Banana',tr:'Muz',ptBR:'Banana',nl:'Banaan',pl:'Banan'}},
+            {emoji:'🥜',kind:'nut',pieces:6,color:'#e9c79b',names:{en:'Nuts',enUS:'Nuts',es:'Nueces',esES:'Frutos secos',fr:'Noix',el:'Ξηροί καρποί',de:'Nüsse',it:'Noci',tr:'Kuruyemiş',ptBR:'Castanhas',nl:'Nootjes',pl:'Orzechy'}},
+            {emoji:'🍫',kind:'chocolate',pieces:7,color:'#c99a7b',names:{en:'Chocolate chips',enUS:'Chocolate chips',es:'Chispitas de chocolate',esES:'Pepitas de chocolate',fr:'Pépites de chocolat',el:'Σοκολατένια κομματάκια',de:'Schokostückchen',it:'Gocce di cioccolato',tr:'Çikolata parçaları',ptBR:'Gotas de chocolate',nl:'Chocoladestukjes',pl:'Kawałki czekolady'}},
+            {emoji:'🍒',kind:'cherry',pieces:1,color:'#fed7d7',names:{en:'Cherry',enUS:'Cherry',es:'Cerezita',esES:'Cereza',fr:'Cerise',el:'Κερασάκι',de:'Kirsche',it:'Ciliegina',tr:'Kiraz',ptBR:'Cereja',nl:'Kers',pl:'Wisienka'}}
         ];
         let iceCreamBusy = false;
         let iceCreamScoopCount = 0;
+        let iceCreamToppingCount = 0;
         let iceCreamLanguageIndex = 0;
 
         function creativeActionLanguage(index) {
@@ -7568,6 +7593,7 @@
                 const button = document.createElement('button');
                 button.type = 'button';
                 button.className = 'ice-cream-choice';
+                button.style.setProperty('--choice-color', topping.color);
                 button.innerHTML = `<span aria-hidden="true">${topping.emoji}</span><span class="ice-cream-choice-label"></span>`;
                 button.onclick = () => addIceCreamTopping(index);
                 toppingContainer.appendChild(button);
@@ -7589,6 +7615,7 @@
                 button.querySelector('.ice-cream-choice-label').textContent = name;
                 button.setAttribute('aria-label', name);
             });
+            document.getElementById('iceCreamResult').setAttribute('aria-label', interfaceText[displayLanguage].iceCreamReady);
         }
 
         function chooseIceCreamFlavor(index) {
@@ -7612,39 +7639,50 @@
                 scoop.style.background = flavor.color;
                 document.getElementById('iceCreamScoops').appendChild(scoop);
                 iceCreamScoopCount++;
-                document.getElementById('iceCreamToppingButtons').hidden = false;
-                document.getElementById('iceCreamFinish').hidden = false;
+                if (iceCreamScoopCount >= 3) {
+                    document.getElementById('iceCreamFlavorButtons').hidden = true;
+                    document.getElementById('iceCreamToppingButtons').hidden = false;
+                    document.getElementById('iceCreamResult').classList.add('ready');
+                }
                 setTimeout(() => {
                     iceCreamBusy = false;
-                    document.getElementById('iceCreamPrompt').textContent = interfaceText[language].iceCreamTop;
+                    document.getElementById('iceCreamPrompt').textContent = interfaceText[language][iceCreamScoopCount >= 3 ? 'iceCreamTop' : 'iceCreamPick'];
                 }, 470);
             }, 300);
         }
 
         function addIceCreamTopping(index) {
-            if (!iceCreamScoopCount || iceCreamBusy) return;
+            if (iceCreamScoopCount < 3 || iceCreamBusy) return;
             const topping = iceCreamToppingChoices[index];
             const language = creativeActionLanguage(iceCreamLanguageIndex++);
             const toppings = document.getElementById('iceCreamToppings');
-            while (toppings.children.length >= 18) toppings.firstElementChild.remove();
-            const piece = document.createElement('span');
-            piece.className = 'ice-cream-topping';
-            piece.textContent = topping.emoji;
-            piece.style.left = `${8 + Math.random() * 72}%`;
-            piece.style.top = `${10 + Math.random() * 62}%`;
-            piece.style.transform = `rotate(${Math.round(Math.random() * 40 - 20)}deg)`;
-            toppings.appendChild(piece);
+            const sprinkleColors = ['#e53e3e','#dd6b20','#d69e2e','#38a169','#3182ce','#805ad5'];
+            for (let pieceIndex = 0; pieceIndex < topping.pieces; pieceIndex++) {
+                const piece = document.createElement('span');
+                piece.className = `ice-cream-topping ${topping.kind}`;
+                piece.style.left = `${8 + Math.random() * 77}%`;
+                piece.style.top = `${12 + Math.random() * 57}%`;
+                piece.style.setProperty('--topping-rotation', `${Math.round(Math.random() * 80 - 40)}deg`);
+                if (topping.kind === 'sprinkle') piece.style.setProperty('--topping-color', sprinkleColors[pieceIndex % sprinkleColors.length]);
+                toppings.appendChild(piece);
+            }
+            iceCreamToppingCount++;
             document.getElementById('iceCreamFlag').textContent = languageSettings[language].flag;
             document.getElementById('iceCreamPrompt').textContent = topping.names[language] || topping.names.en;
             playCreativeSound([620,820], .11);
             speakSingle(languageSettings[language].code, topping.names[language] || topping.names.en);
+            if (iceCreamToppingCount >= 3) {
+                iceCreamBusy = true;
+                setTimeout(() => finishIceCream(true), 720);
+            }
         }
 
-        function finishIceCream() {
-            if (!iceCreamScoopCount || iceCreamBusy) return;
+        function finishIceCream(force = false) {
+            if (iceCreamScoopCount < 3 || !iceCreamToppingCount || (iceCreamBusy && !force)) return;
             iceCreamBusy = true;
             const language = creativeActionLanguage(iceCreamLanguageIndex++);
             const result = document.getElementById('iceCreamResult');
+            document.getElementById('iceCreamToppingButtons').hidden = true;
             result.classList.remove('celebrate');
             void result.offsetWidth;
             result.classList.add('celebrate');
@@ -7657,13 +7695,21 @@
         function resetIceCream() {
             iceCreamBusy = false;
             iceCreamScoopCount = 0;
+            iceCreamToppingCount = 0;
             document.getElementById('iceCreamScoops').innerHTML = '';
             document.getElementById('iceCreamToppings').innerHTML = '';
-            document.getElementById('iceCreamResult').classList.remove('celebrate');
+            document.getElementById('iceCreamResult').classList.remove('celebrate','ready');
+            document.getElementById('iceCreamFlavorButtons').hidden = false;
             document.getElementById('iceCreamToppingButtons').hidden = true;
-            document.getElementById('iceCreamFinish').hidden = true;
             updateIceCreamLanguage();
         }
+
+        document.getElementById('iceCreamResult').addEventListener('keydown', event => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                finishIceCream();
+            }
+        });
 
         let birthdayTimers = [];
         let birthdayRoundActive = false;
@@ -7814,8 +7860,8 @@
                 button.querySelector('small').textContent = name;
                 button.setAttribute('aria-label', name);
             });
-            document.getElementById('cookingAction').textContent = `🥄 ${text.cookingStir}`;
-            document.getElementById('cookingNext').textContent = cookingStep === 'ready' ? `↻ ${text.cookingChoose}` : text.cookingNext;
+            document.getElementById('cookingPot').setAttribute('aria-label', text.cookingStir);
+            document.getElementById('cookingFinishedPlate').setAttribute('aria-label', text.cookingChoose);
         }
 
         function chooseCookingMeal(index) {
@@ -7830,8 +7876,7 @@
             document.getElementById('cookingPotFood').textContent = meal.emoji;
             document.getElementById('cookingFinishedPlate').hidden = true;
             document.getElementById('choppingBoard').hidden = true;
-            document.getElementById('cookingAction').hidden = true;
-            document.getElementById('cookingNext').hidden = true;
+            document.getElementById('cookingPot').classList.remove('ready-to-stir');
             const tray = document.getElementById('ingredientTray');
             tray.hidden = false;
             tray.innerHTML = '';
@@ -7917,7 +7962,7 @@
             setTimeout(() => {
                 cookingStep = 'stir';
                 board.hidden = true;
-                document.getElementById('cookingAction').hidden = false;
+                document.getElementById('cookingPot').classList.add('ready-to-stir');
                 updateCookingLanguage(language);
                 speakSingle(languageSettings[language].code, interfaceText[language].cookingStir);
             }, 420);
@@ -7926,8 +7971,8 @@
         function stirCookingPot() {
             if (cookingStep !== 'stir') return;
             cookingStep = 'cooking';
-            document.getElementById('cookingAction').hidden = true;
             const pot = document.getElementById('cookingPot');
+            pot.classList.remove('ready-to-stir');
             pot.classList.add('bubbling');
             playCreativeSound([220,260,310,360], .18);
             setTimeout(() => {
@@ -7937,7 +7982,6 @@
                 const plate = document.getElementById('cookingFinishedPlate');
                 plate.textContent = cookingMeals[cookingMealIndex].emoji;
                 plate.hidden = false;
-                document.getElementById('cookingNext').hidden = false;
                 updateCookingLanguage(language);
                 playCreativeSound([523,659,784,1047], .2);
                 speakSingle(languageSettings[language].code, interfaceText[language].cookingReady);
@@ -7948,9 +7992,23 @@
             cookingStep = 'choose';
             document.getElementById('cookingWorkspace').hidden = true;
             document.getElementById('mealChoices').hidden = false;
-            document.getElementById('cookingNext').hidden = true;
+            document.getElementById('cookingPot').classList.remove('ready-to-stir');
             updateCookingLanguage();
         }
+
+        document.getElementById('cookingPot').addEventListener('keydown', event => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                stirCookingPot();
+            }
+        });
+
+        document.getElementById('cookingFinishedPlate').addEventListener('keydown', event => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                advanceCookingGame();
+            }
+        });
 
         renderIceCreamControls();
         renderMealChoices();

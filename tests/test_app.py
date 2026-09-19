@@ -448,6 +448,17 @@ class AppRegressionTests(unittest.TestCase):
         self.assertIn("@keyframes iceCreamPour", HTML)
         self.assertNotIn("iceCreamWrong", HTML)
 
+    def test_ice_cream_uses_full_screen_decorative_toppings_without_a_finish_button(self) -> None:
+        self.assertIn("#game-icecream,\n        #game-cooking { width:100%;max-width:none;height:100svh", HTML)
+        self.assertIn('class="ice-cream-result" id="iceCreamResult" role="button"', HTML)
+        self.assertNotIn('id="iceCreamFinish"', HTML)
+        self.assertIn("iceCreamToppingCount >= 3", HTML)
+        self.assertIn("setTimeout(() => finishIceCream(true), 720)", HTML)
+        for topping_kind in ("sprinkle", "berry", "banana", "nut", "chocolate", "cherry"):
+            self.assertIn(f"kind:'{topping_kind}'", HTML)
+            self.assertIn(f".ice-cream-topping.{topping_kind}", HTML)
+        self.assertNotIn("piece.textContent = topping.emoji", HTML)
+
     def test_birthday_candles_use_a_private_reliable_countdown_and_tap_fallback(self) -> None:
         birthday_source = HTML[HTML.index("let birthdayTimers") : HTML.index("const cookingMeals")]
         self.assertIn("function startBirthdayRound()", birthday_source)
@@ -468,6 +479,15 @@ class AppRegressionTests(unittest.TestCase):
         self.assertIn("function stirCookingPot()", HTML)
         self.assertIn("cookingChopCount < 3", HTML)
         self.assertIn("cookingCountWords", HTML)
+
+    def test_little_chef_uses_the_full_screen_and_objects_instead_of_action_buttons(self) -> None:
+        self.assertIn("#game-cooking { width:100%;max-width:none;height:100svh", HTML)
+        self.assertIn("grid-template-columns:repeat(5,minmax(0,1fr))", HTML)
+        self.assertIn('class="cooking-pot" id="cookingPot" role="button"', HTML)
+        self.assertIn('class="cooking-finished-plate" id="cookingFinishedPlate" role="button"', HTML)
+        self.assertNotIn('id="cookingAction"', HTML)
+        self.assertNotIn('id="cookingNext"', HTML)
+        self.assertIn("cookingPot').classList.add('ready-to-stir')", HTML)
 
     def test_runner_speaks_food_before_a_quieter_score(self) -> None:
         self.assertIn("speakSingle(languageSettings[runnerDisplayLanguage].code, foodName, () =>", HTML)
