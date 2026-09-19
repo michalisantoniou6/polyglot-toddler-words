@@ -1707,7 +1707,7 @@
             line-height:1;
             box-shadow:0 7px 18px rgba(192,86,33,.32);
             touch-action:manipulation;
-            animation:randomInvite 4.8s ease-in-out infinite;
+            animation:randomInvite 5.6s ease-in-out infinite;
         }
         .random-game-button:active { transform:scale(.9) rotate(18deg); }
         .random-language-game-button {
@@ -1724,7 +1724,7 @@
             touch-action:manipulation;
         }
         .random-language-game-button:active { transform:scale(.9) rotate(-18deg); }
-        @keyframes randomInvite { 0%,82%,100%{transform:rotate(0) scale(1)} 88%{transform:rotate(-10deg) scale(1.08)} 94%{transform:rotate(10deg) scale(1.08)} }
+        @keyframes randomInvite { 0%,84%,100%{transform:scale(1)} 92%{transform:scale(1.025)} }
         .play-timer-button {
             min-width:46px;
             height:46px;
@@ -1919,41 +1919,41 @@
             line-height: 1;
             pointer-events: none;
         }
-        .compact-tap-bounce { animation: compactTapBounce .62s ease both; }
-        .compact-tap-wiggle { animation: compactTapWiggle .62s ease both; }
-        .compact-tap-float { animation: compactTapFloat .62s ease both; }
-        .compact-tap-pop { animation: compactTapPop .62s cubic-bezier(.2,.85,.3,1.25) both; }
+        .compact-tap-bounce { animation: compactTapBounce .52s ease both; }
+        .compact-tap-wiggle { animation: compactTapWiggle .52s ease both; }
+        .compact-tap-float { animation: compactTapFloat .52s ease both; }
+        .compact-tap-pop { animation: compactTapPop .52s cubic-bezier(.2,.8,.3,1) both; }
         @keyframes compactTapBounce {
             0%,100% { transform: translateY(0) scale(1); }
-            38% { transform: translateY(-15px) scale(1.1); }
-            68% { transform: translateY(2px) scale(.96,1.06); }
+            38% { transform: translateY(-4px) scale(1.035); }
+            68% { transform: translateY(1px) scale(.99,1.02); }
         }
         @keyframes compactTapWiggle {
             0%,100% { transform: rotate(0) scale(1); }
-            22% { transform: rotate(-13deg) scale(1.08); }
-            48% { transform: rotate(13deg) scale(1.04); }
-            74% { transform: rotate(-7deg) scale(1.07); }
+            22% { transform: rotate(-3deg) scale(1.025); }
+            48% { transform: rotate(3deg) scale(1.015); }
+            74% { transform: rotate(-1.5deg) scale(1.02); }
         }
         @keyframes compactTapFloat {
             0%,100% { transform: translate(0,0) rotate(0); }
-            35% { transform: translate(12px,-10px) rotate(7deg); }
-            70% { transform: translate(-9px,-3px) rotate(-6deg); }
+            35% { transform: translate(3px,-4px) rotate(1.5deg); }
+            70% { transform: translate(-2px,-1px) rotate(-1deg); }
         }
         @keyframes compactTapPop {
-            0% { transform: scale(.55) rotate(-7deg); }
-            48% { transform: scale(1.2) rotate(5deg); }
-            76% { transform: scale(.94) rotate(-2deg); }
+            0% { transform: scale(.94); opacity:.8; }
+            48% { transform: scale(1.045); opacity:1; }
+            76% { transform: scale(.99); }
             100% { transform: scale(1) rotate(0); }
         }
         .music-pad:nth-child(4n+1) { background:#fff3cd; border-color:#ffd166; }
         .music-pad:nth-child(4n+2) { background:#e0f4ff; border-color:#72c7ed; }
         .music-pad:nth-child(4n+3) { background:#ffe5ec; border-color:#ff8fab; }
         .music-pad:nth-child(4n) { background:#e4f7df; border-color:#7ed36c; }
-        .music-pad.inviting { animation: musicPadInvite .78s cubic-bezier(.2,.85,.3,1.2) both; }
+        .music-pad.inviting { animation: musicPadInvite .9s cubic-bezier(.2,.8,.3,1) both; }
         @keyframes musicPadInvite {
             0%,100% { transform: scale(1) rotate(0); }
-            38% { transform: scale(1.1) rotate(-2deg); box-shadow: 0 12px 0 rgba(45,55,72,.11); }
-            68% { transform: scale(.98) rotate(1deg); }
+            38% { transform: scale(1.025); box-shadow: 0 8px 0 rgba(45,55,72,.09); }
+            68% { transform: scale(.995); }
         }
         .game-action-button {
             min-height: 62px;
@@ -1970,16 +1970,14 @@
         }
         .game-action-button:active { transform: translateY(4px); box-shadow:0 3px 0 #284f83; }
         .tap-invite {
-            animation: tapInvite .58s cubic-bezier(.22,.78,.35,1.18) both;
+            animation: tapInvite .9s cubic-bezier(.22,.72,.35,1) both;
             animation-delay: var(--tap-invite-delay, 0ms);
             transform-origin: 50% 70%;
         }
         @keyframes tapInvite {
-            0%,100% { transform: rotate(0) scale(1); }
-            22% { transform: rotate(-4deg) scale(1.035); }
-            44% { transform: rotate(4deg) scale(1.055); }
-            66% { transform: rotate(-2deg) scale(1.025); }
-            84% { transform: rotate(2deg) scale(1.015); }
+            0%,100% { transform: scale(1); opacity:1; }
+            38% { transform: scale(1.025); opacity:.94; }
+            72% { transform: scale(.997); opacity:1; }
         }
         .beat-start-button {
             width: clamp(96px, 27vw, 126px);
@@ -1993,19 +1991,19 @@
             font-size: clamp(3.2rem, 14vw, 4.8rem);
             line-height: 1;
         }
-        .beat-start-button.ready-to-play { animation: beatStartInvite 1.15s ease-in-out infinite; }
-        .beat-start-button.ready-to-play span { display:block; animation: beatBearDance .58s ease-in-out infinite alternate; }
+        .beat-start-button.ready-to-play { animation: beatStartInvite 1.8s ease-in-out 2; }
+        .beat-start-button.ready-to-play span { display:block; animation: beatBearDance 1.2s ease-in-out 2 alternate; }
         .beat-start-button.playing { display: none; }
         .beat-start-button:disabled { opacity: .45; animation: none; }
         #game-beat.beat-awaiting .beat-grid { opacity: .42; transform: scale(.94); }
         .beat-grid { transition: opacity .28s ease, transform .28s ease; }
         @keyframes beatStartInvite {
             0%,100% { transform: scale(1); box-shadow: 0 9px 0 #276749, 0 0 0 8px rgba(72,187,120,.12); }
-            50% { transform: scale(1.1); box-shadow: 0 9px 0 #276749, 0 0 0 18px rgba(72,187,120,.04); }
+            50% { transform: scale(1.035); box-shadow: 0 9px 0 #276749, 0 0 0 12px rgba(72,187,120,.06); }
         }
         @keyframes beatBearDance {
-            from { transform: rotate(-12deg) translateY(2px); }
-            to { transform: rotate(12deg) translateY(-5px) scale(1.08); }
+            from { transform: rotate(-2deg) translateY(1px); }
+            to { transform: rotate(2deg) translateY(-2px) scale(1.025); }
         }
         .beat-grid {
             width: min(100%, 560px);
@@ -2101,14 +2099,14 @@
             height: clamp(112px, 24svh, 190px);
             object-fit: contain;
             filter: drop-shadow(0 9px 7px rgba(94,48,12,.22));
-            animation: sleighFloat 1.25s ease-in-out infinite alternate;
+            animation: sleighFloat 2.4s ease-in-out infinite alternate;
             pointer-events: none;
         }
         .jingle-sleigh-button.is-playing .jingle-sleigh-art { animation-duration:.5s; }
         .jingle-sleigh-button:active { transform:scale(.96); box-shadow:none; }
         @keyframes sleighFloat {
-            from { transform:translateY(3px) rotate(-1.5deg); }
-            to { transform:translateY(-6px) rotate(2deg); }
+            from { transform:translateY(1px) rotate(-.25deg); }
+            to { transform:translateY(-2px) rotate(.25deg); }
         }
         #game-bells .learning-game { justify-content:flex-start; padding-top:2px; gap:6px; }
         #game-bells .santa-band { flex:0 0 auto; }
@@ -2377,21 +2375,21 @@
         .runner-character.growing { animation:runnerPowerUp .88s cubic-bezier(.2,.85,.3,1.2) both !important; }
         .runner-character.growing::after { content:'✨ ⬆️ ✨';position:absolute;left:50%;top:-34px;transform:translateX(-50%);font-size:1.55rem;white-space:nowrap;animation:runnerSparkle .88s ease-out both; }
         .runner-character.bumped { animation:runnerBump .72s ease-out both !important; }
-        .runner-character.crash-dizzy { animation:runnerCrashDizzy 1.55s ease-out both !important; }
-        .runner-character.crash-tumble { animation:runnerCrashTumble 1.55s cubic-bezier(.2,.8,.25,1) both !important; }
-        .runner-character.crash-squash { animation:runnerCrashSquash 1.55s ease-out both !important; }
-        .runner-character.crash-wobble { animation:runnerCrashWobble 1.55s ease-out both !important; }
-        .runner-character[class*="crash-"]::after { content:'💫 ⭐ 💫';position:absolute;left:50%;top:-38px;transform:translateX(-50%);font-size:1.7rem;white-space:nowrap;animation:runnerCrashStars 1.55s ease-out both; }
+        .runner-character.crash-dizzy { animation:runnerCrashDizzy 1.35s ease-out both !important; }
+        .runner-character.crash-tumble { animation:runnerCrashTumble 1.35s cubic-bezier(.2,.8,.25,1) both !important; }
+        .runner-character.crash-squash { animation:runnerCrashSquash 1.35s ease-out both !important; }
+        .runner-character.crash-wobble { animation:runnerCrashWobble 1.35s ease-out both !important; }
+        .runner-character[class*="crash-"]::after { content:'💫';position:absolute;left:50%;top:-30px;transform:translateX(-50%);font-size:1.2rem;white-space:nowrap;animation:runnerCrashStars 1.35s ease-out both; }
         @keyframes runnerSteps { from{transform:scale(var(--runner-scale))} to{transform:translateY(-5px) rotate(4deg) scale(var(--runner-scale))} }
         @keyframes runnerFly { from{transform:scale(var(--runner-scale))} to{transform:rotate(-7deg) scale(var(--runner-scale))} }
         @keyframes runnerPowerUp { 0%{transform:scale(var(--runner-previous-scale))} 45%{transform:translateY(-15px) scale(var(--runner-burst-scale));filter:drop-shadow(0 0 18px #ffd43b)} 72%{transform:translateY(2px) scale(var(--runner-scale))} 100%{transform:scale(var(--runner-scale))} }
         @keyframes runnerSparkle { 0%{opacity:0;transform:translate(-50%,16px) scale(.5)} 35%{opacity:1} 100%{opacity:0;transform:translate(-50%,-24px) scale(1.25)} }
         @keyframes runnerBump { 0%{transform:scale(var(--runner-previous-scale))} 25%{transform:translate(-16px,-18px) rotate(-12deg) scale(var(--runner-previous-scale))} 55%{transform:translate(9px,0) rotate(8deg) scale(var(--runner-scale))} 100%{transform:scale(var(--runner-scale))} }
-        @keyframes runnerCrashDizzy { 0%{transform:scale(var(--runner-previous-scale))} 22%{transform:translate(-20px,-18px) rotate(-24deg) scale(var(--runner-scale))} 48%{transform:rotate(390deg) scale(var(--runner-scale))} 72%{transform:rotate(340deg) scale(var(--runner-scale))} 100%{transform:rotate(360deg) scale(var(--runner-scale))} }
-        @keyframes runnerCrashTumble { 0%{transform:scale(var(--runner-previous-scale))} 28%{transform:translate(-36px,-28px) rotate(-95deg) scale(var(--runner-scale))} 58%{transform:translate(24px,4px) rotate(-300deg) scale(var(--runner-scale))} 78%{transform:translate(-8px,-8px) rotate(-350deg) scale(var(--runner-scale))} 100%{transform:rotate(-360deg) scale(var(--runner-scale))} }
-        @keyframes runnerCrashSquash { 0%{transform:scale(var(--runner-previous-scale))} 20%{transform:translateX(-22px) scaleX(1.18) scaleY(.62)} 42%{transform:translateY(-35px) scaleX(.72) scaleY(1.28)} 66%{transform:translateY(5px) scaleX(1.12) scaleY(.82)} 100%{transform:scale(var(--runner-scale))} }
-        @keyframes runnerCrashWobble { 0%{transform:scale(var(--runner-previous-scale))} 18%{transform:translateX(-25px) rotate(-22deg) scale(var(--runner-scale))} 35%{transform:translateX(20px) rotate(20deg) scale(var(--runner-scale))} 52%{transform:translateX(-14px) rotate(-15deg) scale(var(--runner-scale))} 70%{transform:translateX(9px) rotate(10deg) scale(var(--runner-scale))} 100%{transform:scale(var(--runner-scale))} }
-        @keyframes runnerCrashStars { 0%{opacity:0;transform:translate(-50%,20px) scale(.4)} 22%,68%{opacity:1;transform:translate(-50%,-4px) scale(1.15)} 100%{opacity:0;transform:translate(-50%,-24px) rotate(40deg) scale(.7)} }
+        @keyframes runnerCrashDizzy { 0%{transform:scale(var(--runner-previous-scale))} 30%{transform:translate(-8px,-5px) rotate(-9deg) scale(var(--runner-scale))} 58%{transform:rotate(12deg) scale(var(--runner-scale))} 78%{transform:rotate(-4deg) scale(var(--runner-scale))} 100%{transform:scale(var(--runner-scale))} }
+        @keyframes runnerCrashTumble { 0%{transform:scale(var(--runner-previous-scale))} 32%{transform:translate(-12px,-9px) rotate(-18deg) scale(var(--runner-scale))} 62%{transform:translate(7px,1px) rotate(9deg) scale(var(--runner-scale))} 100%{transform:scale(var(--runner-scale))} }
+        @keyframes runnerCrashSquash { 0%{transform:scale(var(--runner-previous-scale))} 28%{transform:translateX(-7px) scaleX(1.06) scaleY(.92)} 58%{transform:translateY(-9px) scaleX(.96) scaleY(1.06)} 100%{transform:scale(var(--runner-scale))} }
+        @keyframes runnerCrashWobble { 0%{transform:scale(var(--runner-previous-scale))} 25%{transform:translateX(-8px) rotate(-7deg) scale(var(--runner-scale))} 48%{transform:translateX(7px) rotate(6deg) scale(var(--runner-scale))} 70%{transform:translateX(-3px) rotate(-2deg) scale(var(--runner-scale))} 100%{transform:scale(var(--runner-scale))} }
+        @keyframes runnerCrashStars { 0%{opacity:0;transform:translate(-50%,8px) scale(.7)} 30%,65%{opacity:.9;transform:translate(-50%,-2px) scale(1)} 100%{opacity:0;transform:translate(-50%,-12px) scale(.8)} }
         .runner-object {
             position:absolute;
             right:-100px;
@@ -2427,10 +2425,10 @@
         .runner-celebration.active { display:flex;animation:runnerCollectMessage .72s ease-out both; }
         .runner-celebration span { font-size:clamp(3rem,17vw,6rem);font-weight:950;color:#2f855a;text-shadow:0 4px white; }
         @keyframes runnerCollectMessage { 0%{transform:scale(.3);opacity:0} 45%{transform:scale(1.18);opacity:1} 100%{transform:scale(1);opacity:0} }
-        .runner-crash.active { display:flex;background:rgba(255,255,255,.72);animation:runnerShake .12s 5 linear; }
+        .runner-crash.active { display:flex;background:rgba(255,255,255,.72);animation:runnerCrashFade 1.35s ease both; }
         .runner-crash-ow { font-size:clamp(5rem,28vw,10rem);font-weight:1000;color:#e53e3e;text-shadow:0 7px #fff;transform:rotate(-8deg); }
         .runner-crash-dust { font-size:clamp(4rem,20vw,8rem);letter-spacing:-18px; }
-        @keyframes runnerShake { 50%{transform:translateX(9px)} }
+        @keyframes runnerCrashFade { 0%{opacity:0} 18%,78%{opacity:1} 100%{opacity:0} }
         .runner-tap-hint {
             position:absolute;
             left:50%;
@@ -2477,8 +2475,7 @@
             font-size:clamp(1.3rem,7vw,2.2rem);
             font-weight:950;
         }
-        .runner-rotate-phone { display:block;font-size:6rem;animation:runnerRotatePhone 1.5s ease-in-out infinite; }
-        @keyframes runnerRotatePhone { 0%,25%{transform:rotate(0)} 70%,100%{transform:rotate(90deg)} }
+        .runner-rotate-phone { display:block;font-size:6rem;transform:rotate(90deg); }
         @media (orientation:portrait) {
             #game-runner.active .runner-rotate-overlay { display:flex; }
             #game-runner.active .runner-stage > :not(.runner-rotate-overlay) { visibility:hidden; }
@@ -5650,7 +5647,7 @@
             const activeGame = document.querySelector('.game-view.active');
             if (!activeGame) return;
 
-            const clickables = Array.from(activeGame.querySelectorAll('button:not(:disabled), [role="button"], [data-tap-invite]'))
+            const clickables = Array.from(activeGame.querySelectorAll('button:not(:disabled), [data-tap-invite]'))
                 .filter(element => element.offsetParent !== null && !element.closest('[aria-hidden="true"]'));
 
             clickables.forEach((element, index) => {
