@@ -1,1 +1,1 @@
-# The app intentionally has no custom release shrinking rules yet.
+# Toddler Arcade currently does not minify release builds.

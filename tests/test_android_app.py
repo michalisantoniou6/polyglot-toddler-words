@@ -20,12 +20,26 @@ class AndroidAppRegressionTests(unittest.TestCase):
         self.assertIn("compileSdk 36", BUILD)
         self.assertIn("targetSdk 36", BUILD)
         self.assertIn("minSdk 24", BUILD)
-        self.assertRegex(BUILD, r'versionCode\s+1\b')
-        self.assertRegex(BUILD, r'versionName\s+"1\.0\.0"')
+        self.assertRegex(BUILD, r'versionCode\s+45\b')
+        self.assertRegex(BUILD, r'versionName\s+"1\.0\.44"')
+
+    def test_android_can_apply_an_explicit_per_device_language(self) -> None:
+        self.assertIn('EXTRA_PRIMARY_LANGUAGE = "primaryLanguage"', ACTIVITY)
+        self.assertIn("applyPrimaryLanguageOverride(view)", ACTIVITY)
+        self.assertIn("window.applyInstalledOnboardingLanguage", ACTIVITY)
+        self.assertIn('"es".equals(language)', ACTIVITY)
+
+    def test_android_launcher_uses_the_toddler_arcade_mascot(self) -> None:
+        icon = ANDROID / "app/src/main/res/drawable-nodpi/toddler_arcade_icon.png"
+        self.assertIn('android:icon="@drawable/toddler_arcade_icon"', MANIFEST)
+        self.assertIn('android:roundIcon="@drawable/toddler_arcade_icon"', MANIFEST)
+        self.assertTrue(icon.is_file())
+        self.assertTrue(icon.read_bytes().startswith(b"\x89PNG\r\n\x1a\n"))
 
     def test_build_copies_the_same_web_game_into_the_app(self) -> None:
         self.assertIn('tasks.register("syncWebAssets", Sync)', BUILD)
         self.assertIn('include "index.html"', BUILD)
+        self.assertIn('include "languages.js"', BUILD)
         self.assertIn('include "assets/**"', BUILD)
         self.assertIn('dependsOn("syncWebAssets")', BUILD)
         self.assertIn("file:///android_asset/www/index.html", ACTIVITY)
@@ -54,6 +68,66 @@ class AndroidAppRegressionTests(unittest.TestCase):
         self.assertIn("window.AndroidSpeech?.speak", HTML)
         self.assertIn("window.AndroidSpeech?.stop", HTML)
         self.assertIn("const androidSpeechCallbacks = new Map()", HTML)
+        self.assertIn("TextToSpeech.Engine.KEY_PARAM_VOLUME", ACTIVITY)
+        self.assertIn("float rate, float volume", ACTIVITY)
+        self.assertIn("Math.min(volume, 0.24f)", ACTIVITY)
+
+    def test_android_webview_disables_gesture_zoom(self) -> None:
+        self.assertIn("settings.setSupportZoom(false)", ACTIVITY)
+        self.assertIn("settings.setBuiltInZoomControls(false)", ACTIVITY)
+        self.assertIn("settings.setDisplayZoomControls(false)", ACTIVITY)
+
+    def test_parent_can_use_native_screen_pinning_with_a_grown_up_gate(self) -> None:
+        self.assertIn('addJavascriptInterface(new AndroidChildLockBridge(), "AndroidChildLock")', ACTIVITY)
+        self.assertIn("startLockTask()", ACTIVITY)
+        self.assertIn("stopLockTask()", ACTIVITY)
+        self.assertIn("getLockTaskModeState()", ACTIVITY)
+        self.assertIn("if (isChildLockActive())", ACTIVITY)
+        self.assertIn('id="parentGateQuestion"', HTML)
+        self.assertIn("parentGateExpectedAnswer = first + second", HTML)
+        self.assertIn("window.AndroidChildLock.stop()", HTML)
+
+    def test_child_lock_persists_and_native_unlock_requires_parent_authentication(self) -> None:
+        self.assertIn('<uses-permission android:name="android.permission.USE_BIOMETRIC" />', MANIFEST)
+        self.assertIn("CHILD_LOCK_PREFERRED", ACTIVITY)
+        self.assertIn("isChildLockPreferred()", ACTIVITY)
+        self.assertIn("onWindowFocusChanged", ACTIVITY)
+        self.assertIn("requestParentAuthentication", ACTIVITY)
+        self.assertIn("BiometricManager.Authenticators.BIOMETRIC_STRONG", ACTIVITY)
+        self.assertIn("BiometricManager.Authenticators.DEVICE_CREDENTIAL", ACTIVITY)
+        self.assertIn("createConfirmDeviceCredentialIntent", ACTIVITY)
+        child_lock_bridge = ACTIVITY[ACTIVITY.index("private final class AndroidChildLockBridge") : ACTIVITY.index("private final class AndroidHapticsBridge")]
+        self.assertIn("requestParentAuthentication", child_lock_bridge)
+        self.assertNotIn("stopLockTask();", child_lock_bridge)
+
+    def test_child_lock_requires_secure_android_screen_pinning(self) -> None:
+        self.assertIn('"lock_to_app_enabled"', ACTIVITY)
+        self.assertIn('"lock_to_app_exit_locked"', ACTIVITY)
+        self.assertIn("isLockTaskPermitted(getPackageName())", ACTIVITY)
+        self.assertIn("childLockNeedsSetup()", ACTIVITY)
+        self.assertIn("Settings.ACTION_SECURITY_SETTINGS", ACTIVITY)
+        self.assertIn("startChildLock(true)", ACTIVITY)
+        self.assertIn("startChildLock(false)", ACTIVITY)
+        self.assertIn("isChildLockProtected()", ACTIVITY)
+        self.assertIn("public boolean needsSetup()", ACTIVITY)
+        self.assertIn("+ needsSetup", ACTIVITY)
+        delayed_check = ACTIVITY[
+            ACTIVITY.index("webView.postDelayed(() -> {", ACTIVITY.index("private void startChildLock")) :
+            ACTIVITY.index("private void finishChildUnlock")
+        ]
+        self.assertNotIn("setChildLockPreferred(false)", delayed_check)
+
+    def test_child_lock_is_the_android_default_for_new_and_updated_installs(self) -> None:
+        self.assertIn('CHILD_LOCK_PREFERRED = "child_lock_preferred_v3"', ACTIVITY)
+        self.assertIn(".getBoolean(CHILD_LOCK_PREFERRED, true)", ACTIVITY)
+        self.assertIn("setChildLockPreferred(false)", ACTIVITY)
+
+    def test_runner_crashes_use_native_android_haptics(self) -> None:
+        self.assertIn('<uses-permission android:name="android.permission.VIBRATE" />', MANIFEST)
+        self.assertIn('addJavascriptInterface(new AndroidHapticsBridge(), "AndroidHaptics")', ACTIVITY)
+        self.assertIn("VibrationEffect.createWaveform(pattern, -1)", ACTIVITY)
+        self.assertIn("vibrator.vibrate(pattern, -1)", ACTIVITY)
+        self.assertIn("window.AndroidHaptics.crash()", HTML)
 
     def test_app_stays_inside_the_local_child_safe_game(self) -> None:
         self.assertIn('android:allowBackup="false"', MANIFEST)

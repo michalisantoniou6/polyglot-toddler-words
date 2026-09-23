@@ -2,8 +2,19 @@ package com.michalisantoniou.polyglotplayroom;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.KeyguardManager;
+import android.app.admin.DevicePolicyManager;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.hardware.biometrics.BiometricManager;
+import android.hardware.biometrics.BiometricPrompt;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CancellationSignal;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+import android.provider.Settings;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.view.View;
@@ -17,15 +28,24 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 import java.util.Locale;
 
 public final class MainActivity extends Activity implements TextToSpeech.OnInitListener {
     private static final String START_URL = "file:///android_asset/www/index.html";
+    private static final String EXTRA_PRIMARY_LANGUAGE = "primaryLanguage";
+    private static final String CHILD_LOCK_PREFERENCES = "child_lock_preferences";
+    private static final String CHILD_LOCK_PREFERRED = "child_lock_preferred_v3";
+    private static final int PARENT_CREDENTIAL_REQUEST = 4207;
+    private static final int BIOMETRIC_NEGATIVE_BUTTON_ERROR = 13;
 
     private WebView webView;
     private TextToSpeech textToSpeech;
     private boolean textToSpeechReady;
+    private boolean languageOverrideApplied;
+    private boolean parentAuthenticationPending;
+    private boolean childLockRequestPending;
 
     @Override
     @SuppressLint("SetJavaScriptEnabled")
@@ -46,12 +66,15 @@ public final class MainActivity extends Activity implements TextToSpeech.OnInitL
         settings.setMediaPlaybackRequiresUserGesture(false);
         settings.setAllowFileAccess(true);
         settings.setAllowContentAccess(false);
+        settings.setSupportZoom(false);
         settings.setBuiltInZoomControls(false);
         settings.setDisplayZoomControls(false);
 
         webView.setWebChromeClient(new WebChromeClient());
         webView.setWebViewClient(new LocalGameWebViewClient());
         webView.addJavascriptInterface(new AndroidSpeechBridge(), "AndroidSpeech");
+        webView.addJavascriptInterface(new AndroidChildLockBridge(), "AndroidChildLock");
+        webView.addJavascriptInterface(new AndroidHapticsBridge(), "AndroidHaptics");
         WebView.setWebContentsDebuggingEnabled(BuildConfig.DEBUG);
 
         setContentView(webView);
@@ -101,12 +124,24 @@ public final class MainActivity extends Activity implements TextToSpeech.OnInitL
         super.onResume();
         showImmersivePlayArea();
         webView.onResume();
+        notifyChildLockState();
+        if (isChildLockPreferred() && !isChildLockActive() && !parentAuthenticationPending && !childLockRequestPending) {
+            webView.postDelayed(() -> startChildLock(false), 350);
+        }
     }
 
     @Override
     protected void onPause() {
         webView.onPause();
         super.onPause();
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus && isChildLockPreferred() && !isChildLockActive() && !parentAuthenticationPending && !childLockRequestPending) {
+            webView.postDelayed(() -> startChildLock(false), 250);
+        }
     }
 
     @Override
@@ -122,6 +157,8 @@ public final class MainActivity extends Activity implements TextToSpeech.OnInitL
             textToSpeech.shutdown();
         }
         webView.removeJavascriptInterface("AndroidSpeech");
+        webView.removeJavascriptInterface("AndroidChildLock");
+        webView.removeJavascriptInterface("AndroidHaptics");
         webView.destroy();
         super.onDestroy();
     }
@@ -135,6 +172,10 @@ public final class MainActivity extends Activity implements TextToSpeech.OnInitL
     private void handleBack() {
         if (webView.canGoBack()) {
             webView.goBack();
+            return;
+        }
+
+        if (isChildLockActive()) {
             return;
         }
 
@@ -176,9 +217,240 @@ public final class MainActivity extends Activity implements TextToSpeech.OnInitL
         );
     }
 
+    private boolean isChildLockActive() {
+        ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        return activityManager != null
+            && activityManager.getLockTaskModeState() != ActivityManager.LOCK_TASK_MODE_NONE;
+    }
+
+    private boolean isChildLockPreferred() {
+        return getSharedPreferences(CHILD_LOCK_PREFERENCES, MODE_PRIVATE)
+            .getBoolean(CHILD_LOCK_PREFERRED, true);
+    }
+
+    private void setChildLockPreferred(boolean preferred) {
+        SharedPreferences preferences = getSharedPreferences(CHILD_LOCK_PREFERENCES, MODE_PRIVATE);
+        preferences.edit().putBoolean(CHILD_LOCK_PREFERRED, preferred).apply();
+    }
+
+    private boolean isManagedLockTaskPermitted() {
+        DevicePolicyManager devicePolicyManager =
+            (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
+        return devicePolicyManager != null
+            && devicePolicyManager.isLockTaskPermitted(getPackageName());
+    }
+
+    private boolean isScreenPinningEnabled() {
+        return Settings.Secure.getInt(
+            getContentResolver(),
+            "lock_to_app_enabled",
+            0
+        ) == 1;
+    }
+
+    private boolean isAuthenticationRequiredToUnpin() {
+        return Settings.Secure.getInt(
+            getContentResolver(),
+            "lock_to_app_exit_locked",
+            0
+        ) == 1;
+    }
+
+    private boolean childLockNeedsSetup() {
+        return !isManagedLockTaskPermitted()
+            && (!isScreenPinningEnabled() || !isAuthenticationRequiredToUnpin());
+    }
+
+    private boolean isChildLockProtected() {
+        return isChildLockActive()
+            && (isManagedLockTaskPermitted() || isAuthenticationRequiredToUnpin());
+    }
+
+    private void openScreenPinningSettings() {
+        Toast.makeText(
+            this,
+            "Turn on App pinning and require your screen lock to unpin.",
+            Toast.LENGTH_LONG
+        ).show();
+        try {
+            startActivity(new Intent(Settings.ACTION_SECURITY_SETTINGS));
+        } catch (IllegalArgumentException | SecurityException ignored) {
+            Toast.makeText(
+                this,
+                "Open Android security settings and turn on App pinning.",
+                Toast.LENGTH_LONG
+            ).show();
+        }
+    }
+
+    private void startChildLock(boolean openSettingsWhenNeeded) {
+        if (childLockRequestPending || isChildLockActive()) {
+            return;
+        }
+        if (childLockNeedsSetup()) {
+            notifyChildLockState();
+            if (openSettingsWhenNeeded) {
+                openScreenPinningSettings();
+            }
+            return;
+        }
+        childLockRequestPending = true;
+        try {
+            startLockTask();
+        } catch (IllegalArgumentException | IllegalStateException | SecurityException ignored) {
+            // Android or the device policy may decline pinning; the UI receives the real state below.
+        }
+        showImmersivePlayArea();
+        notifyChildLockState();
+        webView.postDelayed(() -> {
+            childLockRequestPending = false;
+            notifyChildLockState();
+        }, 2500);
+    }
+
+    private void finishChildUnlock() {
+        parentAuthenticationPending = false;
+        setChildLockPreferred(false);
+        try {
+            stopLockTask();
+        } catch (IllegalArgumentException | IllegalStateException | SecurityException ignored) {
+            // Already unlocked or controlled by the device owner.
+        }
+        showImmersivePlayArea();
+        notifyChildLockState();
+    }
+
+    private void requestParentAuthentication() {
+        if (!isChildLockActive() || parentAuthenticationPending) {
+            return;
+        }
+
+        KeyguardManager keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
+        if (keyguardManager == null || !keyguardManager.isDeviceSecure()) {
+            Toast.makeText(this, "Set a phone screen lock before unlocking child mode.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        parentAuthenticationPending = true;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            showModernParentAuthentication();
+            return;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            showBiometricParentAuthentication();
+            return;
+        }
+        showDeviceCredentialConfirmation(keyguardManager);
+    }
+
+    private void showModernParentAuthentication() {
+        CancellationSignal cancellationSignal = new CancellationSignal();
+        BiometricPrompt prompt = new BiometricPrompt.Builder(this)
+            .setTitle("Grown-ups only")
+            .setSubtitle("Use your fingerprint or phone screen lock")
+            .setAllowedAuthenticators(
+                BiometricManager.Authenticators.BIOMETRIC_STRONG
+                    | BiometricManager.Authenticators.DEVICE_CREDENTIAL
+            )
+            .build();
+        prompt.authenticate(cancellationSignal, getMainExecutor(), new BiometricPrompt.AuthenticationCallback() {
+            @Override
+            public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result) {
+                finishChildUnlock();
+            }
+
+            @Override
+            public void onAuthenticationError(int errorCode, CharSequence errorString) {
+                parentAuthenticationPending = false;
+                notifyChildLockState();
+            }
+        });
+    }
+
+    private void showBiometricParentAuthentication() {
+        CancellationSignal cancellationSignal = new CancellationSignal();
+        BiometricPrompt prompt = new BiometricPrompt.Builder(this)
+            .setTitle("Grown-ups only")
+            .setSubtitle("Use your fingerprint")
+            .setNegativeButton("Use PIN", getMainExecutor(), (dialog, which) -> {
+                parentAuthenticationPending = false;
+                KeyguardManager keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
+                if (keyguardManager != null) {
+                    showDeviceCredentialConfirmation(keyguardManager);
+                }
+            })
+            .build();
+        prompt.authenticate(cancellationSignal, getMainExecutor(), new BiometricPrompt.AuthenticationCallback() {
+            @Override
+            public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result) {
+                finishChildUnlock();
+            }
+
+            @Override
+            public void onAuthenticationError(int errorCode, CharSequence errorString) {
+                parentAuthenticationPending = false;
+                if (errorCode != BiometricPrompt.BIOMETRIC_ERROR_USER_CANCELED
+                    && errorCode != BiometricPrompt.BIOMETRIC_ERROR_CANCELED
+                    && errorCode != BIOMETRIC_NEGATIVE_BUTTON_ERROR) {
+                    KeyguardManager keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
+                    if (keyguardManager != null) {
+                        showDeviceCredentialConfirmation(keyguardManager);
+                    }
+                }
+            }
+        });
+    }
+
+    private void showDeviceCredentialConfirmation(KeyguardManager keyguardManager) {
+        Intent intent = keyguardManager.createConfirmDeviceCredentialIntent(
+            "Grown-ups only",
+            "Unlock Toddler Arcade"
+        );
+        if (intent == null) {
+            parentAuthenticationPending = false;
+            return;
+        }
+        parentAuthenticationPending = true;
+        startActivityForResult(intent, PARENT_CREDENTIAL_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode != PARENT_CREDENTIAL_REQUEST) {
+            return;
+        }
+        if (resultCode == RESULT_OK) {
+            finishChildUnlock();
+            return;
+        }
+        parentAuthenticationPending = false;
+        notifyChildLockState();
+    }
+
+    private void notifyChildLockState() {
+        if (webView == null) {
+            return;
+        }
+
+        boolean isActive = isChildLockActive();
+        boolean isProtected = isChildLockProtected();
+        boolean needsSetup = childLockNeedsSetup();
+        webView.post(() -> webView.evaluateJavascript(
+            "window.updateAndroidChildLock && window.updateAndroidChildLock("
+                + isActive
+                + ","
+                + isProtected
+                + ","
+                + needsSetup
+                + ")",
+            null
+        ));
+    }
+
     private final class AndroidSpeechBridge {
         @JavascriptInterface
-        public void speak(String text, String languageTag, int generation, float rate) {
+        public void speak(String text, String languageTag, int generation, float rate, float volume) {
             runOnUiThread(() -> {
                 if (!textToSpeechReady) {
                     webView.evaluateJavascript(
@@ -191,10 +463,15 @@ public final class MainActivity extends Activity implements TextToSpeech.OnInitL
                 textToSpeech.stop();
                 textToSpeech.setLanguage(Locale.forLanguageTag(languageTag));
                 textToSpeech.setSpeechRate(Math.max(0.5f, Math.min(rate, 1.25f)));
+                Bundle speechParameters = new Bundle();
+                speechParameters.putFloat(
+                    TextToSpeech.Engine.KEY_PARAM_VOLUME,
+                    Math.max(0.0f, Math.min(volume, 0.24f))
+                );
                 textToSpeech.speak(
                     text,
                     TextToSpeech.QUEUE_FLUSH,
-                    null,
+                    speechParameters,
                     "web-" + generation
                 );
             });
@@ -210,11 +487,107 @@ public final class MainActivity extends Activity implements TextToSpeech.OnInitL
         }
     }
 
-    private static final class LocalGameWebViewClient extends WebViewClient {
+    private final class AndroidChildLockBridge {
+        @JavascriptInterface
+        public void start() {
+            runOnUiThread(() -> {
+                setChildLockPreferred(true);
+                startChildLock(true);
+            });
+        }
+
+        @JavascriptInterface
+        public void stop() {
+            runOnUiThread(MainActivity.this::requestParentAuthentication);
+        }
+
+        @JavascriptInterface
+        public boolean isActive() {
+            return isChildLockActive();
+        }
+
+        @JavascriptInterface
+        public boolean isProtected() {
+            return isChildLockProtected();
+        }
+
+        @JavascriptInterface
+        public boolean needsSetup() {
+            return childLockNeedsSetup();
+        }
+    }
+
+    private final class AndroidHapticsBridge {
+        @JavascriptInterface
+        public void crash() {
+            runOnUiThread(() -> {
+                Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                if (vibrator == null || !vibrator.hasVibrator()) {
+                    return;
+                }
+
+                long[] pattern = {0, 70, 45, 90};
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    vibrator.vibrate(VibrationEffect.createWaveform(pattern, -1));
+                    return;
+                }
+
+                vibrateLegacy(vibrator, pattern);
+            });
+        }
+
+        @SuppressWarnings("deprecation")
+        private void vibrateLegacy(Vibrator vibrator, long[] pattern) {
+            vibrator.vibrate(pattern, -1);
+        }
+    }
+
+    private final class LocalGameWebViewClient extends WebViewClient {
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+            applyPrimaryLanguageOverride(view);
+            notifyChildLockState();
+        }
+
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
             String url = request.getUrl().toString();
             return !url.startsWith("file:///android_asset/www/");
+        }
+
+        private void applyPrimaryLanguageOverride(WebView view) {
+            if (languageOverrideApplied) {
+                return;
+            }
+
+            String language = getIntent().getStringExtra(EXTRA_PRIMARY_LANGUAGE);
+            if (!isSupportedLanguage(language)) {
+                return;
+            }
+
+            languageOverrideApplied = true;
+            view.evaluateJavascript(
+                "window.applyInstalledOnboardingLanguage && window.applyInstalledOnboardingLanguage('"
+                    + language
+                    + "')",
+                null
+            );
+        }
+
+        private boolean isSupportedLanguage(String language) {
+            return "el".equals(language)
+                || "en".equals(language)
+                || "enUS".equals(language)
+                || "es".equals(language)
+                || "esES".equals(language)
+                || "fr".equals(language)
+                || "de".equals(language)
+                || "it".equals(language)
+                || "tr".equals(language)
+                || "ptBR".equals(language)
+                || "nl".equals(language)
+                || "pl".equals(language);
         }
     }
 }

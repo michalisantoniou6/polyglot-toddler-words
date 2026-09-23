@@ -14,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "PolyglotPlayroom"
-include(":app")
+rootProject.name = "ToddlerArcade"
+include ":app"
