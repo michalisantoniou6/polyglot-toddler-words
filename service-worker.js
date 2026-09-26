@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'toddler-arcade-v48';
+const CACHE_VERSION = 'toddler-arcade-v49';
 const APP_SHELL = [
     './',
     './index.html',
@@ -32,6 +32,10 @@ self.addEventListener('activate', event => {
                     .map(key => caches.delete(key))
             ))
             .then(() => self.clients.claim())
+            .then(() => self.clients.matchAll({ type: 'window' }))
+            .then(clients => Promise.all(
+                clients.map(client => client.navigate(client.url))
+            ))
     );
 });
 

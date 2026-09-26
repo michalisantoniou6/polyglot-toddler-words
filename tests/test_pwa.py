@@ -55,8 +55,11 @@ class ProgressiveWebAppTests(unittest.TestCase):
     def test_service_worker_is_registered_only_on_supported_web_origins(self) -> None:
         self.assertIn("'serviceWorker' in navigator", HTML)
         self.assertIn("location.protocol === 'https:'", HTML)
-        self.assertIn("navigator.serviceWorker.register('./service-worker.js')", HTML)
+        self.assertIn("navigator.serviceWorker.register('./service-worker.js?v=49'", HTML)
+        self.assertIn("updateViaCache: 'none'", HTML)
         self.assertIn("await registration.update()", HTML)
+        self.assertIn("navigator.serviceWorker.addEventListener('controllerchange'", HTML)
+        self.assertIn("window.location.reload()", HTML)
 
     def test_complete_game_shell_is_precached_for_offline_play(self) -> None:
         for path in (
@@ -73,6 +76,9 @@ class ProgressiveWebAppTests(unittest.TestCase):
         ):
             self.assertIn(f"'{path}'", SERVICE_WORKER)
         self.assertIn("cache.addAll(APP_SHELL)", SERVICE_WORKER)
+        self.assertIn("const CACHE_VERSION = 'toddler-arcade-v49'", SERVICE_WORKER)
+        self.assertIn("self.clients.matchAll({ type: 'window' })", SERVICE_WORKER)
+        self.assertIn("client.navigate(client.url)", SERVICE_WORKER)
         self.assertIn("request.mode === 'navigate'", SERVICE_WORKER)
         self.assertIn("networkFirstNavigation(request)", SERVICE_WORKER)
         self.assertRegex(SERVICE_WORKER, re.compile(r"catch \(error\).*cache\.match", re.S))
